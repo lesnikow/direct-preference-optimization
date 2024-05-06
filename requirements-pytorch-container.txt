@@ -1,11 +1,8 @@
-ipykernel
-numpy
-tokenizers
-torch
-tqdm
-transformers
 datasets
-beautifulsoup4
 wandb
 hydra-core
+transformers
+tokenizers
 tensor-parallel
+tqdm
+beautifulsoup4
