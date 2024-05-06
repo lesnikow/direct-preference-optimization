@@ -29,6 +29,10 @@ RUN pip install --upgrade pip && \
     pip install -r requirements.txt && \
     pip install --upgrade datasets
 
+# Install and log in to wandb
+RUN pip install wandb && \
+    wandb login 3df7ad506a96b198d251a4df07f7c9b5bd4745e3
+
 # Set zsh as the default shell
 SHELL ["/usr/bin/zsh", "-c"]
 
