@@ -18,22 +18,4 @@ pip install --upgrade datasets wandb
 wandb login 3df7ad506a96b198d251a4df07f7c9b5bd4745e3
 
 
-python -u train.py model=pythia28 datasets=[hh] loss=sft exp_name=anthropic_dpo_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
-
-
-python -u train.py model=pythia28 datasets=[hh] loss=sft exp_name=anthropic_dpo_pythia28 gradient_accumulation_steps=16 batch_size=8 eval_batch_size=4 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
-
-
-python -u train.py model=pythia28 datasets=[hh] loss=sft exp_name=anthropic_dpo_pythia28 gradient_accumulation_steps=32 batch_size=4 eval_batch_size=2 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
-
-
-python -u train.py model=pythia28 datasets=[hh] loss=sft exp_name=anthropic_dpo_pythia28 gradient_accumulation_steps=128 batch_size=1 eval_batch_size=1 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
-
-
-python -u train.py model=pythia28 datasets=[hh] loss=sft exp_name=anthropic_dpo_pythia28 gradient_accumulation_steps=1 batch_size=1 eval_batch_size=1 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
-
-
-ulimit -n 64000; python -u train.py model=pythia28 datasets=[hh] loss=sft exp_name=anthropic_dpo_pythia28 gradient_accumulation_steps=1 batch_size=1 eval_batch_size=1 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
-
-
 ulimit -n 64000; python -u train.py model=pythia28 datasets=[hh] loss=sft exp_name=anthropic_dpo_pythia28 gradient_accumulation_steps=8 batch_size=8 eval_batch_size=4 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
