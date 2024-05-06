@@ -6,3 +6,4 @@ tokenizers
 tensor-parallel
 tqdm
 beautifulsoup4
+accelerate
