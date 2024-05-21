@@ -517,3 +517,15 @@ def strings_match_up_to_spaces(str_a: str, str_b: str) -> bool:
                     str_b = str_b[:idx] + str_b[idx + 1 :]
 
     return True
+
+
+def failing_test():
+    raise ValueError("This is a failing test.")
+
+
+def main():
+    failing_test()
+
+
+if __name__ == "__main__":
+    main()
