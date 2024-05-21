@@ -202,6 +202,18 @@ def get_hh(
     return data
 
 
+def get_dpo(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    raise NotImplementedError("DPO dataset not implemented yet.")
+
+
+def get_dcpo(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    raise NotImplementedError("DCPO dataset not implemented yet.")
+
+
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "shp":
