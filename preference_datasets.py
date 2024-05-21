@@ -202,6 +202,19 @@ def get_hh(
     return data
 
 
+def test_get_hh():
+    """Test the get_hh function."""
+    
+        data = get_hh("train", silent=True)
+        for prompt, d in data.items()[0:1]:
+            print(f"Prompt: {prompt}")
+            print(f"Responses: {d['responses']}")
+            print(f"Pairs: {d['pairs']}")
+            print(f"SFT target: {d['sft_target']}")
+            print()
+
+
+
 def get_dpo(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
@@ -540,6 +553,7 @@ def failing_test():
 
 
 def main():
+    test_get_hh()
     failing_test()
 
 
