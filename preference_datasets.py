@@ -222,6 +222,10 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
         data = get_hh(split, silent=silent, cache_dir=cache_dir)
     elif name == "se":
         data = get_se(split, silent=silent, cache_dir=cache_dir)
+    elif name == "dpo":
+        data = get_dpo(split, silent=silent, cache_dir=cache_dir)
+    elif name == "dcpo":
+        data = get_dcpo(split, silent=silent, cache_dir=cache_dir)
     else:
         raise ValueError(f"Unknown dataset '{name}'")
 
