@@ -222,7 +222,28 @@ def test_get_hh():
 def get_dpo(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    raise NotImplementedError("DPO dataset not implemented yet.")
+
+    print(f"Loading dpo dataset ({split} split) from local data dir...")
+
+    data = None
+    return data
+
+
+def test_get_dpo():
+    """Test the get_dpo function."""
+
+    data = get_dpo("train", silent=True)
+    n = 0
+    for prompt, d in data.items():
+        if n > 3:
+            break
+        print(f"Prompt: {prompt}")
+        print(f"----")
+        print(f"Responses: {d['responses']}")
+        print(f"Pairs: {d['pairs']}")
+        print(f"SFT target: {d['sft_target']}")
+        print()
+        n += 1
 
 
 def get_dcpo(
@@ -557,7 +578,7 @@ def failing_test():
 
 
 def main():
-    test_get_hh()
+    test_get_dpo()
 
 
 if __name__ == "__main__":
