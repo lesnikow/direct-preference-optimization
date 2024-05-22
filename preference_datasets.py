@@ -204,12 +204,12 @@ def get_hh(
     return data
 
 
-def inspect_data_dict(data):
+def inspect_data_dict(data, break_after=4):
     """Inspect output data dict, useful for tests."""
 
     n = 0
     for prompt, d in data.items():
-        if n > 3:
+        if n >= break_after:
             break
         print(f"Prompt: {prompt}")
         print(f"----")
