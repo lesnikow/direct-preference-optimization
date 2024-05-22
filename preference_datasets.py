@@ -191,7 +191,6 @@ def get_hh(
     )
     print("done")
 
-
     data = defaultdict(lambda: defaultdict(list))
     for row in tqdm.tqdm(dataset, desc="Processing HH", disable=silent):
         prompt, chosen, rejected = split_prompt_and_responses(row)
@@ -219,6 +218,7 @@ def inspect_data_dict(data, break_after=4):
         print()
         n += 1
 
+
 def test_get_hh():
     """Test the get_hh function."""
 
@@ -226,21 +226,25 @@ def test_get_hh():
     inspect_data_dict(data)
 
 
-def get_dpo(
-    split: str, silent: bool = False, cache_dir: str = None, verbose: bool = False
+def get_custom_hh_dataset_from_fp(
+    split: str,
+    fp: str = None,
+    silent: bool = False,
+    cache_dir: str = None,
+    verbose: bool = False,
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get dataset based on Anthropic hh style dataset content and format from custom fp."""
 
-    print(f"Loading dpo dataset ({split} split) from local data dir...")
-    fp ="""/root/llm-sct/data/anthropic/raw/llama3-8B+gpt-3.5-turbo-0125/DPO_data_random_voter_from_helpful-base_v2.json"""
-    print(f"fp: {fp}")
+    print(f"Loading custom hh dataset ({split} split) from local data dir: {fp} ...")
 
     # Load the dataset, actually a Python list of dictionaries
     with open(fp, "r") as f:
         read_data = eval(f.read())
 
     data = defaultdict(lambda: defaultdict(list))
-    n = 0
-    for row in tqdm.tqdm(read_data, desc="Processing DPO", disable=silent):
+    for row in tqdm.tqdm(
+        read_data, desc="Processing custom anthropic style dataset", disable=silent
+    ):
         prompt, chosen, rejected = split_prompt_and_responses(row)
         if verbose:
             print(f"prompt: {prompt}")
@@ -252,8 +256,16 @@ def get_dpo(
         data[prompt]["pairs"].append((n_responses, n_responses + 1))
         data[prompt]["responses"].extend(responses)
         data[prompt]["sft_target"] = chosen
-        n += 1
     return data
+
+
+def get_dpo(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get DPO dataset based on Anthropic hh style dataset content and format."""
+
+    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B+gpt-3.5-turbo-0125/DPO_data_random_voter_from_helpful-base_v2.json"
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
 
 
 def test_get_dpo():
@@ -266,7 +278,17 @@ def test_get_dpo():
 def get_dcpo(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    raise NotImplementedError("DCPO dataset not implemented yet.")
+    """Get DPO dataset based on Anthropic hh style dataset content and format."""
+
+    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B+gpt-3.5-turbo-0125/DCPO_data_from_helpful-base_v2_GPT_tiebreak.json"
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+
+def test_get_dcpo():
+    """Test the get_dcpo function."""
+
+    data = get_dcpo("train", silent=True)
+    inspect_data_dict(data)
 
 
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
@@ -596,6 +618,7 @@ def failing_test():
 
 def main():
     test_get_dpo()
+    test_get_dcpo()
 
 
 if __name__ == "__main__":
