@@ -204,15 +204,18 @@ def get_hh(
 
 def test_get_hh():
     """Test the get_hh function."""
-    
-        data = get_hh("train", silent=True)
-        for prompt, d in data.items()[0:1]:
-            print(f"Prompt: {prompt}")
-            print(f"Responses: {d['responses']}")
-            print(f"Pairs: {d['pairs']}")
-            print(f"SFT target: {d['sft_target']}")
-            print()
 
+    data = get_hh("train", silent=True)
+    n = 0
+    for prompt, d in data.items():
+        if n > 0:
+            break
+        print(f"Prompt: {prompt}")
+        print(f"Responses: {d['responses']}")
+        print(f"Pairs: {d['pairs']}")
+        print(f"SFT target: {d['sft_target']}")
+        print()
+        n += 1
 
 
 def get_dpo(
