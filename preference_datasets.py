@@ -202,10 +202,9 @@ def get_hh(
     return data
 
 
-def test_get_hh():
-    """Test the get_hh function."""
+def inspect_data_dict(data):
+    """Inspect output data dict, useful for tests."""
 
-    data = get_hh("train", silent=True)
     n = 0
     for prompt, d in data.items():
         if n > 3:
@@ -217,6 +216,12 @@ def test_get_hh():
         print(f"SFT target: {d['sft_target']}")
         print()
         n += 1
+
+def test_get_hh():
+    """Test the get_hh function."""
+
+    data = get_hh("train", silent=True)
+    inspect_data_dict(data)
 
 
 def get_dpo(
@@ -233,17 +238,8 @@ def test_get_dpo():
     """Test the get_dpo function."""
 
     data = get_dpo("train", silent=True)
-    n = 0
-    for prompt, d in data.items():
-        if n > 3:
-            break
-        print(f"Prompt: {prompt}")
-        print(f"----")
-        print(f"Responses: {d['responses']}")
-        print(f"Pairs: {d['pairs']}")
-        print(f"SFT target: {d['sft_target']}")
-        print()
-        n += 1
+
+    inspect_data_dict(data)
 
 
 def get_dcpo(
