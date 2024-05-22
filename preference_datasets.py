@@ -227,12 +227,32 @@ def test_get_hh():
 
 
 def get_dpo(
-    split: str, silent: bool = False, cache_dir: str = None
+    split: str, silent: bool = False, cache_dir: str = None, verbose: bool = False
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
 
     print(f"Loading dpo dataset ({split} split) from local data dir...")
+    fp ="""/root/llm-sct/data/anthropic/raw/llama3-8B+gpt-3.5-turbo-0125/DPO_data_random_voter_from_helpful-base_v2.json"""
+    print(f"fp: {fp}")
 
-    data = None
+    # Load the dataset, actually a Python list of dictionaries
+    with open(fp, "r") as f:
+        read_data = eval(f.read())
+
+    data = defaultdict(lambda: defaultdict(list))
+    n = 0
+    for row in tqdm.tqdm(read_data, desc="Processing DPO", disable=silent):
+        prompt, chosen, rejected = split_prompt_and_responses(row)
+        if verbose:
+            print(f"prompt: {prompt}")
+            print(f"chosen: {chosen}")
+            print(f"rejected: {rejected}")
+
+        responses = [chosen, rejected]
+        n_responses = len(data[prompt]["responses"])
+        data[prompt]["pairs"].append((n_responses, n_responses + 1))
+        data[prompt]["responses"].extend(responses)
+        data[prompt]["sft_target"] = chosen
+        n += 1
     return data
 
 
@@ -240,7 +260,6 @@ def test_get_dpo():
     """Test the get_dpo function."""
 
     data = get_dpo("train", silent=True)
-
     inspect_data_dict(data)
 
 
