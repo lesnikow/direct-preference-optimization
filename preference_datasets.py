@@ -235,7 +235,7 @@ def get_custom_hh_dataset_from_fp(
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
     """Get dataset based on Anthropic hh style dataset content and format from custom fp."""
 
-    print(f"Loading custom hh dataset ({split} split) from local data dir: {fp} ...")
+    print(f"Loading custom anthropic-hh style dataset ({split} split) from local data dir: {fp} ...")
 
     # Load the dataset, actually a Python list of dictionaries
     with open(fp, "r") as f:
@@ -243,7 +243,7 @@ def get_custom_hh_dataset_from_fp(
 
     data = defaultdict(lambda: defaultdict(list))
     for row in tqdm.tqdm(
-        read_data, desc="Processing custom anthropic style dataset", disable=silent
+        read_data, desc="Processing custom anthropic-hh style dataset", disable=silent
     ):
         prompt, chosen, rejected = split_prompt_and_responses(row)
         if verbose:
