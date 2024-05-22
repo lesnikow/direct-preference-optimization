@@ -221,7 +221,7 @@ def inspect_data_dict(data, break_after=4):
 
 def test_get_hh():
     """Test the get_hh function."""
-
+    
     data = get_hh("train", silent=True)
     inspect_data_dict(data)
 
@@ -235,7 +235,9 @@ def get_custom_hh_dataset_from_fp(
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
     """Get dataset based on Anthropic hh style dataset content and format from custom fp."""
 
-    print(f"Loading custom anthropic-hh style dataset ({split} split) from local data dir: {fp} ...")
+    print(
+        f"Loading custom anthropic-hh style dataset ({split} split) from local data dir: {fp} ..."
+    )
 
     # Load the dataset, actually a Python list of dictionaries
     with open(fp, "r") as f:
@@ -313,6 +315,22 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
     }, f"Unexpected keys in dataset: {list(list(data.values())[0].keys())}"
 
     return data
+
+
+def test_get_dataset():
+    """Test the get_dataset function."""
+
+    for dataset_name in ["dpo", "dcpo"]:
+        data = get_dataset(dataset_name, "train", silent=True)
+        assert len(data) > 0, "No data loaded"
+        assert set(list(data.values())[0].keys()) == {
+            "responses",
+            "pairs",
+            "sft_target",
+        }, f"Unexpected keys in dataset: {list(list(data.values())[0].keys())}"
+        assert len(list(data.values())[0]["responses"]) > 0, "No responses loaded"
+        assert len(list(data.values())[0]["pairs"]) > 0, "No pairs loaded"
+        assert len(list(data.values())[0]["sft_target"]) > 0, "No sft_target loaded"
 
 
 def get_collate_fn(
@@ -619,6 +637,7 @@ def failing_test():
 def main():
     test_get_dpo()
     test_get_dcpo()
+    test_get_dataset()
 
 
 if __name__ == "__main__":
