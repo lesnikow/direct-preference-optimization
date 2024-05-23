@@ -1,8 +1,9 @@
 import torch
 
 # Define the path to the input model and the output file
-model_path ="/root/dpo/.cache/root/dataset_DPO_loss_dpo_pythia28_2024-05-22_21-25-05_438706/LATEST/model.pt"
-output_path = "/root/dpo/.cache/root/dataset_DPO_loss_dpo_pythia28_2024-05-22_21-25-05_438706/LATEST/pytorch_model.bin"
+exp_dir = "dataset_DCPO_loss_dpo_pythia28_2024-05-22_21-45-42_170746"
+model_path = f"/root/dpo/.cache/root/{exp_dir}/LATEST/policy.pt"
+output_path = f"/root/dpo/.cache/root/{exp_dir}/LATEST/pytorch_model.bin"
 
 # Load the state dictionary from the .pt file
 state_dict = torch.load(model_path)
