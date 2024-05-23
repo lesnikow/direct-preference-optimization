@@ -1,25 +1,28 @@
+# dpo notes
+
+
 ## Commands for pytorch container
 
-sudo apt update && sudo apt -y upgrade
 sudo apt install -y neovim htop atop bmon tree python3.10-venv zsh
 
 python3 -m venv env --system-site-packages
 source env/bin/activate
 pip install --upgrade pip
 
-
 git config --global user.email "adam.lesnikowski@gmail.com"
 git config --global user.name "Adam Lesnikowski"
 git config --global credential.helper cache
 git config --global credential.helper 'cache --timeout=36000'
 
-git clone https://github.com/lesnikow/direct-preference-optimization.git
+git clone https://github.com/lesnikow/direct-preference-optimization.git dpo
 cd direct-preference-optimization
 git checkout ab
 
 pip install -r requirements-pytorch-container.txt
 
 wandb login 3df7ad506a96b198d251a4df07f7c9b5bd4745e3
+
+git clone https://github.com/lesnikow/llm-sct.git
 
 
 ## Commands for cuda container
