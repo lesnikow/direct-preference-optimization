@@ -108,6 +108,33 @@ ulimit -n 64000; python -u train.py model=pythia28 datasets=[hh] loss=dpo loss.b
 python -u train.py model=pythia28 datasets=[hh] loss=dpo loss.beta=0.1 exp_name=anthropic_dpo_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16 model.archive=/path/to/archive/from/sft/LATEST/policy.pt
 
 
+## Evals
+
+
+### Eleuther model harness
+
+
+#### A-arm eval
+lm_eval --model hf \
+    --model_args pretrained=.cache/root/dataset_DPO_loss_dpo_pythia28_2024-05-22_21-25-05_438706/LATEST/ \
+    --tasks truthfulqa \
+    --device cuda:0 \
+    --batch_size auto:4
+
+#### B-arm eval
+lm_eval --model hf \
+    --model_args pretrained=.cache/root/dataset_DCPO_loss_dpo_pythia28_2024-05-22_21-45-42_170746/LATEST/ \
+    --tasks truthfulqa \
+    --device cuda:0 \
+    --batch_size auto:4
+
+
+
+### Copy over lm_eval results dir Non to local machine
+
+rsync -avP -e 'ssh -p 25805' root@45.135.56.11:/root/dpo/None ~/dpo/results/
+
+
 ## Test direct-preference-optimization repo cmds
 
 python -m pytest -vv --durations=10 preference_datasets.py 
