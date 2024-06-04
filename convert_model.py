@@ -1,15 +1,32 @@
 import torch
+from transformers import AutoModel
+from transformers import AutoTokenizer, AutoConfig
+from transformers import GPTNeoXForCausalLM
 
 # Define the path to the input model and the output file
-exp_dir = "dataset_DCPO_loss_dpo_pythia28_2024-05-22_21-45-42_170746"
-model_path = f"/root/dpo/.cache/root/{exp_dir}/LATEST/policy.pt"
-output_path = f"/root/dpo/.cache/root/{exp_dir}/LATEST/pytorch_model.bin"
+exp_dir = ""
+in_path = f"/root/policy_dcpo.pt/policy.pt"
+out_path = f"/root/policy_dcpo/"
 
-# Load the state dictionary from the .pt file
-state_dict = torch.load(model_path)
+state_dict = torch.load(in_path)
+model = GPTNeoXForCausalLM.from_pretrained('EleutherAI/pythia-2.8b')
+model.load_state_dict(state_dict)
+model.save_pretrained(out_path)
 
-# Save the state dictionary to pytorch_model.bin
-torch.save(state_dict, output_path)
+tokenizer = AutoTokenizer.from_pretrained('EleutherAI/pythia-2.8b')
+config = AutoConfig.from_pretrained('EleutherAI/pythia-2.8b')
 
-print(f"Model successfully converted and saved to {output_path}")
+tokenizer.save_pretrained(out_path)
+config.save_pretrained(out_path)
+
+
+
+# Test 
+model = AutoModel.from_pretrained(out_path)
+tokenizer = AutoTokenizer.from_pretrained(out_path)
+
+inputs = tokenizer("Hello, world!", return_tensors="pt")
+outputs = model(**inputs)
+
+print(outputs)
 
