@@ -16,15 +16,11 @@ model = GPTNeoXForCausalLM.from_pretrained('EleutherAI/pythia-2.8b')
 # Update the model's state dict
 model.load_state_dict(state_dict["state"])
 
-
-print("Keys in the model's state_dict:")
-print(model.state_dict().keys())
+# print("Keys in the model's state_dict:")
+# print(model.state_dict().keys())
 
 # Save the model
 model.save_pretrained(out_path)
-
-raise e
-
 
 # Load and save tokenizer and config
 tokenizer = AutoTokenizer.from_pretrained('EleutherAI/pythia-2.8b')
@@ -32,6 +28,7 @@ config = AutoConfig.from_pretrained('EleutherAI/pythia-2.8b')
 
 tokenizer.save_pretrained(out_path)
 config.save_pretrained(out_path)
+
 
 # Test
 model = GPTNeoXForCausalLM.from_pretrained(out_path)
