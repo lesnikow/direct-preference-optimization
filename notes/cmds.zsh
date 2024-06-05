@@ -20,7 +20,8 @@ git checkout ab
 
 pip install -r requirements-pytorch-container.txt
 
-wandb login 3df7ad506a96b198d251a4df07f7c9b5bd4745e3
+source .env
+wandb login WANDB_API_KEY
 
 git clone https://github.com/lesnikow/llm-sct.git
 
