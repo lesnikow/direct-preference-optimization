@@ -24,6 +24,11 @@ wandb login 3df7ad506a96b198d251a4df07f7c9b5bd4745e3
 
 git clone https://github.com/lesnikow/llm-sct.git
 
+git clone https://github.com/lesnikow/fast-chat.git
+cd fast-chat
+pip3 install -e ".[model_worker,webui]"
+pip install anthropic openai
+
 
 ## Commands for cuda container
 
