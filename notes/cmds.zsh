@@ -31,22 +31,10 @@ pip3 install -e ".[model_worker,webui]"
 pip install anthropic openai
 
 
-## Commands for cuda container
 
-sudo apt update && sudo apt -y upgrade
-sudo apt install -y neovim htop atop bmon tree python3.10-venv zsh
 
-python3 -m venv env
-source env/bin/activate
-pip install --upgrade pip
 
-git clone https://github.com/lesnikow/direct-preference-optimization.git
-cd direct-preference-optimization
-git checkout main
 
-pip install -r requirements.txt
-pip install --upgrade datasets wandb
-wandb login 3df7ad506a96b198d251a4df07f7c9b5bd4745e3
 
 
 
