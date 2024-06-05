@@ -1,6 +1,6 @@
 # notes/cmds.zsh for dpo repo
 
-## Commands for sft, dpo
+## Setup cmds for sft, dpo
 
 sudo apt install -y neovim htop atop bmon tree python3.10-venv zsh
 
@@ -14,11 +14,11 @@ git config --global credential.helper cache
 git config --global credential.helper 'cache --timeout=36000'
 
 
-### Data
+### Data setup
 git clone https://github.com/lesnikow/llm-sct.git
 
 
-### DPO, SFT
+### DPO, SFT setup
 cd ~
 git clone https://github.com/lesnikow/direct-preference-optimization.git dpo
 cd dpo
@@ -28,7 +28,7 @@ source .env
 wandb login WANDB_API_KEY
 
 
-### Evals via fast-chat
+### Evals via fast-chat setup
 cd ~
 git clone https://github.com/lesnikow/fast-chat.git
 cd fast-chat
@@ -95,7 +95,14 @@ ulimit -n 64000; python -u train.py model=pythia28 datasets=[dpo] loss=dpo loss.
 
 
 
+
+
 ## Evals
+
+
+### fast-chat llm-judge
+
+# Use notes from my fast-chat repo clone
 
 
 ### Eleuther model harness
@@ -117,7 +124,7 @@ lm_eval --model hf \
 
 
 
-### Copy over lm_eval results dir Non to local machine
+### Copy over lm_eval results dir None to local machine
 
 rsync -avP -e 'ssh -p 25805' root@45.135.56.11:/root/dpo/None ~/dpo/results/
 
