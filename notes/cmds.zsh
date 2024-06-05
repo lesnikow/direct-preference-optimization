@@ -1,7 +1,6 @@
-# dpo notes
+# notes/cmds.zsh for dpo repo
 
-
-## Commands for pytorch container
+## Commands for sft, dpo
 
 sudo apt install -y neovim htop atop bmon tree python3.10-venv zsh
 
@@ -14,17 +13,23 @@ git config --global user.name "Adam Lesnikowski"
 git config --global credential.helper cache
 git config --global credential.helper 'cache --timeout=36000'
 
-git clone https://github.com/lesnikow/direct-preference-optimization.git dpo
-cd direct-preference-optimization
-git checkout ab
 
+### Data
+git clone https://github.com/lesnikow/llm-sct.git
+
+
+### DPO, SFT
+cd ~
+git clone https://github.com/lesnikow/direct-preference-optimization.git dpo
+cd dpo
 pip install -r requirements-pytorch-container.txt
 
 source .env
 wandb login WANDB_API_KEY
 
-git clone https://github.com/lesnikow/llm-sct.git
 
+### Evals via fast-chat
+cd ~
 git clone https://github.com/lesnikow/fast-chat.git
 cd fast-chat
 pip3 install -e ".[model_worker,webui]"
@@ -37,14 +42,26 @@ pip install anthropic openai
 
 
 
+## Five arm trial
+
+# A-arm: Anthropic helpful-base
+
+# B-arm: Random voter, "DPO" in two arm trial
+ 
+# C-arm: Majority preferences, "DCPO" in two arm trial
+ 
+# D-arm: All voters
+ 
+# E-arm: Majority preferences x n
+
+
+
 
 ## Basic experiment setup, replicated dpo codebase
 
+[X] Eval data DCPO, loss DPO
 
-[ ] Eval data DCPO, loss DPO
-
-[ ] Eval data DPO, loss DPO
-
+[X] Eval data DPO, loss DPO
 
 [X] Dataset DCPO, loss DPO
 
