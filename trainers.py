@@ -509,8 +509,8 @@ class FSDPTrainer(BasicTrainer):
         with FSDP.state_dict_type(self.policy, StateDictType.FULL_STATE_DICT, optim_state_dict_config=save_policy):
             optimizer_state_dict = FSDP.optim_state_dict(self.policy, self.optimizer)
 
-        if self.rank == 0:
-            self.write_state_dict(self.example_counter, optimizer_state_dict, metrics, 'optimizer.pt', output_dir)
+        # if self.rank == 0:
+        #    self.write_state_dict(self.example_counter, optimizer_state_dict, metrics, 'optimizer.pt', output_dir)
         del optimizer_state_dict
         dist.barrier()
 
@@ -542,4 +542,4 @@ class TensorParallelTrainer(BasicTrainer):
     
         self.write_state_dict(self.example_counter, policy_state_dict, metrics, 'policy.pt', output_dir)
         del policy_state_dict
-        
+
