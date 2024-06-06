@@ -275,9 +275,9 @@ def get_hb(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
     """Get helpful base dataset based on Anthropic hh style dataset content and format."""
-    
-    split = "helpful-base"
-    return get_hh(split, silent, cache_dir)
+
+    fp = "/root/llm-sct/data/anthropic/raw/helpful-base_A_arm.json"
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
 
 
 def get_rv(
