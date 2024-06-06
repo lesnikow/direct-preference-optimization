@@ -75,23 +75,22 @@ pip install anthropic openai
 
 ## SFT
 
-### B-arm 4 x H100 80 GB, ulimit, DCPO datset, sft loss
-ulimit -n 64000; python -u train.py model=pythia28 datasets=[dcpo] loss=sft exp_name=dataset_DCPO_loss_sft_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
-
-
+ulimit -n 64000
 ### A-arm 4 x H100 80 GB, ulimit, DPO datset, sft loss
-ulimit -n 64000; python -u train.py model=pythia28 datasets=[dpo] loss=sft exp_name=dataset_DPO_loss_sft_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
+python -u train.py model=pythia28 datasets=[dpo] loss=sft exp_name=dataset_DPO_loss_sft_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
 
+### B-arm 4 x H100 80 GB, ulimit, DCPO datset, sft loss
+python -u train.py model=pythia28 datasets=[dcpo] loss=sft exp_name=dataset_DCPO_loss_sft_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
 
 
 ## DPO
 
-### B-arm continued; 4 x H100 80 GB, ulimit, DCPO dataset, dpo loss 
-ulimit -n 64000; python -u train.py model=pythia28 datasets=[dcpo] loss=dpo loss.beta=0.1 exp_name=dataset_DCPO_loss_dpo_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16 model.archive=.cache/root/dataset_DCPO_loss_sft_pythia28_2024-05-22_21-13-30_959011/LATEST/policy.pt
-
-
+ulimit -n 64000
 ### A-arm continued; 4 x H100 80 GB, ulimit, DPO dataset, dpo loss 
-ulimit -n 64000; python -u train.py model=pythia28 datasets=[dpo] loss=dpo loss.beta=0.1 exp_name=dataset_DPO_loss_dpo_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16 model.archive=.cache/root/dataset_dpo_loss_sft_pythia_28_2024-05-22_21-00-06_950890/LATEST/policy.pt
+python -u train.py model=pythia28 datasets=[dpo] loss=dpo loss.beta=0.1 exp_name=dataset_DPO_loss_dpo_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16 model.archive=.cache/root/dataset_dpo_loss_sft_pythia_28_2024-05-22_21-00-06_950890/LATEST/policy.pt
+
+### B-arm continued; 4 x H100 80 GB, ulimit, DCPO dataset, dpo loss 
+python -u train.py model=pythia28 datasets=[dcpo] loss=dpo loss.beta=0.1 exp_name=dataset_DCPO_loss_dpo_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16 model.archive=.cache/root/dataset_DCPO_loss_sft_pythia28_2024-05-22_21-13-30_959011/LATEST/policy.pt
 
 
 
