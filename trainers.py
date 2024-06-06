@@ -233,7 +233,8 @@ class BasicTrainer(object):
         )
 
     def get_batch_samples(self, batch: Dict[str, torch.LongTensor]) -> Tuple[str, str]:
-        """Generate samples from the policy (and reference model, if doing DPO training) for the given batch of inputs."""
+        """Generate samples from the policy (and reference model, if doing DPO training)
+        for the given batch of inputs."""
 
         # FSDP generation according to https://github.com/pytorch/pytorch/issues/100069
         ctx = lambda: (
@@ -293,7 +294,8 @@ class BasicTrainer(object):
     def concatenated_forward(
         self, model: nn.Module, batch: Dict[str, Union[List, torch.LongTensor]]
     ) -> Tuple[torch.FloatTensor, torch.FloatTensor]:
-        """Run the given model on the given batch of inputs, concatenating the chosen and rejected inputs together.
+        """Run the given model on the given batch of inputs, concatenating the chosen
+        and rejected inputs together.
 
         We do this to avoid doing two forward passes, because it's faster for FSDP.
         """
@@ -317,7 +319,8 @@ class BasicTrainer(object):
         loss_config: DictConfig,
         train=True,
     ):
-        """Compute the SFT or DPO loss and other metrics for the given batch of inputs."""
+        """Compute the SFT or DPO loss and other metrics for the given batch of
+        inputs."""
 
         metrics = {}
         train_test = "train" if train else "eval"
@@ -673,10 +676,12 @@ class FSDPTrainer(BasicTrainer):
         rank: int = 0,
         world_size: int = 1,
     ):
-        """A trainer subclass that uses PyTorch FSDP to shard the model across multiple GPUs.
+        """A trainer subclass that uses PyTorch FSDP to shard the model across multiple
+        GPUs.
 
-        This trainer will shard both the policy and reference model across all available GPUs.
-        Models are sharded at the block level, where the block class name is provided in the config.
+        This trainer will shard both the policy and reference model across all available
+        GPUs. Models are sharded at the block level, where the block class name is
+        provided in the config.
         """
 
         super().__init__(
@@ -755,11 +760,13 @@ class FSDPTrainer(BasicTrainer):
         dist.barrier()
 
     def clip_gradient(self):
-        """Clip the gradient norm of the parameters of an FSDP policy, gathering the gradients across all GPUs."""
+        """Clip the gradient norm of the parameters of an FSDP policy, gathering the
+        gradients across all GPUs."""
         return self.policy.clip_grad_norm_(self.config.max_grad_norm).item()
 
     def save(self, output_dir=None, metrics=None):
-        """Save policy, optimizer, and scheduler state to disk, gathering from all processes and saving only on the rank 0 process."""
+        """Save policy, optimizer, and scheduler state to disk, gathering from all
+        processes and saving only on the rank 0 process."""
         save_policy = FullStateDictConfig(offload_to_cpu=True, rank0_only=True)
         with FSDP.state_dict_type(
             self.policy, StateDictType.FULL_STATE_DICT, state_dict_config=save_policy
@@ -806,10 +813,12 @@ class TensorParallelTrainer(BasicTrainer):
     def __init__(
         self, policy, config, seed, run_dir, reference_model=None, rank=0, world_size=1
     ):
-        """A trainer subclass that uses TensorParallel to shard the model across multiple GPUs.
+        """A trainer subclass that uses TensorParallel to shard the model across
+        multiple GPUs.
 
-        Based on https://github.com/BlackSamorez/tensor_parallel. Note sampling is extremely slow,
-           see https://github.com/BlackSamorez/tensor_parallel/issues/66.
+        Based on https://github.com/BlackSamorez/tensor_parallel. Note sampling is
+        extremely slow, see
+        https://github.com/BlackSamorez/tensor_parallel/issues/66.
         """
         super().__init__(
             policy, config, seed, run_dir, reference_model, rank, world_size

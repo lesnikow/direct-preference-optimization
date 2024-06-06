@@ -35,7 +35,8 @@ def worker_main(
     policy: nn.Module,
     reference_model: Optional[nn.Module] = None,
 ):
-    """Main function for each worker process (may be only 1 for BasicTrainer/TensorParallelTrainer)."""
+    """Main function for each worker process (may be only 1 for
+    BasicTrainer/TensorParallelTrainer)."""
     if "FSDP" in config.trainer:
         init_distributed(rank, world_size, port=config.fsdp_port)
 
@@ -71,7 +72,10 @@ def worker_main(
 
 @hydra.main(version_base=None, config_path="config", config_name="config")
 def main(config: DictConfig):
-    """Main entry point for training. Validates config, creates/initializes model(s), and kicks off worker process(es)."""
+    """Main entry point for training.
+
+    Validates config, creates/initializes model(s), and kicks off worker process(es).
+    """
 
     # Resolve hydra references, e.g. so we don't re-compute the run directory
     OmegaConf.resolve(config)
