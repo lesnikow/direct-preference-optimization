@@ -4,9 +4,16 @@
 
 sudo apt install -y neovim htop atop bmon tree python3.10-venv zsh
 
+mkdir -p .config/nvim
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+#nvim :PlugUpdate
+
 python3 -m venv env --system-site-packages
 source env/bin/activate
 pip install --upgrade pip
+echo "source env/bin/activate" >> ~/.bashrc 
+echo "clear" >> ~/.bashrc
 
 git config --global user.email "adam.lesnikowski@gmail.com"
 git config --global user.name "Adam Lesnikowski"
@@ -25,7 +32,7 @@ cd dpo
 pip install -r requirements-pytorch-container.txt
 
 source .env
-wandb login WANDB_API_KEY
+wandb login $WANDB_API_KEY
 
 
 ### Evals via fast-chat setup
@@ -60,7 +67,6 @@ pip install anthropic openai
 ## SFT
 
 ulimit -n 64000
-
 gradient_accumulation_steps=2
 batch_size=64
 eval_batch_size=$batch_size
@@ -121,10 +127,10 @@ python -u train.py \
     model.fsdp_policy_mp=bfloat16
 
 
-### E-arm majority pref n times mpn dataset sft loss
+### E-arm repeated majority pref n times mpn dataset sft loss
 python -u train.py \
     model=pythia28 \
-    datasets=[mpn] \
+    datasets=[rmp] \
     loss=sft \
     exp_name=mpn_dataset_sft_loss_pythia28 \
     gradient_accumulation_steps=$gradient_accumulation_steps \
