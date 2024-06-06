@@ -261,50 +261,70 @@ def get_custom_hh_dataset_from_fp(
     return data
 
 
-def get_dpo(
+def get_mp(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get DPO dataset based on Anthropic hh style dataset content and format."""
+    """Get random voter dataset based on Anthropic hh style dataset content and format."""
 
-    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B+gpt-3.5-turbo-0125/DPO_data_random_voter_from_helpful-base_v2.json"
+    fp = ""
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
 
 
-def test_get_dpo():
-    """Test the get_dpo function."""
-
-    data = get_dpo("train", silent=True)
-    inspect_data_dict(data)
-
-
-def get_dcpo(
+def get_rv(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get DPO dataset based on Anthropic hh style dataset content and format."""
+    """Get random voter dataset based on Anthropic hh style dataset content and format."""
 
-    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B+gpt-3.5-turbo-0125/DCPO_data_from_helpful-base_v2_GPT_tiebreak.json"
+    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B/random_voter_data_helpful-base.json"
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
 
 
-def test_get_dcpo():
-    """Test the get_dcpo function."""
+def get_mp(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get majority pref dataset based on Anthropic hh style dataset content and format."""
 
-    data = get_dcpo("train", silent=True)
-    inspect_data_dict(data)
+    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B/majority_data_helpful-base.json"
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+def get_av(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get all voter dataset based on Anthropic hh style dataset content and format."""
+
+    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B/all_voter_data_helpful-base.json"
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+def get_rmp(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get repeated majority pref dataset based on Anthropic hh style dataset content and format."""
+
+    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B/repeated_majority_data_helpful-base.json"
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
 
 
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
-    if name == "shp":
+
+    if name == "hb":
+        data = get_hb(split, silent=silent, cache_dir=cache_dir)
+    elif name == "rv":
+        data = get_rv(split, silent=silent, cache_dir=cache_dir)
+    elif name == "mp":
+        data = get_mp(split, silent=silent, cache_dir=cache_dir)
+    elif name == "av":
+        data = get_av(split, silent=silent, cache_dir=cache_dir)
+    elif name == "rmp":
+        data = get_rmp(split, silent=silent, cache_dir=cache_dir)
+
+    elif name == "shp":
         data = get_shp(split, silent=silent, cache_dir=cache_dir)
     elif name == "hh":
         data = get_hh(split, silent=silent, cache_dir=cache_dir)
     elif name == "se":
         data = get_se(split, silent=silent, cache_dir=cache_dir)
-    elif name == "dpo":
-        data = get_dpo(split, silent=silent, cache_dir=cache_dir)
-    elif name == "dcpo":
-        data = get_dcpo(split, silent=silent, cache_dir=cache_dir)
+
     else:
         raise ValueError(f"Unknown dataset '{name}'")
 
@@ -315,6 +335,7 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
     }, f"Unexpected keys in dataset: {list(list(data.values())[0].keys())}"
 
     return data
+
 
 
 def test_get_dataset():
@@ -331,6 +352,13 @@ def test_get_dataset():
         assert len(list(data.values())[0]["responses"]) > 0, "No responses loaded"
         assert len(list(data.values())[0]["pairs"]) > 0, "No pairs loaded"
         assert len(list(data.values())[0]["sft_target"]) > 0, "No sft_target loaded"
+
+
+def test_get_rv():
+    """Test the get_rv function."""
+
+    data = get_rv("train", silent=True)
+    inspect_data_dict(data)
 
 
 def get_collate_fn(
