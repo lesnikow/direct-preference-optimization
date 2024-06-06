@@ -1,3 +1,4 @@
+import ast
 import datasets
 import torch
 from torch.utils.data import DataLoader, Dataset
@@ -239,9 +240,10 @@ def get_custom_hh_dataset_from_fp(
         f"Loading custom anthropic-hh style dataset ({split} split) from local data dir: {fp} ..."
     )
 
+
     # Load the dataset, actually a Python list of dictionaries
     with open(fp, "r") as f:
-        read_data = eval(f.read())
+        read_data = ast.literal_eval(f.read())
 
     data = defaultdict(lambda: defaultdict(list))
     for row in tqdm.tqdm(
