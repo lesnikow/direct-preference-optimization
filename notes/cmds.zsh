@@ -60,11 +60,79 @@ pip install anthropic openai
 ## SFT
 
 ulimit -n 64000
-### A-arm 4 x H100 80 GB, ulimit, DPO datset, sft loss
-python -u train.py model=pythia28 datasets=[dpo] loss=sft exp_name=dataset_DPO_loss_sft_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
 
-### B-arm 4 x H100 80 GB, ulimit, DCPO datset, sft loss
-python -u train.py model=pythia28 datasets=[dcpo] loss=sft exp_name=dataset_DCPO_loss_sft_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16
+gradient_accumulation_steps=2
+batch_size=64
+eval_batch_size=$batch_size
+
+### A-arm, helpful-base hb dataset, sft loss
+python -u train.py \
+    model=pythia28 \
+    datasets=[hb] \
+    loss=sft \
+    exp_name=hb_dataset_sft_loss_pythia28 \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=FSDPTrainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+
+
+### B-arm random voter rv dataset sft loss
+python -u train.py \
+    model=pythia28 \
+    datasets=[rv] \
+    loss=sft \
+    exp_name=rv_dataset_sft_loss_pythia28 \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=FSDPTrainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+
+
+### C-arm majority pref mp dataset sft loss
+python -u train.py \
+    model=pythia28 \
+    datasets=[mp] \
+    loss=sft \
+    exp_name=mp_dataset_sft_loss_pythia28 \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=FSDPTrainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+
+
+### D-arm all voters av dataset sft loss
+python -u train.py \
+    model=pythia28 \
+    datasets=[av] \
+    loss=sft \
+    exp_name=av_dataset_sft_loss_pythia28 \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=FSDPTrainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+
+
+### E-arm majority pref n times mpn dataset sft loss
+python -u train.py \
+    model=pythia28 \
+    datasets=[mpn] \
+    loss=sft \
+    exp_name=mpn_dataset_sft_loss_pythia28 \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=FSDPTrainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
 
 
 ## DPO
