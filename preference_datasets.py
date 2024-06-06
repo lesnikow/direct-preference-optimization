@@ -169,8 +169,8 @@ def get_hh(
     The dataset is converted to a dictionary with the following structure:
     {
         'prompt1': {
-            'responses': List[str],
             'pairs': List[Tuple[int, int]],
+            'responses': List[str],
             'sft_target': str
         },
         'prompt2': {
