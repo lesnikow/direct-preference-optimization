@@ -193,6 +193,7 @@ def get_hh(
     print("done")
 
     data = defaultdict(lambda: defaultdict(list))
+
     for row in tqdm.tqdm(dataset, desc="Processing HH", disable=silent):
         prompt, chosen, rejected = split_prompt_and_responses(row)
         responses = [chosen, rejected]
@@ -246,20 +247,27 @@ def get_custom_hh_dataset_from_fp(
         read_data = ast.literal_eval(f.read())
 
     data = defaultdict(lambda: defaultdict(list))
+
+    cnt = 0
     for row in tqdm.tqdm(
         read_data, desc="Processing custom anthropic-hh style dataset", disable=silent
     ):
         prompt, chosen, rejected = split_prompt_and_responses(row)
+        prompt = f"{cnt}. " + prompt
+        responses = [chosen, rejected]
+        n_responses = len(data[prompt]["responses"])
+
+        data[prompt]["pairs"].append((n_responses, n_responses + 1))
+        data[prompt]["responses"].extend(responses)
+        data[prompt]["sft_target"] = chosen
+
         if verbose:
             print(f"prompt: {prompt}")
             print(f"chosen: {chosen}")
             print(f"rejected: {rejected}")
+        cnt += 1
 
-        responses = [chosen, rejected]
-        n_responses = len(data[prompt]["responses"])
-        data[prompt]["pairs"].append((n_responses, n_responses + 1))
-        data[prompt]["responses"].extend(responses)
-        data[prompt]["sft_target"] = chosen
+    print(f"len(data.keys()) is {len(data.keys())}")
     return data
 
 
@@ -279,6 +287,7 @@ def get_rv(
 
     fp = "/root/llm-sct/data/anthropic/raw/llama3-8B/random_voter_data_helpful-base.json"
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
 
 
 def get_mp(
