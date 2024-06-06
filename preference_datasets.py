@@ -263,13 +263,13 @@ def get_custom_hh_dataset_from_fp(
     return data
 
 
-def get_mp(
+def get_hb(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get random voter dataset based on Anthropic hh style dataset content and format."""
-
-    fp = ""
-    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+    """Get helpful base dataset based on Anthropic hh style dataset content and format."""
+    
+    split = "helpful-base"
+    return get_hh(split, silent, cache_dir)
 
 
 def get_rv(
