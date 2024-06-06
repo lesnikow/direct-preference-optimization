@@ -475,7 +475,9 @@ class BasicTrainer(object):
                 if self.config.sample_during_eval:
                     if self.config.n_eval_model_samples < self.config.eval_batch_size:
                         rank0_print(
-                            f"Warning: n_eval_model_samples ({self.config.n_eval_model_samples}) < eval_batch_size ({self.config.eval_batch_size}). Sampling from the first complete eval batch of prompts."
+                            f"Warning: n_eval_model_samples ({self.config.n_eval_model_samples}) < "
+                            f"eval_batch_size ({self.config.eval_batch_size}). Sampling from the first "
+                            "complete eval batch of prompts."
                         )
                         sample_batches = self.eval_batches[:1]
                     else:
