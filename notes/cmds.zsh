@@ -57,22 +57,6 @@ pip install anthropic openai
 
 
 
-## Basic experiment setup, replicated dpo codebase
-
-[X] Eval data DCPO, loss DPO
-
-[X] Eval data DPO, loss DPO
-
-[X] Dataset DCPO, loss DPO
-
-[X] Dataset DPO,  loss DPO
-
-[X] Dataset DCPO, loss SFT
-
-[X] Dataset DPO,  loss SFT
-
-
-
 ## SFT
 
 ulimit -n 64000
