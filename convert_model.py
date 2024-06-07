@@ -1,4 +1,5 @@
 import argparse
+import os
 import torch
 from transformers import (
     AutoModelForCausalLM,
@@ -8,7 +9,13 @@ from transformers import (
 )
 
 
-def main(in_path, out_path):
+def main(in_path):
+    """Main method."""
+
+    out_path = os.path.join(os.path.dirname(in_path), "converted")
+    print(f"Saving model .bin, tokenizer, config json files to {out_path}")
+    os.makedirs(out_path, exist_ok=True)
+
     state_dict = torch.load(in_path)
     print(state_dict.keys())
 
@@ -41,14 +48,6 @@ if __name__ == "__main__":
         required=True,
         help="""Path to the input state dictionary file, e.g. 
             /root/dpo/.cache/root/hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174/LATEST/policy.pt
-            """,
-    )
-    parser.add_argument(
-        "--out_path",
-        type=str,
-        required=True,
-        help="""Path to the output directory where the converted model will be saved, e.g.
-            /root/dpo/.cache/root/hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174/LATEST/converted/
             """,
     )
 
