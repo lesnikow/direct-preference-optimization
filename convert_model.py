@@ -30,6 +30,7 @@ def main(in_path):
 
 
 def test(out_path):
+    """Test our main method outputs."""
     model = GPTNeoXForCausalLM.from_pretrained(out_path)
     tokenizer = AutoTokenizer.from_pretrained(out_path)
 
@@ -52,4 +53,4 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    main(args.in_path, args.out_path)
+    main(args.in_path)
