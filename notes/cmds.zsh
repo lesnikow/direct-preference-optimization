@@ -144,12 +144,110 @@ python -u train.py \
 ## DPO
 
 ulimit -n 64000
-### A-arm continued; 4 x H100 80 GB, ulimit, DPO dataset, dpo loss 
-python -u train.py model=pythia28 datasets=[dpo] loss=dpo loss.beta=0.1 exp_name=dataset_DPO_loss_dpo_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16 model.archive=.cache/root/dataset_dpo_loss_sft_pythia_28_2024-05-22_21-00-06_950890/LATEST/policy.pt
+loss_beta=0.1
+gradient_accumulation_steps=2
+batch_size=64
+eval_batch_size=$batch_size
 
-### B-arm continued; 4 x H100 80 GB, ulimit, DCPO dataset, dpo loss 
-python -u train.py model=pythia28 datasets=[dcpo] loss=dpo loss.beta=0.1 exp_name=dataset_DCPO_loss_dpo_pythia28 gradient_accumulation_steps=2 batch_size=64 eval_batch_size=32 trainer=FSDPTrainer sample_during_eval=false model.fsdp_policy_mp=bfloat16 model.archive=.cache/root/dataset_DCPO_loss_sft_pythia28_2024-05-22_21-13-30_959011/LATEST/policy.pt
 
+### A-arm, helpful-base hb dataset, dpo loss
+dataset="hb"
+exp_name="${dataset}_dataset_dpo_loss_pythia28"
+sft_exp_dir="hb_dataset_sft_loss_pythia28_2024-06-06_23-35-42_315586/"
+
+python -u train.py \
+  model=pythia28 \
+  datasets=[$dataset] \
+  loss=dpo \
+  loss.beta=$loss_beta \
+  exp_name=$exp_name \
+  gradient_accumulation_steps=$gradient_accumulation_steps \
+  batch_size=$batch_size \
+  eval_batch_size=$eval_batch_size \
+  trainer=FSDPTrainer \
+  sample_during_eval=false \
+  model.fsdp_policy_mp=bfloat16 \
+  model.archive=".cache/root/${sft_exp_dir}/LATEST/policy.pt"
+
+
+### B-arm random voter rv dataset, dpo loss
+dataset="rv"
+exp_name="${dataset}_dataset_dpo_loss_pythia28"
+sft_exp_dir="rv_dataset_sft_loss_pythia28_2024-06-07_18-00-46_380909/"
+
+python -u train.py \
+  model=pythia28 \
+  datasets=[$dataset] \
+  loss=dpo \
+  loss.beta=$loss_beta \
+  exp_name=$exp_name \
+  gradient_accumulation_steps=$gradient_accumulation_steps \
+  batch_size=$batch_size \
+  eval_batch_size=$eval_batch_size \
+  trainer=FSDPTrainer \
+  sample_during_eval=false \
+  model.fsdp_policy_mp=bfloat16 \
+  model.archive=".cache/root/${sft_exp_dir}/LATEST/policy.pt"
+
+
+### C-arm majority pref mp dataset, dpo loss
+dataset="mp"
+exp_name="${dataset}_dataset_dpo_loss_pythia28"
+sft_exp_dir="mp_dataset_sft_loss_pythia28_2024-06-07_18-09-45_573945"
+
+python -u train.py \
+  model=pythia28 \
+  datasets=[$dataset] \
+  loss=dpo \
+  loss.beta=$loss_beta \
+  exp_name=$exp_name \
+  gradient_accumulation_steps=$gradient_accumulation_steps \
+  batch_size=$batch_size \
+  eval_batch_size=$eval_batch_size \
+  trainer=FSDPTrainer \
+  sample_during_eval=false \
+  model.fsdp_policy_mp=bfloat16 \
+  model.archive=".cache/root/${sft_exp_dir}/LATEST/policy.pt"
+
+
+### D-arm all voters av dataset, dpo loss
+dataset="av"
+exp_name="${dataset}_dataset_dpo_loss_pythia28"
+sft_exp_dir="av_dataset_sft_loss_pythia28_2024-06-06_20-27-23_235653"
+
+python -u train.py \
+  model=pythia28 \
+  datasets=[$dataset] \
+  loss=dpo \
+  loss.beta=$loss_beta \
+  exp_name=$exp_name \
+  gradient_accumulation_steps=$gradient_accumulation_steps \
+  batch_size=$batch_size \
+  eval_batch_size=$eval_batch_size \
+  trainer=FSDPTrainer \
+  sample_during_eval=false \
+  model.fsdp_policy_mp=bfloat16 \
+  model.archive=".cache/root/${sft_exp_dir}/LATEST/policy.pt"
+
+
+### E-arm repeated majority pref n times mpn dataset, dpo loss
+# dataset="mpn"
+exp_name="${dataset}_dataset_dpo_loss_pythia28"
+sft_exp_dir="mpn_dataset_sft_loss_pythia28_2024-06-06_22-00-50_990593"
+
+python -u train.py \
+  model=pythia28 \
+  datasets=[$dataset] \
+  loss=dpo \
+  loss.beta=$loss_beta \
+  exp_name=$exp_name \
+  gradient_accumulation_steps=$gradient_accumulation_steps \
+  batch_size=$batch_size \
+  eval_batch_size=$eval_batch_size \
+  trainer=FSDPTrainer \
+  sample_during_eval=false \
+  model.fsdp_policy_mp=bfloat16 \
+  model.archive=".cache/root/${sft_exp_dir}/LATEST/policy.pt"
 
 
 
