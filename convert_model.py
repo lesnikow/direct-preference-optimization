@@ -1,3 +1,4 @@
+import argparse
 import torch
 from transformers import (
     AutoModelForCausalLM,
@@ -6,10 +7,8 @@ from transformers import (
     GPTNeoXForCausalLM,
 )
 
-def main():
-    in_path = f"/root/policy_dcpo.pt/policy.pt"
-    out_path = f"/root/policy_dcpo/"
 
+def main(in_path, out_path):
     state_dict = torch.load(in_path)
     print(state_dict.keys())
 
@@ -19,7 +18,6 @@ def main():
 
     tokenizer = AutoTokenizer.from_pretrained("EleutherAI/pythia-2.8b")
     config = AutoConfig.from_pretrained("EleutherAI/pythia-2.8b")
-
     tokenizer.save_pretrained(out_path)
     config.save_pretrained(out_path)
 
@@ -32,5 +30,27 @@ def test(out_path):
     outputs = model(**inputs)
     print(outputs)
 
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Load and save a model with a given state dictionary."
+    )
+    parser.add_argument(
+        "--in_path",
+        type=str,
+        required=True,
+        help="""Path to the input state dictionary file, e.g. 
+            /root/dpo/.cache/root/hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174/LATEST/policy.pt
+            """,
+    )
+    parser.add_argument(
+        "--out_path",
+        type=str,
+        required=True,
+        help="""Path to the output directory where the converted model will be saved, e.g.
+            /root/dpo/.cache/root/hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174/LATEST/converted/
+            """,
+    )
+
+    args = parser.parse_args()
+    main(args.in_path, args.out_path)
