@@ -253,29 +253,75 @@ python -u train.py \
 
 
 ## Evals
+## Run model adapter code models
+dpo_exp_dirs=(
+  "hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174"
+  "rv_dataset_dpo_loss_pythia28_2024-06-07_18-38-18_587808"
+  "mp_dataset_dpo_loss_pythia28_2024-06-07_18-59-42_906288"
+)
+
+in_paths=()
+for exp_dir in ${dpo_exp_dirs[@]};
+do
+  in_paths+=("/root/dpo/.cache/root/${exp_dir}/LATEST/policy.pt")
+done
+
+# run du -sh on each in_path
+for i in {1..2};
+do
+  du -sh ${in_paths[i]}
+done
+
+
+for i in {1..2};
+do
+  python3 convert_model.py --in_path ${in_paths[i]} 
+done
+
+
+
+
+python3 convert_model.py --in_path [] --out_path []
 
 
 ### fast-chat llm-judge
 
-# Use notes from my fast-chat repo clone
 
 
-### Eleuther model harness
+
+python gen_model_answer.py --model-path [MODEL-PATH] --model-id [MODEL-ID]
 
 
-#### A-arm eval
-lm_eval --model hf \
-    --model_args pretrained=.cache/root/dataset_DPO_loss_dpo_pythia28_2024-05-22_21-25-05_438706/LATEST/ \
-    --tasks truthfulqa \
-    --device cuda:0 \
-    --batch_size auto:4
 
-#### B-arm eval
-lm_eval --model hf \
-    --model_args pretrained=.cache/root/dataset_DCPO_loss_dpo_pythia28_2024-05-22_21-45-42_170746/LATEST/ \
-    --tasks truthfulqa \
-    --device cuda:0 \
-    --batch_size auto:4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
