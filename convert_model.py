@@ -24,7 +24,7 @@ def main():
     config.save_pretrained(out_path)
 
 
-def test():
+def test(out_path):
     model = GPTNeoXForCausalLM.from_pretrained(out_path)
     tokenizer = AutoTokenizer.from_pretrained(out_path)
 
