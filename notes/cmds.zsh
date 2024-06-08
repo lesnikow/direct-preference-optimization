@@ -252,18 +252,21 @@ python -u train.py \
 
 
 
+"hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174"
+
 ## Evals
 ## Run model adapter code models
 dpo_exp_dirs=(
-  "hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174"
   "rv_dataset_dpo_loss_pythia28_2024-06-07_18-38-18_587808"
   "mp_dataset_dpo_loss_pythia28_2024-06-07_18-59-42_906288"
-  "av_dataset_dpo_loss_pythia28_"
-  "rmp_dataset_dpo_loss_pythia28"
+  "av_dataset_dpo_loss_pythia28_2024-06-07_19-23-48_746742"
+  "rmp_dataset_dpo_loss_pythia28_2024-06-07_23-13-10_543309"
 )
 
 for exp_dir in ${dpo_exp_dirs[@]}; do
+  dataset=$(echo $exp_dir | cut -d'_' -f1)
   in_path="/root/dpo/.cache/root/${exp_dir}/LATEST/policy.pt"
+  in_path="/root/dpo/incoming/${dataset}/policy.pt"
   du -sh ${in_path}
   python3 convert_model.py --in_path ${in_path}
 done
