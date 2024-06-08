@@ -258,41 +258,48 @@ dpo_exp_dirs=(
   "hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174"
   "rv_dataset_dpo_loss_pythia28_2024-06-07_18-38-18_587808"
   "mp_dataset_dpo_loss_pythia28_2024-06-07_18-59-42_906288"
+  "av_dataset_dpo_loss_pythia28_"
+  "rmp_dataset_dpo_loss_pythia28"
 )
 
-in_paths=()
-for exp_dir in ${dpo_exp_dirs[@]};
-do
-  in_paths+=("/root/dpo/.cache/root/${exp_dir}/LATEST/policy.pt")
+for exp_dir in ${dpo_exp_dirs[@]}; do
+  in_path="/root/dpo/.cache/root/${exp_dir}/LATEST/policy.pt"
+  du -sh ${in_path}
+  python3 convert_model.py --in_path ${in_path}
 done
 
-# run du -sh on each in_path
-for i in {1..2};
-do
-  du -sh ${in_paths[i]}
-done
-
-
-for i in {1..2};
-do
-  python3 convert_model.py --in_path ${in_paths[i]} 
-done
-
-
-
-
-python3 convert_model.py --in_path [] --out_path []
 
 
 ### fast-chat llm-judge
 
+# import OPENAI_API_KEY key from .env file
+source .env
+
+for exp_dir in ${dpo_exp_dirs[@]}; do
+  dataset=$(echo $exp_dir | cut -d'_' -f1)
+  python3 gen_model_answer.py \
+    --model-path "/root/dpo/.cache/root/${exp_dir}/LATEST/converted/" \
+    --model-id "${dataset}_answers" \
+    --num-gpus-total 4 \
+    --max-new-token 256 \
+    --question-begin 81 \  # debug options
+    --question-end 85 \    # debug options
+done
+
+for exp_dir in ${dpo_exp_dirs[@]}; do
+  dataset=$(echo $exp_dir | cut -d'_' -f1)
+  python3 gen_model_judgment.py \
+    --model-list "${dataset}_answers" \
+    --parallel 4 \
+    --mode single \
+    --judge-model "gpt-4-turbo"\
+    --first-n 2 \  # debug options
+done
 
 
-
-python gen_model_answer.py --model-path [MODEL-PATH] --model-id [MODEL-ID]
-
-
-
+python show_result.py
+  --input-file "/root/fastchat/fastchat/llm-judge/data/mt_bench/model_judgment/gpt-4-turbo_single.jsonl"
+  --mode single
 
 
 
