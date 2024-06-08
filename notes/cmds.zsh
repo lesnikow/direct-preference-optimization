@@ -231,7 +231,7 @@ python -u train.py \
 
 
 ### E-arm repeated majority pref n times mpn dataset, dpo loss
-# dataset="mpn"
+dataset="rmp"
 exp_name="${dataset}_dataset_dpo_loss_pythia28"
 sft_exp_dir="mpn_dataset_sft_loss_pythia28_2024-06-06_22-00-50_990593"
 
