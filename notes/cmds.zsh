@@ -256,6 +256,13 @@ python -u train.py \
 ## Evals
 ## Run model adapter code models
 
+dpo_exp_dirs=(
+  "hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174"
+  "rv_dataset_dpo_loss_pythia28_2024-06-07_18-38-18_587808"
+  "mp_dataset_dpo_loss_pythia28_2024-06-07_18-59-42_906288"
+  "av_dataset_dpo_loss_pythia28_2024-06-07_19-23-48_746742"
+  "rmp_dataset_dpo_loss_pythia28_2024-06-07_23-13-10_543309"
+)
 for exp_dir in ${dpo_exp_dirs[@]}; do
   dataset=$(echo $exp_dir | cut -d'_' -f1)
   in_path="/root/dpo/incoming/${dataset}/policy.pt"
@@ -266,14 +273,6 @@ done
 
 
 ### fast-chat llm-judge
-
-dpo_exp_dirs=(
-  "hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174"
-  "rv_dataset_dpo_loss_pythia28_2024-06-07_18-38-18_587808"
-  "mp_dataset_dpo_loss_pythia28_2024-06-07_18-59-42_906288"
-  "av_dataset_dpo_loss_pythia28_2024-06-07_19-23-48_746742"
-  "rmp_dataset_dpo_loss_pythia28_2024-06-07_23-13-10_543309"
-)
 max_new_tokens=512
 for exp_dir in ${dpo_exp_dirs[@]}; do
   dataset=$(echo $exp_dir | cut -d'_' -f1)
