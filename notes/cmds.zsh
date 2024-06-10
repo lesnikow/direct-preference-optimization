@@ -252,16 +252,9 @@ python -u train.py \
 
 
 
-"hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174"
 
 ## Evals
 ## Run model adapter code models
-dpo_exp_dirs=(
-  "rv_dataset_dpo_loss_pythia28_2024-06-07_18-38-18_587808"
-  "mp_dataset_dpo_loss_pythia28_2024-06-07_18-59-42_906288"
-  "av_dataset_dpo_loss_pythia28_2024-06-07_19-23-48_746742"
-  "rmp_dataset_dpo_loss_pythia28_2024-06-07_23-13-10_543309"
-)
 
 for exp_dir in ${dpo_exp_dirs[@]}; do
   dataset=$(echo $exp_dir | cut -d'_' -f1)
@@ -275,9 +268,14 @@ done
 
 ### fast-chat llm-judge
 
-# import OPENAI_API_KEY key from .env file
-source .env
-
+dpo_exp_dirs=(
+  "hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174"
+  "rv_dataset_dpo_loss_pythia28_2024-06-07_18-38-18_587808"
+  "mp_dataset_dpo_loss_pythia28_2024-06-07_18-59-42_906288"
+  "av_dataset_dpo_loss_pythia28_2024-06-07_19-23-48_746742"
+  "rmp_dataset_dpo_loss_pythia28_2024-06-07_23-13-10_543309"
+)
+max_new_tokens=512
 for exp_dir in ${dpo_exp_dirs[@]}; do
   dataset=$(echo $exp_dir | cut -d'_' -f1)
   python3 gen_model_answer.py \
@@ -289,6 +287,8 @@ for exp_dir in ${dpo_exp_dirs[@]}; do
     --question-end 85 \    # debug options
 done
 
+source /root/fast-chat/.env
+export OPENAI_API_KEY
 for exp_dir in ${dpo_exp_dirs[@]}; do
   dataset=$(echo $exp_dir | cut -d'_' -f1)
   python3 gen_model_judgment.py \
