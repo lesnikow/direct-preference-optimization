@@ -258,7 +258,6 @@ python -u train.py \
 
 for exp_dir in ${dpo_exp_dirs[@]}; do
   dataset=$(echo $exp_dir | cut -d'_' -f1)
-  in_path="/root/dpo/.cache/root/${exp_dir}/LATEST/policy.pt"
   in_path="/root/dpo/incoming/${dataset}/policy.pt"
   du -sh ${in_path}
   python3 convert_model.py --in_path ${in_path}
@@ -278,22 +277,23 @@ dpo_exp_dirs=(
 max_new_tokens=512
 for exp_dir in ${dpo_exp_dirs[@]}; do
   dataset=$(echo $exp_dir | cut -d'_' -f1)
+  model_path="/root/dpo/incoming/${dataset}/converted/"
+  echo "Model path: ${model_path}"
   python3 gen_model_answer.py \
-    --model-path "/root/dpo/.cache/root/${exp_dir}/LATEST/converted/" \
-    --model-id "${dataset}_answers" \
+    --model-path ${model_path} \
+    --model-id "${dataset}_answers_${max_new_tokens}_max_new_tokens" \
     --num-gpus-total 4 \
-    --max-new-token 256 \
-    --question-begin 81 \  # debug options
-    --question-end 85 \    # debug options
+    --max-new-token ${max_new_tokens}
 done
 
 source /root/fast-chat/.env
 export OPENAI_API_KEY
 for exp_dir in ${dpo_exp_dirs[@]}; do
   dataset=$(echo $exp_dir | cut -d'_' -f1)
-  python3 gen_model_judgment.py \
-    --model-list "${dataset}_answers" \
-    --parallel 4 \
+  echo "Starting judgment for ${dataset}"
+  python3 gen_judgment.py \
+    --model-list "${dataset}_answers_${max_new_tokens}_max_new_tokens" \
+    --parallel 16 \
     --mode single \
     --judge-model "gpt-4-turbo"
 done
