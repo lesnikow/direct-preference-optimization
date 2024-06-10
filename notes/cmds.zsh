@@ -37,10 +37,10 @@ wandb login $WANDB_API_KEY
 
 ### Evals via fast-chat setup
 cd ~
-git clone https://github.com/lesnikow/fast-chat.git
-cd fast-chat
+git clone https://github.com/lesnikow/fast-chat.git fastchat
+cd fastchat
 pip3 install -e ".[model_worker,webui]"
-pip install anthropic openai
+pip install anthropic openai==0.28
 
 
 
@@ -295,14 +295,13 @@ for exp_dir in ${dpo_exp_dirs[@]}; do
     --model-list "${dataset}_answers" \
     --parallel 4 \
     --mode single \
-    --judge-model "gpt-4-turbo"\
-    --first-n 2 \  # debug options
+    --judge-model "gpt-4-turbo"
 done
 
 
-python show_result.py
-  --input-file "/root/fastchat/fastchat/llm-judge/data/mt_bench/model_judgment/gpt-4-turbo_single.jsonl"
-  --mode single
+python3 show_result.py \
+  --mode single \
+  --judge-model "gpt-4-turbo"
 
 
 
