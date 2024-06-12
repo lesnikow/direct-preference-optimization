@@ -349,9 +349,20 @@ python3 show_result.py \
 
 
 
+### Copy over files in between instances
 
+src_id=11087135
+dest_id=11119184
+src_fp="/root/dpo/outgoing/"
+dest_fp="/root/incoming/"
 
+vastai execute ${src_id} "ls -l ${src_fp}"
+vastai execute ${src_id} "du -sh ${src_fp}"
 
+vastai execute ${dest_id} "ls -l ${dest_fp}"
+vastai execute ${dest_id} "du -sh ${dest_fp}"
+
+vastai copy ${src_id}:${src_fp} ${dest_id}:${dest_fp}
 
 
 
