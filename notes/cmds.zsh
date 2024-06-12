@@ -305,16 +305,13 @@ python3 show_result.py \
 
 ## Generate pairwise comparisons between av/rmp & av-512/rmp-512
 
-
-# gen_judgements
-model_answers=(
-  "av_answers"
-  "rmp_answers"
-)
+### Generate judgements
 source /root/fast-chat/.env
 export OPENAI_API_KEY
-
-# Do pairwise comparision of gen_judgement on all of model answers, pulling from model_answers
+model_answers=(
+  "av_answers_512_max_new_tokens"
+  "rmp_answers_512_max_new_tokens"
+)
 python3 gen_judgment.py \
   --model-list "${model_answers[@]}" \
   --parallel 16 \
@@ -322,20 +319,19 @@ python3 gen_judgment.py \
   --judge-model "gpt-4-turbo"
 
 
-# Show results
+### Show results
 python3 show_result.py \
   --mode "pairwise-all" \
   --judge-model "gpt-4-turbo"
 
-
 python3 show_result.py \
   --mode "pairwise-all" \
-  --judge-model "gpt-4-turbo"
+  --judge-model "gpt-4-turbo" \
   --model-list av_answers rmp_answers
 
 python3 show_result.py \
   --mode "pairwise-all" \
-  --judge-model "gpt-4-turbo"
+  --judge-model "gpt-4-turbo" \
   --model-list av_answers_512_max_new_tokens rmp_answers_512_max_new_tokens
 
 
