@@ -223,7 +223,7 @@ def inspect_data_dict(data, break_after=4):
 
 def test_get_hh():
     """Test the get_hh function."""
-    
+
     data = get_hh("train", silent=True)
     inspect_data_dict(data)
 
@@ -240,7 +240,6 @@ def get_custom_hh_dataset_from_fp(
     print(
         f"Loading custom anthropic-hh style dataset ({split} split) from local data dir: {fp} ..."
     )
-
 
     # Load the dataset, actually a Python list of dictionaries
     with open(fp, "r") as f:
@@ -271,6 +270,24 @@ def get_custom_hh_dataset_from_fp(
     return data
 
 
+def get_rv_33_voters(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get random voters 33 voters based on Anthropic hh style dataset content and format."""
+
+    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B+gpt-3.5-turbo-0125+claude-3-haiku-20240307/random_voter_data_helpful-base.json"
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+
+def get_mp_33_voters(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get random voters 33 voters based on Anthropic hh style dataset content and format."""
+
+    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B+gpt-3.5-turbo-0125+claude-3-haiku-20240307/majority_data_helpful-base.json"
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+
 def get_hb(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
@@ -285,9 +302,10 @@ def get_rv(
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
     """Get random voter dataset based on Anthropic hh style dataset content and format."""
 
-    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B/random_voter_data_helpful-base.json"
+    fp = (
+        "/root/llm-sct/data/anthropic/raw/llama3-8B/random_voter_data_helpful-base.json"
+    )
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
-
 
 
 def get_mp(
@@ -298,6 +316,7 @@ def get_mp(
     fp = "/root/llm-sct/data/anthropic/raw/llama3-8B/majority_data_helpful-base.json"
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
 
+
 def get_av(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
@@ -305,6 +324,7 @@ def get_av(
 
     fp = "/root/llm-sct/data/anthropic/raw/llama3-8B/all_voter_data_helpful-base.json"
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
 
 def get_rmp(
     split: str, silent: bool = False, cache_dir: str = None
@@ -317,8 +337,11 @@ def get_rmp(
 
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
-
-    if name == "hb":
+    if name == "rv_33_voters":
+        data = get_rv_33_voters(split, silent=silent, cache_dir=cache_dir)
+    if name == "mp_33_voters":
+        data = get_mp_33_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "hb":
         data = get_hb(split, silent=silent, cache_dir=cache_dir)
     elif name == "rv":
         data = get_rv(split, silent=silent, cache_dir=cache_dir)
@@ -346,7 +369,6 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
     }, f"Unexpected keys in dataset: {list(list(data.values())[0].keys())}"
 
     return data
-
 
 
 def test_get_dataset():
