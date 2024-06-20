@@ -48,6 +48,82 @@ pip install anthropic openai==0.28
 
 
 
+## Two arm trial, using different preference models, on helpful base dataset
+
+# A-arm: Random voter, using thirty three voters, three judgement models,
+# llama-3-8b?, oai gpt-3.5 01-25, anthropic claude 3 haiku
+
+# B-arm: Majority prefernce, using thirty three voters, three judgement models,
+# llama-3-8b?, oai gpt-3.5 01-25, anthropic claude 3 haiku
+
+
+## SFT
+ulimit -n 64000
+gradient_accumulation_steps=2
+batch_size=64
+eval_batch_size=$batch_size
+
+### A-arm, random voter, 33 voters
+dataset="rv_33_voters"
+exp_name="${dataset}_dataset_sfo_loss_pythia28"
+python -u train.py \
+    model=pythia28 \
+    datasets=[${datasets}] \
+    loss=sft \
+    exp_name=${exp_name} \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=FSDPTrainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+
+### B-arm, majority preferences, 33 voters
+dataset="mp_33_voters"
+exp_name="${dataset}_dataset_sfo_loss_pythia28"
+python -u train.py \
+    model=pythia28 \
+    datasets=[mp_33_voters] \
+    loss=sft \
+    exp_name=${exp_name} \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=FSDPTrainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+
+
+## DPO
+ulimit -n 64000
+loss_beta=0.1
+gradient_accumulation_steps=2
+batch_size=64
+eval_batch_size=$batch_size
+
+### A-arm, random_voter_33
+dataset="rv_33_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28"
+sft_exp_dir="hb_dataset_sft_loss_pythia28_2024-06-06_23-35-42_315586/"
+
+python -u train.py \
+  model=pythia28 \
+  datasets=[$dataset] \
+  loss=dpo \
+  loss.beta=$loss_beta \
+  exp_name=$exp_name \
+  gradient_accumulation_steps=$gradient_accumulation_steps \
+  batch_size=$batch_size \
+  eval_batch_size=$eval_batch_size \
+  trainer=FSDPTrainer \
+  sample_during_eval=false \
+  model.fsdp_policy_mp=bfloat16 \
+  model.archive=".cache/root/${sft_exp_dir}/LATEST/policy.pt"
+
+
+
+
+
 
 
 ## Five arm trial
