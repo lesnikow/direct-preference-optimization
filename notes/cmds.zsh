@@ -2,7 +2,7 @@
 
 ## Setup cmds for sft, dpo
 
-sudo apt install -y neovim htop atop bmon tree python3.10-venv zsh
+sudo apt install -y neovim htop atop bmon tree python3.10-venv zsh unzip
 
 mkdir -p .config/nvim
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
