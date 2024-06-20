@@ -5,6 +5,7 @@
 sudo apt install -y neovim htop atop bmon tree python3.10-venv zsh unzip
 
 mkdir -p .config/nvim
+touch .config/nvim/init.vim
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 # nvim :PlugUpdate
