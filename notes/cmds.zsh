@@ -47,6 +47,74 @@ pip install anthropic openai==0.28
 
 
 
+## CHAI slurm cmds
+
+
+# Basic slurm cmds
+srun --mem=100mb --time=0:01:00 cat /etc/hostname
+srun --mem=1GB --time=0:01:00 --gpus=1 nvidia-smi
+srun --mem=1GB --time=0:01:00 --gpus=A6000:1 nvidia-smi
+srun --mem=1GB --time=0:01:00 --gpus=A4000:1 --job-name=adam_test nvidia-smi 
+
+# Interactive jobs
+srun --mem=1GB --time=0:01:00 --gpus=A4000:1 --job-name=adam_test --pty bash
+srun --pty --mem 1gb --time=01:00:00 bash
+
+# QoS cmds
+srun --mem=1GB --time=0:01:00 --gpus=A6000:1 --job-name=adam_test --qos=high nvidia-smi 
+srun --mem=1GB --time=0:01:00 --gpus=A6000:4 --job-name=adam_test --qos=high nvidia-smi 
+
+# Running from slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A4000:2 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A4000:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A6000:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+
+# A100 gpus cmds
+srun --mem=1GB --time=0:01:00 --gpus=A100-SXM4-80GB:1 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A100-PCI-80GB:1 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A100-SXM4-80GB:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A100-PCI-80GB:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+
+
+
+# Interactive job to debug my train run sft, dpo, wanbd
+srun --pty --mem=8gb -c 4 --gres=shard:8 --time=01:00:00 bash
+srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:1 --time=04:00:00 bash
+srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:2 --qos=high --time=04:00:00 bash
+srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:2 --qos=high --time=04:00:00 "bash"
+
+srun --pty --mem=32gb -c 4 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
+
+# Slurm cluster info
+sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Two arm trial, using different preference models, on helpful base dataset
