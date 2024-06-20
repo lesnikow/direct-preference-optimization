@@ -7,7 +7,7 @@ sudo apt install -y neovim htop atop bmon tree python3.10-venv zsh unzip
 mkdir -p .config/nvim
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-#nvim :PlugUpdate
+# nvim :PlugUpdate
 
 python3 -m venv env --system-site-packages
 source env/bin/activate
@@ -31,6 +31,7 @@ git clone https://github.com/lesnikow/direct-preference-optimization.git dpo
 cd dpo
 pip install -r requirements-pytorch-container.txt
 
+# vim .env
 source .env
 wandb login $WANDB_API_KEY
 
