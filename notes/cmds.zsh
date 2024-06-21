@@ -178,10 +178,10 @@ python -u train.py \
 ## DPO
 loss_beta=0.1
 
-### A-arm, random_voter_33
+### A-arm, random voter, 33 voters
 dataset="rv_33_voters"
 exp_name="${dataset}_dataset_dpo_loss_pythia28"
-sft_exp_dir="hb_dataset_sft_loss_pythia28_2024-06-06_23-35-42_315586/"
+sft_exp_dir="rv_33_voters_dataset_sfo_loss_pythia28_2024-06-21_02-17-06_114556/"
 
 python -u train.py \
   model=pythia28 \
@@ -195,10 +195,14 @@ python -u train.py \
   trainer=FSDPTrainer \
   sample_during_eval=false \
   model.fsdp_policy_mp=bfloat16 \
-  model.archive=".cache/root/${sft_exp_dir}/LATEST/policy.pt"
+  model.archive=".cache/adamlesnikowski/${sft_exp_dir}/LATEST/policy.pt"
 
 
 
+### B-arm, majority preference, 33 voters
+dataset="mp_33_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28"
+sft_exp_dir="mp_33_voters_dataset_sfo_loss_pythia28_2024-06-21_02-21-36_501474/"
 
 
 
