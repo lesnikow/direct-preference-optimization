@@ -137,7 +137,7 @@ dataset="rv_33_voters"
 exp_name="${dataset}_dataset_sfo_loss_pythia28"
 python -u train.py \
     model=pythia28 \
-    datasets=[${datasets}] \
+    datasets=[${dataset}] \
     loss=sft \
     exp_name=${exp_name} \
     gradient_accumulation_steps=$gradient_accumulation_steps \
