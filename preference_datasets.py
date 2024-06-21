@@ -339,7 +339,7 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "rv_33_voters":
         data = get_rv_33_voters(split, silent=silent, cache_dir=cache_dir)
-    if name == "mp_33_voters":
+    elif name == "mp_33_voters":
         data = get_mp_33_voters(split, silent=silent, cache_dir=cache_dir)
     elif name == "hb":
         data = get_hb(split, silent=silent, cache_dir=cache_dir)
