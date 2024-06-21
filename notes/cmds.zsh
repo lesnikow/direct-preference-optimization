@@ -176,11 +176,7 @@ python -u train.py \
 
 
 ## DPO
-ulimit -n 64000
 loss_beta=0.1
-gradient_accumulation_steps=2
-batch_size=64
-eval_batch_size=$batch_size
 
 ### A-arm, random_voter_33
 dataset="rv_33_voters"
