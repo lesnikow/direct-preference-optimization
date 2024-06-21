@@ -10,7 +10,7 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 # nvim :PlugUpdate
 
-python3 -m venv env --system-site-packages
+python3 -m venv env
 source env/bin/activate
 pip install --upgrade pip
 echo "source env/bin/activate" >> ~/.bashrc 
@@ -30,7 +30,7 @@ git clone https://github.com/lesnikow/llm-sct.git
 cd ~
 git clone https://github.com/lesnikow/direct-preference-optimization.git dpo
 cd dpo
-pip install -r requirements-pytorch-container.txt
+pip install -r requirements.txt
 
 # vim .env
 source .env
