@@ -153,33 +153,49 @@ python -u train.py \
 
 
 ## DPO
+### Parameters
 loss_beta=0.1
+ulimit -n 64000
+gradient_accumulation_steps=8
+batch_size=32
+eval_batch_size=8
+
+### Define function to call python -u train.py with args dataset, exp_name, sft_exp_dir
+function run_dpo {
+  dataset=$1
+  exp_name=$2
+  sft_exp_dir=$3
+
+  python -u train.py \
+    model=pythia28 \
+    datasets=[$dataset] \
+    loss=dpo \
+    loss.beta=$loss_beta \
+    exp_name=$exp_name \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=BasicTrainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16 \
+    model.archive=".cache/adamlesnikowski/${sft_exp_dir}/LATEST/policy.pt"
+}
+
 
 ### A-arm, random voter, 33 voters
 dataset="rv_33_voters"
-exp_name="${dataset}_dataset_dpo_loss_pythia28"
-sft_exp_dir="rv_33_voters_dataset_sfo_loss_pythia28_2024-06-21_02-17-06_114556/"
-
-python -u train.py \
-  model=pythia28 \
-  datasets=[$dataset] \
-  loss=dpo \
-  loss.beta=$loss_beta \
-  exp_name=$exp_name \
-  gradient_accumulation_steps=$gradient_accumulation_steps \
-  batch_size=$batch_size \
-  eval_batch_size=$eval_batch_size \
-  trainer=FSDPTrainer \
-  sample_during_eval=false \
-  model.fsdp_policy_mp=bfloat16 \
-  model.archive=".cache/adamlesnikowski/${sft_exp_dir}/LATEST/policy.pt"
-
+exp_name="${dataset}_dataset_dpo_loss_pythia28_${batch_size}_batch_size"
+sft_exp_dir="rv_33_voters_dataset_sfo_loss_pythia28_64_batch_size_2024-06-21_14-59-56_224105"
+run_dpo $dataset $exp_name $sft_exp_dir
 
 
 ### B-arm, majority preference, 33 voters
 dataset="mp_33_voters"
-exp_name="${dataset}_dataset_dpo_loss_pythia28"
-sft_exp_dir="mp_33_voters_dataset_sfo_loss_pythia28_2024-06-21_02-21-36_501474/"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_${batch_size}_batch_size"
+sft_exp_dir="mp_33_voters_dataset_sfo_loss_pythia28_64_batch_size_2024-06-21_15-15-36_010543"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
 
 
 
