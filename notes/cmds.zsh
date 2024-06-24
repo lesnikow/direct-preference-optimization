@@ -405,54 +405,48 @@ python -u train.py \
 
 
 ## Evals
-## Run model adapter code models
+### Run model adapter code models
 
 dpo_exp_dirs=(
-  "hb_dataset_dpo_loss_pythia28_2024-06-07_18-19-17_935174"
-  "rv_dataset_dpo_loss_pythia28_2024-06-07_18-38-18_587808"
-  "mp_dataset_dpo_loss_pythia28_2024-06-07_18-59-42_906288"
-  "av_dataset_dpo_loss_pythia28_2024-06-07_19-23-48_746742"
-  "rmp_dataset_dpo_loss_pythia28_2024-06-07_23-13-10_543309"
+  "rv_33_voters_dataset_dpo_loss_pythia28_32_batch_size_2024-06-21_19-42-41_738922"
+  "mp_33_voters_dataset_dpo_loss_pythia28_32_batch_size_2024-06-21_19-50-12_125630"
 )
 for exp_dir in ${dpo_exp_dirs[@]}; do
   dataset=$(echo $exp_dir | cut -d'_' -f1)
-  in_path="/root/dpo/incoming/${dataset}/policy.pt"
+  in_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/policy.pt"
   du -sh ${in_path}
   python3 convert_model.py --in_path ${in_path}
 done
 
 
 
-### fast-chat llm-judge
+### Make fast-chat llm-judge answers
 max_new_tokens=512
-for exp_dir in ${dpo_exp_dirs[@]}; do
-  dataset=$(echo $exp_dir | cut -d'_' -f1)
-  model_path="/root/dpo/incoming/${dataset}/converted/"
-  echo "Model path: ${model_path}"
-  python3 gen_model_answer.py \
-    --model-path ${model_path} \
-    --model-id "${dataset}_answers_${max_new_tokens}_max_new_tokens" \
-    --num-gpus-total 4 \
-    --max-new-token ${max_new_tokens}
-done
+function gen_model_answers {
+  dpo_exp_dirs=$1
+  max_new_tokens=$2
+  for exp_dir in ${dpo_exp_dirs[@]}; do
+    dataset=$(echo $exp_dir | cut -d'_' -f1)
+    model_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/converted/"
+    echo "Model path: ${model_path}"
+    python3 gen_model_answer.py \
+      --model-path ${model_path} \
+      --model-id ${exp_dir} \
+      --num-gpus-total 1 \
+      --max-new-token ${max_new_tokens}
+  done
+}
 
-source /root/fast-chat/.env
-export OPENAI_API_KEY
-for exp_dir in ${dpo_exp_dirs[@]}; do
-  dataset=$(echo $exp_dir | cut -d'_' -f1)
-  echo "Starting judgment for ${dataset}"
-  python3 gen_judgment.py \
-    --model-list "${dataset}_answers_${max_new_tokens}_max_new_tokens" \
-    --parallel 16 \
-    --mode single \
-    --judge-model "gpt-4-turbo"
-done
+dpo_exp_dirs=(
+  "rv_33_voters_dataset_dpo_loss_pythia28_32_batch_size_2024-06-21_19-42-41_738922"
+)
+gen_model_answers "${dpo_exp_dirs}" "${max_new_tokens}"
 
 
-python3 show_result.py \
-  --mode single \
-  --judge-model "gpt-4-turbo"
-
+dpo_exp_dirs=(
+  "mp_33_voters_dataset_dpo_loss_pythia28_32_batch_size_2024-06-21_19-50-12_125630"
+)
+gen_model_answers "${dpo_exp_dirs}" "${max_new_tokens}"
 
 ## Generate pairwise comparisons between av/rmp & av-512/rmp-512
 
