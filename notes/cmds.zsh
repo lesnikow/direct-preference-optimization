@@ -98,50 +98,22 @@ srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=04:00:00 "
 srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=04:00:00 "bash"
 srun --pty --mem=512G -c 128 --gpus=A6000:1 --qos=high --time=04:00:00 "bash"
 
-srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=10:00:00 "bash"
-srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=10:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
+
+srun --pty --mem=256G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
 
 # Slurm cluster info
 sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50" | grep A100
 sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50"
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Two arm trial, using different preference models, on helpful base dataset
 
 # A-arm: Random voter, using thirty three voters, three judgement models,
 # llama-3-8b?, oai gpt-3.5 01-25, anthropic claude 3 haiku
-
 # B-arm: Majority prefernce, using thirty three voters, three judgement models,
 # llama-3-8b?, oai gpt-3.5 01-25, anthropic claude 3 haiku
-
 
 ## SFT
 ulimit -n 64000
