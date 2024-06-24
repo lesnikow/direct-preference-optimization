@@ -448,36 +448,43 @@ dpo_exp_dirs=(
 )
 gen_model_answers "${dpo_exp_dirs}" "${max_new_tokens}"
 
-## Generate pairwise comparisons between av/rmp & av-512/rmp-512
 
-### Generate judgements
+### Make fast-chat llm-judge judgements
+#### Single mode 
+source /nas/ucb/adamlesnikowski/dpo/.env
+export OPENAI_API_KEY
+
+model_answers=(
+  "rv_3_x_11_voters_dpo_loss_pythia28_32_batch_size_2024-06-21_19-42-41_738922"
+  "mp_3_x_11_voters_dpo_loss_pythia28_32_batch_size_2024-06-21_19-50-12_125630"
+)
+python3 gen_judgment.py \
+  --model-list "${model_answers[@]}" \
+  --parallel 16 \
+  --mode single \
+  --judge-model "gpt-4-turbo"
+
+
+python3 show_result.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo"
+
+
+#### Pairwise-all mode
 source /root/fast-chat/.env
 export OPENAI_API_KEY
-model_answers=(
-  "av_answers_512_max_new_tokens"
-  "rmp_answers_512_max_new_tokens"
-)
+
 python3 gen_judgment.py \
   --model-list "${model_answers[@]}" \
   --parallel 16 \
   --mode pairwise-all \
   --judge-model "gpt-4-turbo"
 
-
-### Show results
-python3 show_result.py \
-  --mode "pairwise-all" \
-  --judge-model "gpt-4-turbo"
-
 python3 show_result.py \
   --mode "pairwise-all" \
   --judge-model "gpt-4-turbo" \
-  --model-list av_answers rmp_answers
+  --model-list "${model_answers[@]}"
 
-python3 show_result.py \
-  --mode "pairwise-all" \
-  --judge-model "gpt-4-turbo" \
-  --model-list av_answers_512_max_new_tokens rmp_answers_512_max_new_tokens
 
 
 
