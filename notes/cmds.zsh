@@ -123,7 +123,7 @@ eval_batch_size=$batch_size
 
 ### A-arm, random voter, 33 voters
 dataset="rv_33_voters"
-exp_name="${dataset}_dataset_sfo_loss_pythia28"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
 python -u train.py \
     model=pythia28 \
     datasets=[${dataset}] \
@@ -138,10 +138,10 @@ python -u train.py \
 
 ### B-arm, majority preferences, 33 voters
 dataset="mp_33_voters"
-exp_name="${dataset}_dataset_sfo_loss_pythia28"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
 python -u train.py \
     model=pythia28 \
-    datasets=[mp_33_voters] \
+    datasets=[${dataset}] \
     loss=sft \
     exp_name=${exp_name} \
     gradient_accumulation_steps=$gradient_accumulation_steps \
