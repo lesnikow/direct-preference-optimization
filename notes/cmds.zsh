@@ -38,9 +38,14 @@ wandb login $WANDB_API_KEY
 
 
 ### Evals via fast-chat setup
-cd ~
+cd /nas/ucb/adamlesnikowski
+python3 -m venv env-fastchat
+source env-fastchat/bin/activate
+pip install --upgrade pip
+
 git clone https://github.com/lesnikow/fast-chat.git fastchat
 cd fastchat
+
 pip3 install -e ".[model_worker,webui]"
 pip install anthropic openai==0.28
 
