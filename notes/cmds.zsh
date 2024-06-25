@@ -128,9 +128,10 @@ sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres
 
 ## SFT
 ulimit -n 64000
-gradient_accumulation_steps=8
+gradient_accumulation_steps=4
 batch_size=64
 eval_batch_size=$batch_size
+trainer='FSDPTrainer'
 
 ### A-arm, random voter, 11 haiku voters
 dataset="rv_11_haiku_voters"
@@ -143,7 +144,7 @@ python -u train.py \
     gradient_accumulation_steps=$gradient_accumulation_steps \
     batch_size=$batch_size \
     eval_batch_size=$eval_batch_size \
-    trainer=BasicTrainer \
+    trainer=$trainer \
     sample_during_eval=false \
     model.fsdp_policy_mp=bfloat16
 
