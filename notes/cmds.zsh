@@ -160,7 +160,7 @@ python -u train.py \
     gradient_accumulation_steps=$gradient_accumulation_steps \
     batch_size=$batch_size \
     eval_batch_size=$eval_batch_size \
-    trainer=BasicTrainer \
+    trainer=$trainer \
     sample_during_eval=false \
     model.fsdp_policy_mp=bfloat16
 
