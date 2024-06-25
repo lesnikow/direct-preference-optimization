@@ -270,6 +270,56 @@ def get_custom_hh_dataset_from_fp(
     return data
 
 
+def get_rv_11_gpt35_voters(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get random 11 GPT-3.5 voters based on Anthropic hh style dataset
+    content and format."""
+
+    fp = (
+        "/root/llm-sct/data/anthropic/raw/gpt-3.5-turbo-0125/"
+        "random_voter_data_helpful-base.json"
+    )
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+
+def get_mp_11_gpt35_voters(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+
+    fp = (
+        "/root/llm-sct/data/anthropic/raw/gpt-3.5-turbo-0125/"
+        "majority_data_helpful-base.json"
+    )
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+
+def get_rv_11_haiku_voters(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get random 11 Claude Haiku voters based on Anthropic hh style dataset
+    content and format."""
+
+    fp = (
+        "/root/llm-sct/data/anthropic/raw/claude-3-haiku-20240307/"
+        "random_voter_data_helpful-base.json"
+    )
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+
+def get_mp_11_haiku_voters(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get majority 11 Claude Haiku voters based on Anthropic hh style dataset
+    content and format."""
+
+    fp = (
+        "/root/llm-sct/data/anthropic/raw/claude-3-haiku-20240307/"
+        "majority_data_helpful-base.json"
+    )
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+
 def get_rv_33_voters(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
@@ -337,7 +387,15 @@ def get_rmp(
 
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
-    if name == "rv_33_voters":
+    if name == "rv_11_gpt35_voters":
+        data = get_rv_11_gpt35_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "mp_11_gpt35_voters":
+        data = get_mp_11_gpt35_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "rv_11_haiku_voters":
+        data = get_rv_11_haiku_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "mp_11_haiku_voters":
+        data = get_mp_11_haiku_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "rv_33_voters":
         data = get_rv_33_voters(split, silent=silent, cache_dir=cache_dir)
     elif name == "mp_33_voters":
         data = get_mp_33_voters(split, silent=silent, cache_dir=cache_dir)
@@ -358,7 +416,6 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
         data = get_hh(split, silent=silent, cache_dir=cache_dir)
     elif name == "se":
         data = get_se(split, silent=silent, cache_dir=cache_dir)
-
     else:
         raise ValueError(f"Unknown dataset '{name}'")
 
