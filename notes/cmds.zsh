@@ -213,6 +213,9 @@ run_dpo $dataset $exp_name $sft_exp_dir
 
 
 
+
+
+## Done: Two arm trial, between Haiku random voter rv vs majority preference mp
 ## A-arm: Haiku rv
 ## B-arm: Haiku mp
 
@@ -239,7 +242,7 @@ python -u train.py \
     model.fsdp_policy_mp=bfloat16
 
 
-### B-arm, majority preferences, 33 voters
+### B-arm, majority preferences, 11 voters
 dataset="mp_11_haiku_voters"
 exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
 python -u train.py \
@@ -264,8 +267,6 @@ batch_size=32
 eval_batch_size=8
 trainer='FSDPTrainer'
 
-### Define function to call python -u train.py with args dataset, exp_name,
-### sft_exp_dir
 function run_dpo {
   dataset=$1
   exp_name=$2
