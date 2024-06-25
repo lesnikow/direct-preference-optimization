@@ -323,25 +323,36 @@ def get_mp_11_haiku_voters(
 def get_rv_33_voters(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get random voters 33 voters based on Anthropic hh style dataset content and format."""
+    """Get random voters 33 voters based on Anthropic hh style dataset content
+    and format."""
 
-    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B+gpt-3.5-turbo-0125+claude-3-haiku-20240307/random_voter_data_helpful-base.json"
+    fp = (
+        "/root/llm-sct/data/anthropic/raw/"
+        "llama3-8B+gpt-3.5-turbo-0125+claude-3-haiku-20240307/"
+        "random_voter_data_helpful-base.json"
+    )
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
 
 
 def get_mp_33_voters(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get random voters 33 voters based on Anthropic hh style dataset content and format."""
+    """Get random voters 33 voters based on Anthropic hh style dataset content
+    and format."""
 
-    fp = "/root/llm-sct/data/anthropic/raw/llama3-8B+gpt-3.5-turbo-0125+claude-3-haiku-20240307/majority_data_helpful-base.json"
+    fp = (
+        "/root/llm-sct/data/anthropic/raw/"
+        "llama3-8B+gpt-3.5-turbo-0125+claude-3-haiku-20240307/"
+        "majority_data_helpful-base.json"
+    )
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
 
 
 def get_hb(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get helpful base dataset based on Anthropic hh style dataset content and format."""
+    """Get helpful base dataset based on Anthropic hh style dataset content and
+    format."""
 
     fp = "/root/llm-sct/data/anthropic/raw/helpful-base_A_arm.json"
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
@@ -350,7 +361,8 @@ def get_hb(
 def get_rv(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get random voter dataset based on Anthropic hh style dataset content and format."""
+    """Get random voter dataset based on Anthropic hh style dataset content and
+    format."""
 
     fp = (
         "/root/llm-sct/data/anthropic/raw/llama3-8B/random_voter_data_helpful-base.json"
@@ -361,7 +373,8 @@ def get_rv(
 def get_mp(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get majority pref dataset based on Anthropic hh style dataset content and format."""
+    """Get majority pref dataset based on Anthropic hh style dataset content
+    and format."""
 
     fp = "/root/llm-sct/data/anthropic/raw/llama3-8B/majority_data_helpful-base.json"
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
@@ -370,7 +383,8 @@ def get_mp(
 def get_av(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get all voter dataset based on Anthropic hh style dataset content and format."""
+    """Get all voter dataset based on Anthropic hh style dataset content and
+    format."""
 
     fp = "/root/llm-sct/data/anthropic/raw/llama3-8B/all_voter_data_helpful-base.json"
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
@@ -379,7 +393,8 @@ def get_av(
 def get_rmp(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get repeated majority pref dataset based on Anthropic hh style dataset content and format."""
+    """Get repeated majority pref dataset based on Anthropic hh style dataset
+    content and format."""
 
     fp = "/root/llm-sct/data/anthropic/raw/llama3-8B/repeated_majority_data_helpful-base.json"
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
