@@ -212,11 +212,82 @@ run_dpo $dataset $exp_name $sft_exp_dir
 
 
 
+## Evals
+### A. Run model adapter code models
+### Get dpo_exp_dirs from dpo .cache/adamlesnikowski/ dir
+
+cd /nas/ucb/adamlesnikowski/fastchat/fastchat/llm_judge/
+deactivate
+source /nas/ucb/adamlesnikowski/env-fastchat/bin/activate
+source /nas/ucb/adamlesnikowski/dpo/.env
+export OPENAI_API_KEY
+
+dpo_exp_dirs=(
+  "rv_11_haiku_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_03-31-36_227916"
+  "mp_11_haiku_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_04-03-22_200982"
+)
+for exp_dir in ${dpo_exp_dirs[@]}; do
+  dataset=$(echo $exp_dir | cut -d'_' -f1)
+  in_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/policy.pt"
+  du -sh ${in_path}
+  python3 convert_model.py --in_path ${in_path}
+done
 
 
+### B. Make fast-chat llm-judge answers
+max_new_tokens=128
+function gen_model_answers {
+  dpo_exp_dirs=$1
+  max_new_tokens=$2
+  for exp_dir in ${dpo_exp_dirs[@]}; do
+    dataset=$(echo $exp_dir | cut -d'_' -f1)
+    model_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/converted/"
+    echo "Model path: ${model_path}"
+    python3 gen_model_answer.py \
+      --model-path ${model_path} \
+      --model-id ${exp_dir} \
+      --num-gpus-total 1 \
+      --max-new-token ${max_new_tokens}
+  done
+}
+
+dpo_exp_dirs=(
+  "rv_11_haiku_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_03-31-36_227916"
+)
+gen_model_answers "${dpo_exp_dirs}" "${max_new_tokens}"
+
+dpo_exp_dirs=(
+  "mp_11_haiku_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_04-03-22_200982"
+)
+gen_model_answers "${dpo_exp_dirs}" "${max_new_tokens}"
 
 
+### C. Make fast-chat llm-judge judgements
+model_answers=(
+  ""
+  ""
+)
+python3 gen_judgment.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo"
+  --model-list "${model_answers[@]}" \
+  --parallel 16 \
 
+python3 gen_judgment.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo"
+  --model-list "${model_answers[@]}" \
+  --parallel 16 \
+
+### D. Show results
+python3 show_result.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo"
+
+python3 show_result.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_answers[@]}"
 
 
 
@@ -523,87 +594,6 @@ python -u train.py \
 
 
 
-
-## Evals
-### Run model adapter code models
-
-dpo_exp_dirs=(
-  "rv_33_voters_dataset_dpo_loss_pythia28_32_batch_size_2024-06-21_19-42-41_738922"
-  "mp_33_voters_dataset_dpo_loss_pythia28_32_batch_size_2024-06-21_19-50-12_125630"
-)
-for exp_dir in ${dpo_exp_dirs[@]}; do
-  dataset=$(echo $exp_dir | cut -d'_' -f1)
-  in_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/policy.pt"
-  du -sh ${in_path}
-  python3 convert_model.py --in_path ${in_path}
-done
-
-
-
-### Make fast-chat llm-judge answers
-max_new_tokens=512
-function gen_model_answers {
-  dpo_exp_dirs=$1
-  max_new_tokens=$2
-  for exp_dir in ${dpo_exp_dirs[@]}; do
-    dataset=$(echo $exp_dir | cut -d'_' -f1)
-    model_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/converted/"
-    echo "Model path: ${model_path}"
-    python3 gen_model_answer.py \
-      --model-path ${model_path} \
-      --model-id ${exp_dir} \
-      --num-gpus-total 1 \
-      --max-new-token ${max_new_tokens}
-  done
-}
-
-dpo_exp_dirs=(
-  "rv_33_voters_dataset_dpo_loss_pythia28_32_batch_size_2024-06-21_19-42-41_738922"
-)
-gen_model_answers "${dpo_exp_dirs}" "${max_new_tokens}"
-
-
-dpo_exp_dirs=(
-  "mp_33_voters_dataset_dpo_loss_pythia28_32_batch_size_2024-06-21_19-50-12_125630"
-)
-gen_model_answers "${dpo_exp_dirs}" "${max_new_tokens}"
-
-
-### Make fast-chat llm-judge judgements
-#### Single mode 
-source /nas/ucb/adamlesnikowski/dpo/.env
-export OPENAI_API_KEY
-
-model_answers=(
-  "rv_3_x_11_voters_dpo_loss_pythia28_32_batch_size_2024-06-21_19-42-41_738922"
-  "mp_3_x_11_voters_dpo_loss_pythia28_32_batch_size_2024-06-21_19-50-12_125630"
-)
-python3 gen_judgment.py \
-  --model-list "${model_answers[@]}" \
-  --parallel 16 \
-  --mode single \
-  --judge-model "gpt-4-turbo"
-
-
-python3 show_result.py \
-  --mode "single" \
-  --judge-model "gpt-4-turbo"
-
-
-#### Pairwise-all mode
-source /root/fast-chat/.env
-export OPENAI_API_KEY
-
-python3 gen_judgment.py \
-  --model-list "${model_answers[@]}" \
-  --parallel 16 \
-  --mode pairwise-all \
-  --judge-model "gpt-4-turbo"
-
-python3 show_result.py \
-  --mode "pairwise-all" \
-  --judge-model "gpt-4-turbo" \
-  --model-list "${model_answers[@]}"
 
 
 
