@@ -117,12 +117,102 @@ srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=high   --time=24:00:00
 sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50" | grep A100
 sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50"
 
-## todo: Two arm trial, between GPT 3.5 random voter rv vs majority preference mp
+
+
+
+## Wip: Two arm trial, between GPT 3.5 random voter rv vs majority preference mp
 ## A-arm: GPT-3.5 rv
 ## B-arm: GPT-3.5 mp
 
+## SFT
+ulimit -n 64000
+gradient_accumulation_steps=8
+batch_size=64
+eval_batch_size=8
+trainer='BasicTrainer'
+voters_model='gpt35'
 
-## wip: Two arm trial, between Haiku random voter rv vs majority preference mp
+### A-arm, random voter
+dataset="rv_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+python -u train.py \
+    model=pythia28 \
+    datasets=[${dataset}] \
+    loss=sft \
+    exp_name=${exp_name} \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+
+
+### B-arm, majority preferences
+dataset="mp_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+python -u train.py \
+    model=pythia28 \
+    datasets=[${dataset}] \
+    loss=sft \
+    exp_name=${exp_name} \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+
+
+## DPO
+### Parameters
+loss_beta=0.1
+ulimit -n 64000
+gradient_accumulation_steps=8
+batch_size=32
+eval_batch_size=8
+trainer='BasicTrainer'
+voters_model='gpt35'
+
+function run_dpo {
+  dataset=$1
+  exp_name=$2
+  sft_exp_dir=$3
+
+  python -u train.py \
+    model=pythia28 \
+    datasets=[$dataset] \
+    loss=dpo \
+    loss.beta=$loss_beta \
+    exp_name=$exp_name \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16 \
+    model.archive=".cache/adamlesnikowski/${sft_exp_dir}/LATEST/policy.pt"
+}
+
+
+### A-arm, random voter, 11 voters
+dataset="rv_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="rv_11_gpt35_voters_dataset_sft_loss_pythia28_64_batch_size_2024-06-25_16-08-25_542594"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
+### B-arm, majority preference, 11 voters
+dataset="mp_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="mp_11_gpt35_voters_dataset_sft_loss_pythia28_64_batch_size_2024-06-25_17-14-17_866894"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
+
+
+
+
 ## A-arm: Haiku rv
 ## B-arm: Haiku mp
 
