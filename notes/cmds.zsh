@@ -110,13 +110,76 @@ srun --pty --mem=256G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "
 sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50" | grep A100
 sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50"
 
+## todo: Two arm trial, between GPT 3.5 random voter rv vs majority preference mp
+## A-arm: GPT-3.5 rv
+## B-arm: GPT-3.5 mp
 
-## Two arm trial, using different preference models, on helpful base dataset
 
-# A-arm: Random voter, using thirty three voters, three judgement models,
-# llama-3-8b?, oai gpt-3.5 01-25, anthropic claude 3 haiku
-# B-arm: Majority prefernce, using thirty three voters, three judgement models,
-# llama-3-8b?, oai gpt-3.5 01-25, anthropic claude 3 haiku
+## wip: Two arm trial, between Haiku random voter rv vs majority preference mp
+## A-arm: Haiku rv
+## B-arm: Haiku mp
+
+## SFT
+ulimit -n 64000
+gradient_accumulation_steps=8
+batch_size=64
+eval_batch_size=$batch_size
+
+### A-arm, random voter, 11 haiku voters
+dataset="rv_11_haiku_voters"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+python -u train.py \
+    model=pythia28 \
+    datasets=[${dataset}] \
+    loss=sft \
+    exp_name=${exp_name} \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=BasicTrainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+
+
+### B-arm, majority preferences, 33 voters
+dataset="mp_11_haiku_voters"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+python -u train.py \
+    model=pythia28 \
+    datasets=[${dataset}] \
+    loss=sft \
+    exp_name=${exp_name} \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=BasicTrainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Two arm trial, using different preference models, on llama3-8B preference
+## datasets on helpful-base completion pairs dataset.
+
+## A-arm: Random voter, using thirty three voters, three judgement models,
+## llama-3-8b, oai gpt-3.5 01-25, anthropic claude 3 haiku
+## B-arm: Majority preference, using thirty three voters, three judgement models,
+## llama-3-8b, oai gpt-3.5 01-25, anthropic claude 3 haiku
 
 ## SFT
 ulimit -n 64000
