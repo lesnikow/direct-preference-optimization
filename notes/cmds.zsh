@@ -98,9 +98,12 @@ srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=04:00:00 "
 srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=04:00:00 "bash"
 srun --pty --mem=512G -c 128 --gpus=A6000:1 --qos=high --time=04:00:00 "bash"
 
-srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:4 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=12:00:00 "bash"
 srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
 
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:4 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=12:00:00 "bash"
 srun --pty --mem=256G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
 
 # Slurm cluster info
