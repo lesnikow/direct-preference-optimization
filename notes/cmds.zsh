@@ -264,25 +264,26 @@ gen_model_answers "${dpo_exp_dirs}" "${max_new_tokens}"
 
 ### C. Make fast-chat llm-judge judgements
 model_answers=(
-  ""
-  ""
+  "rv_11_haiku_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_03-31-36_227916"
+  "mp_11_haiku_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_04-03-22_200982"
 )
 python3 gen_judgment.py \
   --mode "single" \
-  --judge-model "gpt-4-turbo"
+  --judge-model "gpt-4-turbo" \
   --model-list "${model_answers[@]}" \
-  --parallel 16 \
+  --parallel 16
 
 python3 gen_judgment.py \
   --mode "pairwise-all" \
-  --judge-model "gpt-4-turbo"
+  --judge-model "gpt-4-turbo" \
   --model-list "${model_answers[@]}" \
-  --parallel 16 \
+  --parallel 16
 
 ### D. Show results
 python3 show_result.py \
   --mode "single" \
-  --judge-model "gpt-4-turbo"
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_answers[@]}"
 
 python3 show_result.py \
   --mode "pairwise-all" \
