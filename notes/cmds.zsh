@@ -120,7 +120,7 @@ sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres
 
 
 
-## Wip: Two arm trial, between GPT 3.5 random voter rv vs majority preference mp
+## Done: Two arm trial, between GPT 3.5 random voter rv vs majority preference mp
 ## A-arm: GPT-3.5 rv
 ## B-arm: GPT-3.5 mp
 
@@ -209,6 +209,81 @@ sft_exp_dir="mp_11_gpt35_voters_dataset_sft_loss_pythia28_64_batch_size_2024-06-
 run_dpo $dataset $exp_name $sft_exp_dir
 
 
+## Evals
+### A. Run model adapter code models
+### Get dpo_exp_dirs from dpo .cache/adamlesnikowski/ dir
+
+cd /nas/ucb/adamlesnikowski/fastchat/fastchat/llm_judge/
+deactivate
+source /nas/ucb/adamlesnikowski/env-fastchat/bin/activate
+source /nas/ucb/adamlesnikowski/dpo/.env
+export OPENAI_API_KEY
+
+dpo_exp_dirs=(
+  "rv_11_gpt35_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_18-54-53_932088"
+  "mp_11_gpt35_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_18-56-31_220164"
+)
+for exp_dir in ${dpo_exp_dirs[@]}; do
+  in_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/policy.pt"
+  du -sh ${in_path}
+  python3 convert_model.py --in_path ${in_path}
+done
+
+
+### B. Make fast-chat llm-judge answers
+max_new_tokens=128
+function gen_model_answers {
+  dpo_exp_dirs=$1
+  max_new_tokens=$2
+  for exp_dir in ${dpo_exp_dirs[@]}; do
+    model_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/converted/"
+    echo "Model path: ${model_path}"
+    python3 gen_model_answer.py \
+      --model-path ${model_path} \
+      --model-id ${exp_dir} \
+      --num-gpus-total 1 \
+      --max-new-token ${max_new_tokens}
+  done
+}
+
+dpo_exp_dirs=(
+  "rv_11_gpt35_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_18-54-53_932088"
+)
+gen_model_answers "${dpo_exp_dirs}" "${max_new_tokens}"
+
+dpo_exp_dirs=(
+  "mp_11_gpt35_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_18-56-31_220164"
+)
+gen_model_answers "${dpo_exp_dirs}" "${max_new_tokens}"
+
+
+### C. Make fast-chat llm-judge judgements
+model_ids=(
+  "rv_11_gpt35_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_18-54-53_932088"
+  "mp_11_gpt35_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-06-25_18-56-31_220164"
+)
+python3 gen_judgment.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}" \
+  --parallel 16
+
+python3 gen_judgment.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}" \
+  --parallel 16
+
+### D. Show results
+python3 show_result.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}"
+
+python3 show_result.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}"
 
 
 
