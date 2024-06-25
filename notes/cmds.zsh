@@ -106,6 +106,13 @@ srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:4 --qos=high --time=12:00:00 
 srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=12:00:00 "bash"
 srun --pty --mem=256G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
 
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=24:00:00 "bash"
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=24:00:00 "bash"
+
+
+srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=medium --time=24:00:00 "bash"
+srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=high   --time=24:00:00 "bash"
+
 # Slurm cluster info
 sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50" | grep A100
 sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50"
