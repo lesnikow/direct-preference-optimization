@@ -165,6 +165,52 @@ python -u train.py \
     model.fsdp_policy_mp=bfloat16
 
 
+## DPO
+### Parameters
+loss_beta=0.1
+ulimit -n 64000
+gradient_accumulation_steps=4
+batch_size=32
+eval_batch_size=8
+trainer='FSDPTrainer'
+
+### Define function to call python -u train.py with args dataset, exp_name,
+### sft_exp_dir
+function run_dpo {
+  dataset=$1
+  exp_name=$2
+  sft_exp_dir=$3
+
+  python -u train.py \
+    model=pythia28 \
+    datasets=[$dataset] \
+    loss=dpo \
+    loss.beta=$loss_beta \
+    exp_name=$exp_name \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16 \
+    model.archive=".cache/adamlesnikowski/${sft_exp_dir}/LATEST/policy.pt"
+}
+
+
+### A-arm, random voter, 11 voters
+dataset="rv_11_haiku_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="rv_11_haiku_voters_dataset_sft_loss_pythia28_64_batch_size_2024-06-25_02-07-17_645248"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
+### B-arm, majority preference, 11 voters
+dataset="mp_11_haiku_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="mp_11_haiku_voters_dataset_sft_loss_pythia28_64_batch_size_2024-06-25_02-08-35_445715"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
 
 
 
