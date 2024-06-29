@@ -110,13 +110,47 @@ srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=24:00:00 
 srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=24:00:00 "bash"
 
 
-srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=medium --time=24:00:00 "bash"
 srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=high   --time=24:00:00 "bash"
+srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=medium --time=24:00:00 "bash"
 
 # Slurm cluster info
 sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50" | grep A100
 sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50"
 
+$ sacctmgr list qos
+      Name   Priority                     MaxTRES     MaxWall     MaxTRESPU MaxJobsPU   |   MaxSubmitPU     MaxTRESPA MaxJobsPA MaxSubmitPA       MinTRES   GraceTime    Preempt   PreemptExemptTime PreemptMode                                    Flags UsageThres UsageFactor       GrpTRES   GrpTRESMins GrpTRESRunMin GrpJobs GrpSubmit     GrpWall MaxTRESPerNode   MaxTRESMins
+---------- ---------- --------------------------- ----------- ------------- ---------   |   ----------- ------------- --------- ----------- -------------  ---------- ---------- ------------------- ----------- ---------------------------------------- ---------- ----------- ------------- ------------- ------------- ------- --------- ----------- -------------- -------------
+      high          3 cpu=128,gres/gpu=4,mem=512G  1-12:00:00                       2   |                                                                    00:00:00                                    cluster                                                        1.000000                                                                                                     
+    medium          2  cpu=64,gres/gpu=2,mem=256G  3-00:00:00                       1   |                                                                    00:00:00                                    cluster                                                        1.000000                                                                                                     
+   default          1  cpu=32,gres/gpu=1,mem=128G  7-00:00:00                       2   |                                                                    00:00:00                                    cluster                                                        1.000000                                                                                                     
+ scavenger          0                              3-00:00:00   gres/gpu=24             |                                                                    00:00:00                                    cluster                                                        1.000000                                                                                                     
+                                                                                        | --> fields that are the same for all QoS levels have been moved to the right
+
+
+## Wip: Two arm trial, between llama3-*B random voter rv vs majority preference mp
+
+## SFT
+ulimit -n 64000
+gradient_accumulation_steps=8
+batch_size=64
+eval_batch_size=8
+trainer='BasicTrainer'
+voters_model='llama3-8B'
+
+### A-arm, random voter
+dataset="rv_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+python -u train.py \
+    model=pythia28 \
+    datasets=[${dataset}] \
+    loss=sft \
+    exp_name=${exp_name} \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
 
 
 
@@ -275,6 +309,10 @@ python3 gen_judgment.py \
   --parallel 16
 
 ### D. Show results
+model_ids=(
+  "rv_llama3-8B_voters_128_max_new_tokens"
+  "mp_llama3-8B_voters_128_max_new_tokens"
+)
 python3 show_result.py \
   --mode "single" \
   --judge-model "gpt-4-turbo" \
