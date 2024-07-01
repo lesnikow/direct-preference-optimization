@@ -269,7 +269,22 @@ def get_custom_hh_dataset_from_fp(
     print(f"len(data.keys()) is {len(data.keys())}")
     return data
 
+
 nas = "/nas/ucb/adamlesnikowski/"
+
+
+def get_av_11_haiku_voters(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get random 11 GPT-3.5 voters based on Anthropic hh style dataset
+    content and format."""
+
+    fp = (
+        "/nas/ucb/adamlesnikowski/llm-sct/data/anthropic/raw/claude-3-haiku-20240307/"
+        "all_voter_data_helpful-base.json"
+    )
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
 
 def get_rv_11_gpt35_voters(
     split: str, silent: bool = False, cache_dir: str = None
