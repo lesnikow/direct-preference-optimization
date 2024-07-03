@@ -276,12 +276,25 @@ nas = "/nas/ucb/adamlesnikowski/"
 def get_av_11_haiku_voters(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get random 11 GPT-3.5 voters based on Anthropic hh style dataset
+    """Get rmp 11 haiku voters based on Anthropic hh style dataset
     content and format."""
 
     fp = (
         "/nas/ucb/adamlesnikowski/llm-sct/data/anthropic/raw/claude-3-haiku-20240307/"
         "all_voter_data_helpful-base.json"
+    )
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+
+def get_rmp_11_haiku_voters(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get rmp 11 haiku voters based on Anthropic hh style dataset
+    content and format."""
+
+    fp = (
+        "/nas/ucb/adamlesnikowski/llm-sct/data/anthropic/raw/claude-3-haiku-20240307/"
+        "repeated_majority_data_helpful-base.json"
     )
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
 
@@ -420,7 +433,13 @@ def get_rmp(
 
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
-    if name == "rv_11_gpt35_voters":
+    if name == "":
+        pass
+    elif name == "av_11_haiku_voters":
+        data = get_av_11_haiku_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "rmp_11_haiku_voters":
+        data = get_rmp_11_haiku_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "rv_11_gpt35_voters":
         data = get_rv_11_gpt35_voters(split, silent=silent, cache_dir=cache_dir)
     elif name == "mp_11_gpt35_voters":
         data = get_mp_11_gpt35_voters(split, silent=silent, cache_dir=cache_dir)
