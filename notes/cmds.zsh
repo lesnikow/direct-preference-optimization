@@ -1,13 +1,95 @@
 # notes/cmds.zsh for dpo repo
+#
+
+
+## CHAI slurm cmds
+
+# Basic slurm cmds
+srun --mem=100mb --time=0:01:00 cat /etc/hostname
+srun --mem=1GB --time=0:01:00 --gpus=1 nvidia-smi
+srun --mem=1GB --time=0:01:00 --gpus=A6000:1 nvidia-smi
+srun --mem=1GB --time=0:01:00 --gpus=A4000:1 --job-name=adam_test nvidia-smi 
+
+# Interactive jobs
+srun --mem=1GB --time=0:01:00 --gpus=A4000:1 --job-name=adam_test --pty bash
+srun --pty --mem 1gb --time=01:00:00 bash
+
+# QoS cmds
+srun --mem=1GB --time=0:01:00 --gpus=A6000:1 --job-name=adam_test --qos=high nvidia-smi 
+srun --mem=1GB --time=0:01:00 --gpus=A6000:4 --job-name=adam_test --qos=high nvidia-smi 
+
+# Running from slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A4000:2 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A4000:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A6000:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+
+# A100 gpus cmds
+srun --mem=1GB --time=0:01:00 --gpus=A100-SXM4-80GB:1 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A100-PCI-80GB:1 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A100-SXM4-80GB:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A100-PCI-80GB:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+
+# Interactive job to debug my train run sft, dpo, wanbd
+srun --pty --mem=8gb -c 4 --gres=shard:8 --time=01:00:00 bash
+srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:1 --time=04:00:00 bash
+srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:2 --qos=high --time=04:00:00 bash
+srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:2 --qos=high --time=04:00:00 "bash"
+
+srun --pty --mem=32gb -c 4 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
+srun --pty --mem=32gb -c 64 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
+
+srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:2 --qos=high --time=04:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=04:00:00 "bash"
+
+srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=04:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A6000:1 --qos=high --time=04:00:00 "bash"
+
+srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:4 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
+
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:4 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=256G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
+
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=24:00:00 "bash"
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=24:00:00 "bash"
+
+
+srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=high   --time=24:00:00 "bash"
+srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=medium --time=24:00:00 "bash"
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=high --time=3-00:00:00 "bash"
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=medium --time=3-00:00:00 "bash"
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=high --time=1-12:00:00 "bash"
+
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=high --time=1-12:00:00 "bash"
+
+
+
+
+### Slurm cluster info
+sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50" | grep A100
+sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50"
+
+      Name   Priority                     MaxTRES     MaxWall     
+      high          3 cpu=128,gres/gpu=4,mem=512G  1-12:00:00
+    medium          2  cpu=64,gres/gpu=2,mem=256G  3-00:00:00
+   default          1  cpu=32,gres/gpu=1,mem=128G  7-00:00:00
+ scavenger          0                              3-00:00:00
+                                                                                    
+
+
 
 ## Setup cmds for sft, dpo
+## Many of these are only neccesary on e.g. Vast, and not on CHAI machines.
 
-sudo apt install -y neovim htop atop bmon tree python3.10-venv zsh unzip
+# sudo apt install -y neovim htop atop bmon tree python3.10-venv zsh unzip
 
-mkdir -p .config/nvim
-touch .config/nvim/init.vim
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+# mkdir -p .config/nvim
+# touch .config/nvim/init.vim
+# sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+#       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 # nvim :PlugUpdate
 
 python3 -m venv env
@@ -50,95 +132,136 @@ pip3 install -e ".[model_worker,webui]"
 pip install anthropic openai==0.28
 
 
+## Done: Evals, RMP/MP and AV/RV pairwise comps
+### MP / RMP
 
 
-## CHAI slurm cmds
+#### Query available model answers
 
 
-# Basic slurm cmds
-srun --mem=100mb --time=0:01:00 cat /etc/hostname
-srun --mem=1GB --time=0:01:00 --gpus=1 nvidia-smi
-srun --mem=1GB --time=0:01:00 --gpus=A6000:1 nvidia-smi
-srun --mem=1GB --time=0:01:00 --gpus=A4000:1 --job-name=adam_test nvidia-smi 
+#### Make fast-chat llm-judge judgements
+source .env
+export OPENAI_API_KEY
+model_ids=(
+  "mp_llama3-8B_voters_128_max_new_tokens"
+  "rmp_llama3-8B_voters_128_max_new_tokens"
+)
 
-# Interactive jobs
-srun --mem=1GB --time=0:01:00 --gpus=A4000:1 --job-name=adam_test --pty bash
-srun --pty --mem 1gb --time=01:00:00 bash
+python3 gen_judgment.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}" \
+  --parallel 64
 
-# QoS cmds
-srun --mem=1GB --time=0:01:00 --gpus=A6000:1 --job-name=adam_test --qos=high nvidia-smi 
-srun --mem=1GB --time=0:01:00 --gpus=A6000:4 --job-name=adam_test --qos=high nvidia-smi 
+#### Show results
+python3 show_result.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}"
 
-# Running from slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A4000:2 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A4000:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A6000:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+python3 show_result.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}"
 
-# A100 gpus cmds
-srun --mem=1GB --time=0:01:00 --gpus=A100-SXM4-80GB:1 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A100-PCI-80GB:1 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A100-SXM4-80GB:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A100-PCI-80GB:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+python3 show_result.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo"
 
+### RV / AV
 
+#### Make fast-chat llm-judge judgements
+model_ids=(
+  "rv_llama3-8B_voters_128_max_new_tokens"
+  "av_llama3-8B_voters_128_max_new_tokens"
+)
 
-# Interactive job to debug my train run sft, dpo, wanbd
-srun --pty --mem=8gb -c 4 --gres=shard:8 --time=01:00:00 bash
-srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:1 --time=04:00:00 bash
-srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:2 --qos=high --time=04:00:00 bash
-srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:2 --qos=high --time=04:00:00 "bash"
+python3 gen_judgment.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}" \
+  --parallel 64
 
-srun --pty --mem=32gb -c 4 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
-srun --pty --mem=32gb -c 64 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
-
-srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
-srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:2 --qos=high --time=04:00:00 "bash"
-srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=04:00:00 "bash"
-
-srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=04:00:00 "bash"
-srun --pty --mem=512G -c 128 --gpus=A6000:1 --qos=high --time=04:00:00 "bash"
-
-srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:4 --qos=high --time=12:00:00 "bash"
-srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=12:00:00 "bash"
-srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
-
-srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:4 --qos=high --time=12:00:00 "bash"
-srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=12:00:00 "bash"
-srun --pty --mem=256G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
-
-srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=24:00:00 "bash"
-srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=24:00:00 "bash"
+#### Show results
+python3 show_result.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}"
 
 
-srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=high   --time=24:00:00 "bash"
-srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=medium --time=24:00:00 "bash"
-
-# Slurm cluster info
-sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50" | grep A100
-sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50"
-
-$ sacctmgr list qos
-      Name   Priority                     MaxTRES     MaxWall     MaxTRESPU MaxJobsPU   |   MaxSubmitPU     MaxTRESPA MaxJobsPA MaxSubmitPA       MinTRES   GraceTime    Preempt   PreemptExemptTime PreemptMode                                    Flags UsageThres UsageFactor       GrpTRES   GrpTRESMins GrpTRESRunMin GrpJobs GrpSubmit     GrpWall MaxTRESPerNode   MaxTRESMins
----------- ---------- --------------------------- ----------- ------------- ---------   |   ----------- ------------- --------- ----------- -------------  ---------- ---------- ------------------- ----------- ---------------------------------------- ---------- ----------- ------------- ------------- ------------- ------- --------- ----------- -------------- -------------
-      high          3 cpu=128,gres/gpu=4,mem=512G  1-12:00:00                       2   |                                                                    00:00:00                                    cluster                                                        1.000000                                                                                                     
-    medium          2  cpu=64,gres/gpu=2,mem=256G  3-00:00:00                       1   |                                                                    00:00:00                                    cluster                                                        1.000000                                                                                                     
-   default          1  cpu=32,gres/gpu=1,mem=128G  7-00:00:00                       2   |                                                                    00:00:00                                    cluster                                                        1.000000                                                                                                     
- scavenger          0                              3-00:00:00   gres/gpu=24             |                                                                    00:00:00                                    cluster                                                        1.000000                                                                                                     
-                                                                                        | --> fields that are the same for all QoS levels have been moved to the right
+python3 show_result.py \
+  --mode "pairwise-baseline" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}"\
+  --baseline-model "av_llama3-8B_voters_128_max_new_tokens"
 
 
-## Wip: Two arm trial, between llama3-*B random voter rv vs majority preference mp
+python3 show_result.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}"
+
+python3 show_result.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo"
+
+
+
+
+
+## WIP: RMP vs AV for GPT
 
 ## SFT
 ulimit -n 64000
-gradient_accumulation_steps=8
+gradient_accumulation_steps=4
 batch_size=64
 eval_batch_size=8
-trainer='BasicTrainer'
-voters_model='llama3-8B'
+trainer='FSDPTrainer'
+voters_model='gpt35'
 
-### A-arm, random voter
-dataset="rv_11_${voters_model}_voters"
+function run_sft {
+  dataset=$1
+  exp_name=$2
+  python -u train.py \
+    model=pythia28 \
+    datasets=[$dataset] \
+    loss=sft \
+    exp_name=$exp_name \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+}
+
+
+### A-arm, AV
+dataset="av_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+run_sft $dataset $exp_name
+
+
+### B-arm, RMP
+dataset="rmp_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+run_sft $dataset $exp_name
+
+
+
+## WIP: RMP vs AV for Haiku
+
+
+## SFT
+ulimit -n 64000
+gradient_accumulation_steps=4
+batch_size=64
+eval_batch_size=8
+trainer='FSDPTrainer'
+voters_model='haiku'
+
+### A-arm, AV
+dataset="av_11_${voters_model}_voters"
 exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
 python -u train.py \
     model=pythia28 \
@@ -153,6 +276,70 @@ python -u train.py \
     model.fsdp_policy_mp=bfloat16
 
 
+### B-arm, RMP
+dataset="rmp_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+python -u train.py \
+    model=pythia28 \
+    datasets=[${dataset}] \
+    loss=sft \
+    exp_name=${exp_name} \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+
+
+
+## DPO
+### Parameters
+loss_beta=0.1
+ulimit -n 64000
+gradient_accumulation_steps=4
+batch_size=32
+eval_batch_size=8
+trainer='FSDPTrainer'
+voters_model='haiku'
+
+function run_dpo {
+  dataset=$1
+  exp_name=$2
+  sft_exp_dir=$3
+
+  python -u train.py \
+    model=pythia28 \
+    datasets=[$dataset] \
+    loss=dpo \
+    loss.beta=$loss_beta \
+    exp_name=$exp_name \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16 \
+    model.archive=".cache/adamlesnikowski/${sft_exp_dir}/LATEST/policy.pt"
+}
+
+
+### A-arm, av, 11 voters
+dataset="av_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="av_11_haiku_voters_dataset_sft_loss_pythia28_64_batch_size_2024-07-02_00-48-42_317597"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
+### B-arm, rmp, 11 voters
+dataset="rmp_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="rmp_11_haiku_voters_dataset_sft_loss_pythia28_64_batch_size_2024-07-02_00-54-49_729410"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
+## DONE: Two arm trial, between llama3-*B random voter rv vs majority preference mp
+## Done previously.
 
 ## Done: Two arm trial, between GPT 3.5 random voter rv vs majority preference mp
 ## A-arm: GPT-3.5 rv
