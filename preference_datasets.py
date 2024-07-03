@@ -273,14 +273,51 @@ def get_custom_hh_dataset_from_fp(
 nas = "/nas/ucb/adamlesnikowski/"
 
 
-def get_av_11_haiku_voters(
+def get_rmp_33_voters(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
-    """Get rmp 11 haiku voters based on Anthropic hh style dataset
-    content and format."""
+    """Get rmp 33 voters dataset."""
 
     fp = (
-        "/nas/ucb/adamlesnikowski/llm-sct/data/anthropic/raw/claude-3-haiku-20240307/"
+        "/nas/ucb/adamlesnikowski/llm-sct/data/anthropic/raw/"
+        "llama3-8B+gpt-3.5-turbo-0125+claude-3-haiku-20240307/"
+        "repeated_majority_data_helpful-base.json"
+    )
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+
+def get_av_33_voters(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get av 33 voters dataset."""
+
+    fp = (
+        "/nas/ucb/adamlesnikowski/llm-sct/data/anthropic/raw/"
+        "llama3-8B+gpt-3.5-turbo-0125+claude-3-haiku-20240307/"
+        "all_voter_data_helpful-base.json"
+    )
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+
+def get_rmp_11_gpt35_voters(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get rmp 11 gpt35 voters dataset."""
+
+    fp = (
+        "/nas/ucb/adamlesnikowski/llm-sct/data/anthropic/raw/gpt-3.5-turbo-0125/"
+        "repeated_majority_data_helpful-base.json"
+    )
+    return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
+
+
+def get_av_11_gpt35_voters(
+    split: str, silent: bool = False, cache_dir: str = None
+) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
+    """Get av 11 gpt35 voters dataset."""
+
+    fp = (
+        "/nas/ucb/adamlesnikowski/llm-sct/data/anthropic/raw/gpt-3.5-turbo-0125/"
         "all_voter_data_helpful-base.json"
     )
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
@@ -435,6 +472,14 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "":
         pass
+    elif name == "av_33_voters":
+        data = get_av_33_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "rmp_33_voters":
+        data = get_rmp_33_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "av_11_gpt35_voters":
+        data = get_av_11_gpt35_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "rmp_11_gpt35_voters":
+        data = get_rmp_11_gpt35_voters(split, silent=silent, cache_dir=cache_dir)
     elif name == "av_11_haiku_voters":
         data = get_av_11_haiku_voters(split, silent=silent, cache_dir=cache_dir)
     elif name == "rmp_11_haiku_voters":
