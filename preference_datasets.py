@@ -273,7 +273,7 @@ def get_custom_hh_dataset_from_fp(
 nas = "/nas/ucb/adamlesnikowski/"
 
 
-def get_rmp_33_voters(
+def get_rmp_33_all_voters(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
     """Get rmp 33 voters dataset."""
@@ -286,7 +286,7 @@ def get_rmp_33_voters(
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
 
 
-def get_av_33_voters(
+def get_av_33_all_voters(
     split: str, silent: bool = False, cache_dir: str = None
 ) -> Dict[str, Dict[str, Union[List[Tuple[int, int]], List[str], str]]]:
     """Get av 33 voters dataset."""
@@ -472,10 +472,10 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "":
         pass
-    elif name == "av_33_voters":
-        data = get_av_33_voters(split, silent=silent, cache_dir=cache_dir)
-    elif name == "rmp_33_voters":
-        data = get_rmp_33_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "av_33_all_voters":
+        data = get_av_33_all_voters(split, silent=silent, cache_dir=cache_dir)
+    elif name == "rmp_33_all_voters":
+        data = get_rmp_33_all_voters(split, silent=silent, cache_dir=cache_dir)
     elif name == "av_11_gpt35_voters":
         data = get_av_11_gpt35_voters(split, silent=silent, cache_dir=cache_dir)
     elif name == "rmp_11_gpt35_voters":
