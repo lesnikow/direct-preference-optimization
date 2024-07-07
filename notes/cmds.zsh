@@ -64,8 +64,14 @@ srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=medium --time=3-00:00:
 srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=high --time=1-12:00:00 "bash"
 
 srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=high --time=1-12:00:00 "bash"
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=default --time=1-12:00:00 "bash"
 
 
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:4 --qos=default --time=1-12:00:00 "bash"
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:4 --qos=default --time=2-12:00:00 "bash"
+
+srun --pty -c 64 --mem=128G --gpus=A100-SXM4-80GB:1 --qos=default --time=3-00:00:00 "bash"
+srun --pty -c 64 --mem=128G --gpus=A100-SXM4-80GB:4 --qos=default --time=3-00:00:00 "bash"
 
 
 ### Slurm cluster info
@@ -101,7 +107,7 @@ echo "clear" >> ~/.bashrc
 git config --global user.email "adam.lesnikowski@gmail.com"
 git config --global user.name "Adam Lesnikowski"
 git config --global credential.helper cache
-git config --global credential.helper 'cache --timeout=36000'
+git config --global credential.helper 'cache --timeout=360000'
 
 
 ### Data setup
@@ -132,84 +138,97 @@ pip3 install -e ".[model_worker,webui]"
 pip install anthropic openai==0.28
 
 
-## Done: Evals, RMP/MP and AV/RV pairwise comps
-### MP / RMP
 
 
-#### Query available model answers
+## WIP: RMP / AV for 33_all_voters
+
+## SFT
+ulimit -n 64000
+gradient_accumulation_steps=2
+batch_size=64
+trainer='FSDPTrainer'
+voters_model='all'
+cd /nas/ucb/adamlesnikowski/dpo
+eval_batch_size=8
+
+function run_sft {
+  dataset=$1
+  exp_name=$2
+  python -u train.py \
+    model=pythia28 \
+    datasets=[$dataset] \
+    loss=sft \
+    exp_name=$exp_name \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+}
 
 
-#### Make fast-chat llm-judge judgements
-source .env
-export OPENAI_API_KEY
-model_ids=(
-  "mp_llama3-8B_voters_128_max_new_tokens"
-  "rmp_llama3-8B_voters_128_max_new_tokens"
-)
-
-python3 gen_judgment.py \
-  --mode "pairwise-all" \
-  --judge-model "gpt-4-turbo" \
-  --model-list "${model_ids[@]}" \
-  --parallel 64
-
-#### Show results
-python3 show_result.py \
-  --mode "pairwise-all" \
-  --judge-model "gpt-4-turbo" \
-  --model-list "${model_ids[@]}"
-
-python3 show_result.py \
-  --mode "single" \
-  --judge-model "gpt-4-turbo" \
-  --model-list "${model_ids[@]}"
-
-python3 show_result.py \
-  --mode "single" \
-  --judge-model "gpt-4-turbo"
-
-### RV / AV
-
-#### Make fast-chat llm-judge judgements
-model_ids=(
-  "rv_llama3-8B_voters_128_max_new_tokens"
-  "av_llama3-8B_voters_128_max_new_tokens"
-)
-
-python3 gen_judgment.py \
-  --mode "pairwise-all" \
-  --judge-model "gpt-4-turbo" \
-  --model-list "${model_ids[@]}" \
-  --parallel 64
-
-#### Show results
-python3 show_result.py \
-  --mode "pairwise-all" \
-  --judge-model "gpt-4-turbo" \
-  --model-list "${model_ids[@]}"
+### A-arm, AV
+dataset="av_33_${voters_model}_voters"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+run_sft $dataset $exp_name
 
 
-python3 show_result.py \
-  --mode "pairwise-baseline" \
-  --judge-model "gpt-4-turbo" \
-  --model-list "${model_ids[@]}"\
-  --baseline-model "av_llama3-8B_voters_128_max_new_tokens"
-
-
-python3 show_result.py \
-  --mode "single" \
-  --judge-model "gpt-4-turbo" \
-  --model-list "${model_ids[@]}"
-
-python3 show_result.py \
-  --mode "single" \
-  --judge-model "gpt-4-turbo"
+### B-arm, RMP
+dataset="rmp_33_${voters_model}_voters"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+run_sft $dataset $exp_name
 
 
 
+## DPO
+### Parameters
+loss_beta=0.1
+ulimit -n 64000
+gradient_accumulation_steps=2
+batch_size=64
+trainer='FSDPTrainer'
+voters_model='all'
+eval_batch_size=8
+
+function run_dpo {
+  dataset=$1
+  exp_name=$2
+  sft_exp_dir=$3
+
+  python -u train.py \
+    model=pythia28 \
+    datasets=[$dataset] \
+    loss=dpo \
+    loss.beta=$loss_beta \
+    exp_name=$exp_name \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16 \
+    model.archive=".cache/adamlesnikowski/${sft_exp_dir}/LATEST/policy.pt"
+}
 
 
-## WIP: RMP vs AV for GPT
+### A-arm, av, 33 voters
+dataset="av_33_${voters_model}_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="av_33_all_voters_dataset_sft_loss_pythia28_64_batch_size_2024-07-06_00-51-42_121901"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
+### B-arm, rmp, 33 voters
+dataset="rmp_33_${voters_model}_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="rmp_33_all_voters_dataset_sft_loss_pythia28_64_batch_size_2024-07-06_01-07-54_520211"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
+
+
+## DONE: RMP / AV for gpt35
 
 ## SFT
 ulimit -n 64000
@@ -249,7 +268,127 @@ run_sft $dataset $exp_name
 
 
 
-## WIP: RMP vs AV for Haiku
+## DPO
+### Parameters
+loss_beta=0.1
+ulimit -n 64000
+gradient_accumulation_steps=4
+batch_size=32
+eval_batch_size=8
+trainer='FSDPTrainer'
+voters_model='gpt35'
+
+function run_dpo {
+  dataset=$1
+  exp_name=$2
+  sft_exp_dir=$3
+
+  python -u train.py \
+    model=pythia28 \
+    datasets=[$dataset] \
+    loss=dpo \
+    loss.beta=$loss_beta \
+    exp_name=$exp_name \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16 \
+    model.archive=".cache/adamlesnikowski/${sft_exp_dir}/LATEST/policy.pt"
+}
+
+
+### A-arm, av, 11 voters
+dataset="av_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="av_11_gpt35_voters_dataset_sft_loss_pythia28_64_batch_size_2024-07-03_17-27-33_280451"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
+### B-arm, rmp, 11 voters
+dataset="rmp_11_${voters_model}_voters"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="rmp_11_gpt35_voters_dataset_sft_loss_pythia28_64_batch_size_2024-07-03_17-28-24_612379"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
+
+## Evals
+### A. Run model adapter code models
+### Get dpo_exp_dirs from dpo .cache/adamlesnikowski/ dir
+
+
+cd /nas/ucb/adamlesnikowski/dpo
+dpo_exp_dirs=(
+  "av_11_gpt35_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-07-03_23-31-00_706908"
+  "rmp_11_gpt35_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-07-03_23-32-45_576791"
+)
+for exp_dir in ${dpo_exp_dirs[@]}; do
+  in_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/policy.pt"
+  du -sh ${in_path}
+  python3 convert_model.py --in_path ${in_path}
+done
+
+
+### B. Make fast-chat llm-judge answers
+
+cd /nas/ucb/adamlesnikowski/fastchat/fastchat/llm_judge/
+deactivate
+source /nas/ucb/adamlesnikowski/env-fastchat/bin/activate
+
+source /nas/ucb/adamlesnikowski/dpo/.env
+export OPENAI_API_KEY
+max_new_tokens=128
+
+
+function gen_model_answers {
+  dpo_exp_dirs=$1
+  max_new_tokens=$2
+  model_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/converted/"
+  echo "Model path: ${model_path}"
+  python3 gen_model_answer.py \
+    --model-path ${model_path} \
+    --model-id ${exp_dir} \
+    --num-gpus-total 1 \
+    --max-new-token ${max_new_tokens}
+}
+
+for exp_dir in ${dpo_exp_dirs[@]}; do
+    gen_model_answers "${exp_dir}" "${max_new_tokens}"
+done
+
+
+### C. Make fast-chat llm-judge judgements
+
+python3 gen_judgment.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${dpo_exp_dirs[@]}" \
+  --parallel 256
+
+python3 gen_judgment.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${dpo_exp_dirs[@]}" \
+  --parallel 256
+
+### D. Show results
+
+python3 show_result.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${dpo_exp_dirs[@]}"
+
+python3 show_result.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${dpo_exp_dirs[@]}"
+
+
+
+
+## DONE: RMP / AV for Haiku
 
 
 ## SFT
@@ -274,7 +413,6 @@ python -u train.py \
     trainer=$trainer \
     sample_during_eval=false \
     model.fsdp_policy_mp=bfloat16
-
 
 ### B-arm, RMP
 dataset="rmp_11_${voters_model}_voters"
@@ -336,6 +474,134 @@ dataset="rmp_11_${voters_model}_voters"
 exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
 sft_exp_dir="rmp_11_haiku_voters_dataset_sft_loss_pythia28_64_batch_size_2024-07-02_00-54-49_729410"
 run_dpo $dataset $exp_name $sft_exp_dir
+
+
+## Evals
+## DONE: Figure out past bug in convert_model.py here for config not existing?
+### A. Run model adapter code models
+### Get dpo_exp_dirs from dpo .cache/adamlesnikowski/ dir
+
+
+cd /nas/ucb/adamlesnikowski/dpo
+dpo_exp_dirs=(
+  "av_11_haiku_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-07-02_15-14-25_461393"
+  "rmp_11_haiku_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-07-02_15-14-35_826063"
+)
+for exp_dir in ${dpo_exp_dirs[@]}; do
+  in_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/policy.pt"
+  du -sh ${in_path}
+  python3 convert_model.py --in_path ${in_path}
+done
+
+
+### B. Make fast-chat llm-judge answers
+
+cd /nas/ucb/adamlesnikowski/fastchat/fastchat/llm_judge/
+deactivate
+source /nas/ucb/adamlesnikowski/env-fastchat/bin/activate
+source /nas/ucb/adamlesnikowski/dpo/.env
+export OPENAI_API_KEY
+max_new_tokens=128
+
+
+function gen_model_answers {
+  dpo_exp_dirs=$1
+  max_new_tokens=$2
+  model_path="/nas/ucb/adamlesnikowski/dpo/.cache/adamlesnikowski/${exp_dir}/LATEST/converted/"
+  echo "Model path: ${model_path}"
+  python3 gen_model_answer.py \
+    --model-path ${model_path} \
+    --model-id ${exp_dir} \
+    --num-gpus-total 1 \
+    --max-new-token ${max_new_tokens}
+}
+
+for exp_dir in ${dpo_exp_dirs[@]}; do
+    gen_model_answers "${exp_dir}" "${max_new_tokens}"
+done
+
+
+### C. Make fast-chat llm-judge judgements
+model_ids=(
+  "av_11_haiku_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-07-02_15-14-25_461393"
+  "rmp_11_haiku_voters_dataset_dpo_loss_pythia28_model_32_batch_size_2024-07-02_15-14-35_826063"
+)
+
+python3 gen_judgment.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}" \
+  --parallel 128
+
+python3 gen_judgment.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}" \
+  --parallel 128
+
+### D. Show results
+model_ids=(
+  ""
+  ""
+)
+
+python3 show_result.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}"
+
+python3 show_result.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}"
+
+
+
+
+
+
+## DONE: Evals, RMP/MP and AV/RV pairwise comps
+### MP / RMP
+#### Make fast-chat llm-judge judgements
+source .env
+export OPENAI_API_KEY
+model_ids=(
+  "mp_llama3-8B_voters_128_max_new_tokens"
+  "rmp_llama3-8B_voters_128_max_new_tokens"
+)
+
+python3 gen_judgment.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}" \
+  --parallel 64
+
+#### Show results
+python3 show_result.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}"
+
+
+### RV / AV
+
+#### Make fast-chat llm-judge judgements
+model_ids=(
+  "rv_llama3-8B_voters_128_max_new_tokens"
+  "av_llama3-8B_voters_128_max_new_tokens"
+)
+
+python3 gen_judgment.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}" \
+  --parallel 64
+
+#### Show results
+python3 show_result.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${model_ids[@]}"
 
 
 ## DONE: Two arm trial, between llama3-*B random voter rv vs majority preference mp
