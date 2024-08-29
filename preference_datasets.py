@@ -153,6 +153,48 @@ def get_shp(
     return data
 
 
+def get_custom_shp_dataset_from_fp(
+    split: str,
+    fp: str = None,
+    silent: bool = False,
+    cache_dir: str = None,
+    verbose: bool = False,
+):
+    """Get dataset based on Stanford Human Preferences dataset content and format from custom fp."""
+
+    print(
+        f"Loading custom SHP style dataset ({split} split) from local data dir: {fp} ..."
+    )
+
+    with open(fp, "r") as f:
+        read_data = ast.literal_eval(f.read())
+
+    data = defaultdict(lambda: defaultdict(list))
+
+    cnt = 0
+    for row in tqdm.tqdm(
+        read_data, desc="Processing custom SHP style dataset", disable=silent
+    ):
+
+        prompt = f"{cnt}. " + row["prompt"]
+        chosen = row["chosen"]
+        rejected = row["rejected"]
+        responses = [chosen, rejected]
+        n_responses = len(data[prompt]["responses"])
+
+        data[prompt]["responses"].extend(responses)
+        data[prompt]["pairs"].append((n_responses, n_responses + 1))
+        data[prompt]["sft_target"] = chosen
+
+        if verbose:
+            print(f"prompt: {prompt}")
+            print(f"chosen: {chosen}")
+            print(f"rejected: {rejected}")
+        cnt += 1
+
+    print(f"len(data.keys()) is {len(data.keys())}")
+    return data
+
 def split_prompt_and_responses(ex):
     prompt = extract_anthropic_prompt(ex["chosen"])
     chosen_response = ex["chosen"][len(prompt) :]
