@@ -154,17 +154,13 @@ def get_shp(
 
 
 def get_custom_shp_dataset_from_fp(
-    split: str,
     fp: str = None,
     silent: bool = False,
-    cache_dir: str = None,
     verbose: bool = False,
 ):
     """Get dataset based on Stanford Human Preferences dataset content and format from custom fp."""
 
-    print(
-        f"Loading custom SHP style dataset ({split} split) from local data dir: {fp} ..."
-    )
+    print(f"Loading custom SHP style dataset from local data dir: {fp} ...")
 
     with open(fp, "r") as f:
         read_data = ast.literal_eval(f.read())
@@ -194,6 +190,7 @@ def get_custom_shp_dataset_from_fp(
 
     print(f"len(data.keys()) is {len(data.keys())}")
     return data
+
 
 def split_prompt_and_responses(ex):
     prompt = extract_anthropic_prompt(ex["chosen"])
@@ -510,10 +507,29 @@ def get_rmp(
     return get_custom_hh_dataset_from_fp(split, fp, silent, cache_dir)
 
 
+def get_shp_maj_data():
+    """Get SHP majority data."""
+
+    fp = "/nas/ucb/adamlesnikowski/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO.json"
+    return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+
+
+def get_shp_sc_data():
+    """Get SHP split cycle data."""
+
+    fp = "/nas/ucb/adamlesnikowski/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO.json"
+    return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+
+
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "":
         pass
+    elif name == "shp_maj_data":
+        data = get_shp_maj_data()
+    elif name == "shp_sc_data":
+        data = get_shp_sc_data()
+
     elif name == "av_33_all_voters":
         data = get_av_33_all_voters(split, silent=silent, cache_dir=cache_dir)
     elif name == "rmp_33_all_voters":
@@ -538,6 +554,7 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
         data = get_rv_33_voters(split, silent=silent, cache_dir=cache_dir)
     elif name == "mp_33_voters":
         data = get_mp_33_voters(split, silent=silent, cache_dir=cache_dir)
+
     elif name == "hb":
         data = get_hb(split, silent=silent, cache_dir=cache_dir)
     elif name == "rv":
