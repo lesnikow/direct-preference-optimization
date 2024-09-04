@@ -73,6 +73,10 @@ srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:4 --qos=default --time=2-12:00
 srun --pty -c 64 --mem=128G --gpus=A100-SXM4-80GB:1 --qos=default --time=3-00:00:00 "bash"
 srun --pty -c 64 --mem=128G --gpus=A100-SXM4-80GB:4 --qos=default --time=3-00:00:00 "bash"
 
+srun --pty -c 64 --mem=128G --gpus=A6000:4 --qos=default --time=3-00:00:00 "bash"
+
+srun --pty --cpus-per-task=64 --mem=128G --gpus=A6000:4 --qos=default --time=3-00:00:00 "bash"
+srun --pty --cpus-per-task=64 --mem=128G --gpus=A6000:4 --qos=high --time=3-00:00:00 "bash"
 
 ### Slurm cluster info
 sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50" | grep A100
@@ -138,6 +142,44 @@ pip3 install -e ".[model_worker,webui]"
 pip install anthropic openai==0.28
 
 
+
+## WIP: reddit random majority preference "maj" vs random split cycle "sc"
+
+## SFT
+ulimit -n 64000
+gradient_accumulation_steps=2
+batch_size=64
+trainer='FSDPTrainer'
+voters_model='gpt35'
+cd /nas/ucb/adamlesnikowski/dpo
+eval_batch_size=8
+
+function run_sft {
+  dataset=$1
+  exp_name=$2
+  python -u train.py \
+    model=pythia28 \
+    datasets=[$dataset] \
+    loss=sft \
+    exp_name=$exp_name \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16
+}
+
+### A-arm, maj
+dataset="shp_maj_data"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+run_sft $dataset $exp_name
+
+
+### B-arm, sc
+dataset="shp_sc_data"
+exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+run_sft $dataset $exp_name
 
 
 ## WIP: RMP / AV for 33_all_voters
