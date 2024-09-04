@@ -520,6 +520,12 @@ def get_shp_sc_data():
     fp = "/nas/ucb/adamlesnikowski/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO.json"
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
+def test_get_shp_maj_data():
+    fp = "/nas/ucb/adamlesnikowski/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO.json"
+    data = get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+    assert data
+    print(len(data.keys()))
+
 
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
