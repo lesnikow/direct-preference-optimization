@@ -2,6 +2,7 @@
 # Project specific things
 outputs/
 .cache
+slurm/*.out
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
