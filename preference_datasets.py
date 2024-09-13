@@ -1,15 +1,17 @@
 import ast
+from collections import defaultdict
+import os
+import random
+from typing import Dict, List, Optional, Iterator, Callable, Union, Tuple
+from utils import get_local_dir, TemporarilySeededRandom
+
+from bs4 import BeautifulSoup, NavigableString
 import datasets
+import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
-from utils import get_local_dir, TemporarilySeededRandom
 from torch.nn.utils.rnn import pad_sequence
-from collections import defaultdict
 import tqdm
-import random
-from bs4 import BeautifulSoup, NavigableString
-import numpy as np
-from typing import Dict, List, Optional, Iterator, Callable, Union, Tuple
 
 
 def extract_anthropic_prompt(prompt_and_response):
