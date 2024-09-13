@@ -512,7 +512,8 @@ def get_rmp(
 def get_shp_maj_data():
     """Get SHP majority data."""
 
-    fp = "/nas/ucb/adamlesnikowski/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO.json"
+    home_dir = os.environ.get('HOME', '')
+    fp = os.path.join(home_dir, "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO.json")
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
 
