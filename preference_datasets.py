@@ -520,7 +520,8 @@ def get_shp_maj_data():
 def get_shp_sc_data():
     """Get SHP split cycle data."""
 
-    fp = "/nas/ucb/adamlesnikowski/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO.json"
+    home_dir = os.environ.get('HOME', '')
+    fp = os.path.join(home_dir, "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO.json")
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
 def test_get_shp_maj_data():
