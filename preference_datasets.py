@@ -805,7 +805,7 @@ def get_batch_iterator(
         datasets.logging.disable_progress_bar()
         datasets.logging.set_verbosity_error()
 
-    with TemporarilySeededRandom(seed):
+    with TemporarilySeededRandom(int(seed)):
         permutation_seeds = iter(np.random.randint(0, 2**32, size=1000000))
         flat_data = []
         for name in names:
@@ -834,7 +834,7 @@ def get_batch_iterator(
                 print(f"Finished generating {n_epochs} epochs on {split} split")
             break
         if shuffle:
-            with TemporarilySeededRandom(next(permutation_seeds)):
+            with TemporarilySeededRandom(int(next(permutation_seeds))):
                 random.shuffle(flat_data)
 
         batch = []
