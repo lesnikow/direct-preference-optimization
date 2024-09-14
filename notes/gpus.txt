@@ -1,0 +1,45 @@
+GPU priority list
+
+
+
+gpu    memory    max_gpu_avail_per_node   max_gpu_mem_avail_per_node    priority cluster    relative_perf
+
+
+H100   80 GB?                                                          00         vast              9x?
+A100   80 GB        ~0 in practice, 8        0 / 640 GB                 0         chai              3x
+A40    48 GB        2 / 4                    96 /  192 GB              1a         savio             1x
+A6000  48 GB        1-4 in practice, 8       192 / 384                 1b         chai              1x
+A5000  24 GB        8                        192 GB                     2         savio           0.5x?
+V100   16/32GB?                                                         3         savio             1x?
+
+
+
+
+
+
+Conclusion
+
+A40: Better suited for large-scale LLM training tasks, such as Pythia SFT or DPO,
+where memory capacity and compute performance are critical. It is more expensive but
+provides higher performance and larger memory.
+A5000: A cost-effective option for smaller-scale or less demanding LLM training
+tasks. It has less memory and slightly lower performance but may still be
+suitable for many LLM tasks, particularly if cost is a concern or if the model
+size does not require the full capacity of the A40.
+
+*For large-scale LLM training like Pythia, the A40 would generally be the
+preferred option due to its superior memory and performance, while the A5000
+could be a more budget-friendly alternative for smaller models or projects with
+tighter resource constraints.*
+
+
+
+Conclusion
+
+*For large language model training tasks like Pythia, the performance difference between
+the NVIDIA A40 and A6000 is expected to be minimal (around 1-3%).* Both GPUs have nearly
+identical specifications and are based on the same Ampere architecture, with the minor
+differences mainly related to memory bandwidth and ECC overhead. The choice between them
+should largely depend on specific use case requirements: if you need enterprise-level
+reliability and ECC memory, the A40 is a better choice; if you are looking for slightly
+faster performance without ECC, the A6000 might be marginally better.#
