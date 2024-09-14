@@ -21,6 +21,8 @@ import socket
 from typing import Optional, Set
 import resource
 
+from torch.profiler import profile, record_function, ProfilerActivity
+
 
 OmegaConf.register_new_resolver(
     "get_local_run_dir",
@@ -153,12 +155,14 @@ def main(config: DictConfig):
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         resource.setrlimit(resource.RLIMIT_NOFILE, (hard, hard))
         print(f"setting RLIMIT_NOFILE soft limit to {hard} from {soft}")
+        # with profile(activities=[ProfilerActivity.CUDA, ProfilerActivity.CPU]) as prof:
         mp.spawn(
             worker_main,
             nprocs=world_size,
             args=(world_size, config, policy, reference_model),
             join=True,
         )
+        #prof.export_chrome_trace("out_trace.json")
     else:
         print("starting single-process worker")
         worker_main(0, 1, config, policy, reference_model)
