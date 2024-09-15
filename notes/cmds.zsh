@@ -94,6 +94,54 @@ exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
 run_sft $dataset $exp_name
 
 
+## DONE: DPO
+### Parameters
+loss_beta=0.1
+ulimit -n 32000
+gradient_accumulation_steps=4
+batch_size=32
+trainer='FSDPTrainer'
+voters_model='gpt35'
+eval_batch_size=4
+
+function run_dpo {
+  dataset=$1
+  exp_name=$2
+  sft_exp_dir=$3
+
+  python -u train.py \
+    model=pythia28 \
+    datasets="[$dataset]" \
+    loss=dpo \
+    loss.beta=$loss_beta \
+    exp_name=$exp_name \
+    gradient_accumulation_steps=$gradient_accumulation_steps \
+    batch_size=$batch_size \
+    eval_batch_size=$eval_batch_size \
+    trainer=$trainer \
+    sample_during_eval=false \
+    model.fsdp_policy_mp=bfloat16 \
+    eval_every=40000 \
+    model.archive=".cache/adamlesnikowski/${sft_exp_dir}/LATEST/policy.pt"
+}
+
+
+
+### A-arm, maj
+dataset='shp_maj_data'
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="shp_maj_data_dataset_sft_loss_pythia28_32_batch_size_2024-09-13_00-47-30_627856"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
+### B-arm, sc
+dataset="shp_sc_data"
+exp_name="${dataset}_dataset_dpo_loss_pythia28_model_${batch_size}_batch_size"
+sft_exp_dir="shp_sc_data_dataset_sft_loss_pythia28_32_batch_size_2024-09-13_00-57-51_032507"
+run_dpo $dataset $exp_name $sft_exp_dir
+
+
+
 ## WIP: RMP / AV for 33_all_voters
 
 ## SFT
