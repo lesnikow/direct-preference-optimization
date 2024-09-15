@@ -12,7 +12,7 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 # nvim :PlugUpdate
 
-python3 -m venv env
+python3.11 -m venv env
 source env/bin/activate
 pip install --upgrade pip
 echo "source env/bin/activate" >> ~/.bashrc 
