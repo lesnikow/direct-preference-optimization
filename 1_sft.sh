@@ -5,13 +5,14 @@ a_arm_dataset='shp_maj_data'
 b_arm_dataset='shp_sc_data'
 model='pythia69'
 loss='sft'
-batch_size=32
-gradient_accumulation_steps=4
+batch_size=2
+gradient_accumulation_steps=1
 trainer='FSDPTrainer'
 voters_model='gpt35'
 eval_batch_size=4
 eval_every=40000
 ulimit_value=32000
+n_eval_examples=64
 
 
 function run_sft {
@@ -28,7 +29,8 @@ function run_sft {
       trainer="$trainer" \
       sample_during_eval=false \
       model.fsdp_policy_mp=bfloat16 \
-      eval_every="$eval_every"
+      eval_every="$eval_every" \
+      n_eval_examples="$n_eval_examples"
 }
 
 
