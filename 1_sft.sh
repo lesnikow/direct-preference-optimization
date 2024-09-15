@@ -1,15 +1,18 @@
 #!/bin/bash
 # Soft fine-tuning (SFT) experiments
 
+a_arm_dataset='shp_maj_data'
+b_arm_dataset='shp_sc_data'
 model='pythia69'
 loss='sft'
-gradient_accumulation_steps=4
 batch_size=32
+gradient_accumulation_steps=4
 trainer='FSDPTrainer'
 voters_model='gpt35'
 eval_batch_size=4
 eval_every=40000
 ulimit_value=32000
+
 
 function run_sft {
     dataset=$1
@@ -28,20 +31,24 @@ function run_sft {
       eval_every="$eval_every"
 }
 
+
 function run_a_arm {
-    dataset='shp_maj_data'
-    exp_name="${dataset}_dataset_${model}_model_${loss}_loss_${batch_size}_batch_size"
-    run_sft "$dataset" "$exp_name"
+    exp_name="${a_arm_dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+    run_sft "$a_arm_dataset" "$exp_name"
 }
 
+
 function run_b_arm {
-    dataset='shp_sc_data'
-    exp_name="${dataset}_dataset_${model}_model_${loss}_loss_${batch_size}_batch_size"
-    run_sft "$dataset" "$exp_name"
+    exp_name="${b_arm_dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+    run_sft "$b_arm_dataset" "$exp_name"
 }
 
 
 function main {
+    echo "Starting SFT experiments for a-arm dataset: $a_arm_dataset and b-arm dataset: $b_arm_dataset..."
+    echo "batch_size: $batch_size, gradient_accumulation_steps: $gradient_accumulation_steps; effective_batch_size: $((batch_size *
+    gradient_accumulation_steps))"
+
     cd "$HOME/direct-preference-optimization" || { echo "Directory not found!"; exit 1; }
     ulimit -n "$ulimit_value"
     if [ "$1" == "a" ]; then
@@ -55,4 +62,3 @@ function main {
 
 
 main "$1"
-
