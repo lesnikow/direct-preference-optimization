@@ -30,8 +30,8 @@ git clone https://github.com/lesnikow/llm-sct.git
 
 ### DPO, SFT setup
 cd ~
-git clone https://github.com/lesnikow/direct-preference-optimization.git dpo
-cd dpo
+git clone https://github.com/lesnikow/direct-preference-optimization.git 
+cd direct-preference-optimization
 pip install -r requirements.txt
 
 # vim .env
