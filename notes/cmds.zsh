@@ -53,23 +53,24 @@ pip install anthropic openai==0.28
 
 
 
-## WIP: reddit random majority preference "maj" vs random split cycle "sc"
+## DONE: reddit random majority preference "maj" vs random split cycle "sc"
 
-## SFT
-ulimit -n 64000
-gradient_accumulation_steps=2
-batch_size=64
+## DONE: SFT
+ulimit -n 32000
+gradient_accumulation_steps=4
+batch_size=32
 trainer='FSDPTrainer'
+#trainer='BasicTrainer'
 voters_model='gpt35'
-cd /nas/ucb/adamlesnikowski/dpo
-eval_batch_size=8
+cd $HOME/direct-preference-optimization
+eval_batch_size=4
 
 function run_sft {
   dataset=$1
   exp_name=$2
-  python -u train.py \
+  python3 -u train.py \
     model=pythia28 \
-    datasets=[$dataset] \
+    datasets="[$dataset]" \
     loss=sft \
     exp_name=$exp_name \
     gradient_accumulation_steps=$gradient_accumulation_steps \
@@ -77,11 +78,12 @@ function run_sft {
     eval_batch_size=$eval_batch_size \
     trainer=$trainer \
     sample_during_eval=false \
-    model.fsdp_policy_mp=bfloat16
+    model.fsdp_policy_mp=bfloat16 \
+    eval_every=40000
 }
 
 ### A-arm, maj
-dataset="shp_maj_data"
+dataset='shp_maj_data'
 exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
 run_sft $dataset $exp_name
 
