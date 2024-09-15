@@ -1,10 +1,11 @@
 #!/bin/bash
 # Soft fine-tuning (SFT) experiments
 
+model='pythia69'
+loss='sft'
 gradient_accumulation_steps=4
 batch_size=32
 trainer='FSDPTrainer'
-# trainer='BasicTrainer'
 voters_model='gpt35'
 eval_batch_size=4
 eval_every=40000
@@ -14,9 +15,9 @@ function run_sft {
     dataset=$1
     exp_name=$2
     python3 -u train.py \
-      model=pythia28 \
+      model="$model" \
       datasets="[$dataset]" \
-      loss=sft \
+      loss="$loss" \
       exp_name="$exp_name" \
       gradient_accumulation_steps="$gradient_accumulation_steps" \
       batch_size="$batch_size" \
@@ -29,13 +30,13 @@ function run_sft {
 
 function run_a_arm {
     dataset='shp_maj_data'
-    exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+    exp_name="${dataset}_dataset_${model}_model_${loss}_loss_${batch_size}_batch_size"
     run_sft "$dataset" "$exp_name"
 }
 
 function run_b_arm {
     dataset='shp_sc_data'
-    exp_name="${dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+    exp_name="${dataset}_dataset_${model}_model_${loss}_loss_${batch_size}_batch_size"
     run_sft "$dataset" "$exp_name"
 }
 
