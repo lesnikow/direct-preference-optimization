@@ -1,94 +1,4 @@
 # notes/cmds.zsh for dpo repo
-#
-
-
-## CHAI slurm cmds
-
-# Basic slurm cmds
-srun --mem=100mb --time=0:01:00 cat /etc/hostname
-srun --mem=1GB --time=0:01:00 --gpus=1 nvidia-smi
-srun --mem=1GB --time=0:01:00 --gpus=A6000:1 nvidia-smi
-srun --mem=1GB --time=0:01:00 --gpus=A4000:1 --job-name=adam_test nvidia-smi 
-
-# Interactive jobs
-srun --mem=1GB --time=0:01:00 --gpus=A4000:1 --job-name=adam_test --pty bash
-srun --pty --mem 1gb --time=01:00:00 bash
-
-# QoS cmds
-srun --mem=1GB --time=0:01:00 --gpus=A6000:1 --job-name=adam_test --qos=high nvidia-smi 
-srun --mem=1GB --time=0:01:00 --gpus=A6000:4 --job-name=adam_test --qos=high nvidia-smi 
-
-# Running from slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A4000:2 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A4000:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A6000:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-
-# A100 gpus cmds
-srun --mem=1GB --time=0:01:00 --gpus=A100-SXM4-80GB:1 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A100-PCI-80GB:1 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A100-SXM4-80GB:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-srun --mem=1GB --time=0:01:00 --gpus=A100-PCI-80GB:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
-
-# Interactive job to debug my train run sft, dpo, wanbd
-srun --pty --mem=8gb -c 4 --gres=shard:8 --time=01:00:00 bash
-srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:1 --time=04:00:00 bash
-srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:2 --qos=high --time=04:00:00 bash
-srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:2 --qos=high --time=04:00:00 "bash"
-
-srun --pty --mem=32gb -c 4 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
-srun --pty --mem=32gb -c 64 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
-
-srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
-srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:2 --qos=high --time=04:00:00 "bash"
-srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=04:00:00 "bash"
-
-srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=04:00:00 "bash"
-srun --pty --mem=512G -c 128 --gpus=A6000:1 --qos=high --time=04:00:00 "bash"
-
-srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:4 --qos=high --time=12:00:00 "bash"
-srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=12:00:00 "bash"
-srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
-
-srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:4 --qos=high --time=12:00:00 "bash"
-srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=12:00:00 "bash"
-srun --pty --mem=256G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
-
-srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=24:00:00 "bash"
-srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=24:00:00 "bash"
-
-
-srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=high   --time=24:00:00 "bash"
-srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=medium --time=24:00:00 "bash"
-srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=high --time=3-00:00:00 "bash"
-srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=medium --time=3-00:00:00 "bash"
-srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=high --time=1-12:00:00 "bash"
-
-srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=high --time=1-12:00:00 "bash"
-srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=default --time=1-12:00:00 "bash"
-
-
-srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:4 --qos=default --time=1-12:00:00 "bash"
-srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:4 --qos=default --time=2-12:00:00 "bash"
-
-srun --pty -c 64 --mem=128G --gpus=A100-SXM4-80GB:1 --qos=default --time=3-00:00:00 "bash"
-srun --pty -c 64 --mem=128G --gpus=A100-SXM4-80GB:4 --qos=default --time=3-00:00:00 "bash"
-
-srun --pty -c 64 --mem=128G --gpus=A6000:4 --qos=default --time=3-00:00:00 "bash"
-
-srun --pty --cpus-per-task=64 --mem=128G --gpus=A6000:4 --qos=default --time=3-00:00:00 "bash"
-srun --pty --cpus-per-task=64 --mem=128G --gpus=A6000:4 --qos=high --time=3-00:00:00 "bash"
-
-### Slurm cluster info
-sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50" | grep A100
-sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50"
-
-      Name   Priority                     MaxTRES     MaxWall     
-      high          3 cpu=128,gres/gpu=4,mem=512G  1-12:00:00
-    medium          2  cpu=64,gres/gpu=2,mem=256G  3-00:00:00
-   default          1  cpu=32,gres/gpu=1,mem=128G  7-00:00:00
- scavenger          0                              3-00:00:00
-                                                                                    
-
 
 
 ## Setup cmds for sft, dpo
@@ -1352,3 +1262,89 @@ python -m pytest -vv --durations=10 preference_datasets.py
 
 
 
+## CHAI slurm cmds
+
+# Basic slurm cmds
+srun --mem=100mb --time=0:01:00 cat /etc/hostname
+srun --mem=1GB --time=0:01:00 --gpus=1 nvidia-smi
+srun --mem=1GB --time=0:01:00 --gpus=A6000:1 nvidia-smi
+srun --mem=1GB --time=0:01:00 --gpus=A4000:1 --job-name=adam_test nvidia-smi 
+
+# Interactive jobs
+srun --mem=1GB --time=0:01:00 --gpus=A4000:1 --job-name=adam_test --pty bash
+srun --pty --mem 1gb --time=01:00:00 bash
+
+# QoS cmds
+srun --mem=1GB --time=0:01:00 --gpus=A6000:1 --job-name=adam_test --qos=high nvidia-smi 
+srun --mem=1GB --time=0:01:00 --gpus=A6000:4 --job-name=adam_test --qos=high nvidia-smi 
+
+# Running from slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A4000:2 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A4000:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A6000:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+
+# A100 gpus cmds
+srun --mem=1GB --time=0:01:00 --gpus=A100-SXM4-80GB:1 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A100-PCI-80GB:1 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A100-SXM4-80GB:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+srun --mem=1GB --time=0:01:00 --gpus=A100-PCI-80GB:4 --job-name=adam_test --qos=high /nas/ucb/adamlesnikowski/slurm.sh
+
+# Interactive job to debug my train run sft, dpo, wanbd
+srun --pty --mem=8gb -c 4 --gres=shard:8 --time=01:00:00 bash
+srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:1 --time=04:00:00 bash
+srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:2 --qos=high --time=04:00:00 bash
+srun --pty --mem=32gb -c 4 --gpus=A100-SXM4-80GB:2 --qos=high --time=04:00:00 "bash"
+
+srun --pty --mem=32gb -c 4 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
+srun --pty --mem=32gb -c 64 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
+
+srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:4 --qos=high --time=04:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:2 --qos=high --time=04:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=04:00:00 "bash"
+
+srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=04:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A6000:1 --qos=high --time=04:00:00 "bash"
+
+srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:4 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=512G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
+
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:4 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=12:00:00 "bash"
+srun --pty --mem=256G -c 128 --gpus=A100-PCI-80GB:1 --qos=high --time=12:00:00 "bash"
+
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:2 --qos=high --time=24:00:00 "bash"
+srun --pty --mem=256G -c 128 --gpus=A100-SXM4-80GB:1 --qos=high --time=24:00:00 "bash"
+
+
+srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=high   --time=24:00:00 "bash"
+srun --pty --mem=256G -c 64 --gpus=A100-SXM4-80GB:2 --qos=medium --time=24:00:00 "bash"
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=high --time=3-00:00:00 "bash"
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=medium --time=3-00:00:00 "bash"
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=high --time=1-12:00:00 "bash"
+
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=high --time=1-12:00:00 "bash"
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:2 --qos=default --time=1-12:00:00 "bash"
+
+
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:4 --qos=default --time=1-12:00:00 "bash"
+srun --pty -c 64 --mem=256G --gpus=A100-SXM4-80GB:4 --qos=default --time=2-12:00:00 "bash"
+
+srun --pty -c 64 --mem=128G --gpus=A100-SXM4-80GB:1 --qos=default --time=3-00:00:00 "bash"
+srun --pty -c 64 --mem=128G --gpus=A100-SXM4-80GB:4 --qos=default --time=3-00:00:00 "bash"
+
+srun --pty -c 64 --mem=128G --gpus=A6000:4 --qos=default --time=3-00:00:00 "bash"
+
+srun --pty --cpus-per-task=64 --mem=128G --gpus=A6000:4 --qos=default --time=3-00:00:00 "bash"
+srun --pty --cpus-per-task=64 --mem=128G --gpus=A6000:4 --qos=high --time=3-00:00:00 "bash"
+
+### Slurm cluster info
+sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50" | grep A100
+sinfo -N -O "NodeList:4,CPUsState:.15,Memory:.9 ,FreeMem:.9 ,StateCompact:6,Gres:30,GresUsed:50"
+
+      Name   Priority                     MaxTRES     MaxWall     
+      high          3 cpu=128,gres/gpu=4,mem=512G  1-12:00:00
+    medium          2  cpu=64,gres/gpu=2,mem=256G  3-00:00:00
+   default          1  cpu=32,gres/gpu=1,mem=128G  7-00:00:00
+ scavenger          0                              3-00:00:00
+                                                                                    
