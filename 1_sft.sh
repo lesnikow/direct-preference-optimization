@@ -13,6 +13,8 @@ eval_batch_size=4
 eval_every=40000
 ulimit_value=32000
 n_eval_examples=16
+n_epochs=1
+n_examples=null
 
 
 function run_sft {
@@ -30,7 +32,9 @@ function run_sft {
       sample_during_eval=false \
       model.fsdp_policy_mp=bfloat16 \
       eval_every="$eval_every" \
-      n_eval_examples="$n_eval_examples"
+      n_eval_examples="$n_eval_examples" \
+      n_epochs="$n_epochs" \
+      n_examples="$n_examples"
 }
 
 
