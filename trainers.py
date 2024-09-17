@@ -643,9 +643,16 @@ class BasicTrainer(object):
         """Save policy, optimizer, and scheduler state to disk."""
 
         policy_state_dict = self.policy.state_dict()
-        self.write_state_dict(
-            self.example_counter, policy_state_dict, metrics, "policy.pt", output_dir
-        )
+        try:
+            self.write_state_dict(
+                self.example_counter, policy_state_dict, metrics, "policy.pt", output_dir
+            )
+        except:
+            self.example_counter = 0
+            self.write_state_dict(
+                self.example_counter, policy_state_dict, metrics, "policy.pt", output_dir
+            )
+
         del policy_state_dict
 
         optimizer_state_dict = self.optimizer.state_dict()
