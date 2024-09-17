@@ -35,16 +35,21 @@ function run_sft {
 
 
 function run_a_arm {
-    exp_name="${a_arm_dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+    exp_name="${a_arm_dataset}_dataset_${loss}_loss_${model}_model_${batch_size}_batch_size"
     run_sft "$a_arm_dataset" "$exp_name"
 }
 
 
 function run_b_arm {
-    exp_name="${b_arm_dataset}_dataset_sft_loss_pythia28_${batch_size}_batch_size"
+    exp_name="${b_arm_dataset}_dataset_${loss}_loss_${model}_model_${batch_size}_batch_size"
     run_sft "$b_arm_dataset" "$exp_name"
 }
 
+
+function run_n_arm {
+    exp_name="no_train_${a_arm_dataset}_dataset_${loss}_loss_${model}_model_${batch_size}_batch_size"
+    run_sft "$a_arm_dataset" "$exp_name"
+}
 
 function main {
     echo "Starting SFT experiments for a-arm dataset: $a_arm_dataset and b-arm dataset: $b_arm_dataset..."
@@ -57,6 +62,8 @@ function main {
         run_a_arm
     elif [ "$1" == "b" ]; then
         run_b_arm
+    elif [ "$1" == "n" ]; then
+        run_n_arm
     else
         echo "Invalid argument, use e.g. 'a' or 'b' for running a or b arm respectively."
     fi
