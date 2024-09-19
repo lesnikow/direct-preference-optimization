@@ -9,13 +9,15 @@ loss='sft'
 batch_size=8
 gradient_accumulation_steps=1
 trainer='FSDPTrainer'
-voters_model='gpt35'
+n_epochs=1
+n_examples=null
+
 eval_batch_size=2
 eval_every=32
 n_eval_examples=16
+
 ulimit_value=32000
-n_epochs=1
-n_examples=null
+voters_model='gpt35'
 
 
 function run_sft {
