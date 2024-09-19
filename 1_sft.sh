@@ -12,9 +12,9 @@ trainer='FSDPTrainer'
 n_epochs=1
 n_examples=null
 
-eval_batch_size=2
-eval_every=32
-n_eval_examples=16
+eval_batch_size=8
+eval_every=20000
+n_eval_examples=64
 
 ulimit_value=32000
 voters_model='gpt35'
