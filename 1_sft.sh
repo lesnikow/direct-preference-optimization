@@ -9,10 +9,10 @@ batch_size=8
 gradient_accumulation_steps=1
 trainer='FSDPTrainer'
 voters_model='gpt35'
-eval_batch_size=4
-eval_every=40000
-ulimit_value=32000
+eval_batch_size=2
+eval_every=32
 n_eval_examples=16
+ulimit_value=32000
 n_epochs=1
 n_examples=null
 
