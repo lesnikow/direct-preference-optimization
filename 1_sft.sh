@@ -4,6 +4,7 @@
 a_arm_dataset='shp_maj_data'
 b_arm_dataset='shp_sc_data'
 model='pythia69'
+model_fsdp_policy_mp="bfloat16"
 loss='sft'
 batch_size=8
 gradient_accumulation_steps=1
@@ -30,7 +31,7 @@ function run_sft {
       eval_batch_size="$eval_batch_size" \
       trainer="$trainer" \
       sample_during_eval=false \
-      model.fsdp_policy_mp=bfloat16 \
+      model.fsdp_policy_mp="$model_fsdp_policy_mp" \
       eval_every="$eval_every" \
       n_eval_examples="$n_eval_examples" \
       n_epochs="$n_epochs" \
