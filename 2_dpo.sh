@@ -8,15 +8,15 @@ model='pythia69'
 model_fsdp_policy_mp="bfloat16"
 loss='dpo'
 loss_beta=0.1
-batch_size=4
+batch_size=8
 gradient_accumulation_steps=1
 trainer='FSDPTrainer'
 n_epochs=1
 n_examples=null
 
-eval_batch_size=8
+eval_batch_size=4
 eval_every=20000
-n_eval_examples=64
+n_eval_examples=16
 
 ulimit_value=32000
 voters_model='gpt35'
