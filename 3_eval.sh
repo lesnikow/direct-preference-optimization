@@ -89,11 +89,11 @@ function show_results() {
 
 
 
-function main {
-    # convert_models
-    # make_fastchat_llm_judge_model_answers
+function main() {
+    convert_models
+    make_fastchat_llm_judge_model_answers
     make_fastchat_llm_judge_model_judgements
-    # show_results
+    show_results
 }
 
 
