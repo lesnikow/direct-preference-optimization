@@ -10,7 +10,7 @@ dpo_exp_dirs=(
 )
 
 
-function convert_models {
+function convert_models() {
 
     deactivate && source $HOME/env/bin/activate
     cd $HOME/direct-preference-optimization/
@@ -23,7 +23,7 @@ function convert_models {
 }
 
 
-function generate_model_answers {
+function generate_model_answers() {
     num_gpus=4
     exp_dir=$1
     max_new_tokens=$2
@@ -37,14 +37,14 @@ function generate_model_answers {
 }
 
 
-function fastchat_setup {
+function fastchat_setup() {
     source $HOME/env-fastchat/bin/activate
     cd $HOME/fast-chat/fastchat/llm_judge/
     source $HOME/direct-preference-optimization/.env
     export OPENAI_API_KEY
 }
 
-function make_fastchat_llm_judge_model_answers {
+function make_fastchat_llm_judge_model_answers() {
     fastchat_setup
 
     export max_new_tokens=128
@@ -56,7 +56,7 @@ function make_fastchat_llm_judge_model_answers {
 
 
 
-function make_fastchat_llm_judge_model_judgements {
+function make_fastchat_llm_judge_model_judgements() {
     fastchat_setup
 
     python3 gen_judgment.py \
@@ -73,7 +73,7 @@ function make_fastchat_llm_judge_model_judgements {
 }
 
 
-function show_results {
+function show_results() {
     fastchat_setup
 
     python3 show_result.py \
