@@ -19,12 +19,12 @@ def main(in_path):
     state_dict = torch.load(in_path)
     print(state_dict.keys())
 
-    model = GPTNeoXForCausalLM.from_pretrained("EleutherAI/pythia-2.8b")
+    model = GPTNeoXForCausalLM.from_pretrained("EleutherAI/pythia-6.9b")
     model.load_state_dict(state_dict["state"])
     model.save_pretrained(out_path)
 
-    tokenizer = AutoTokenizer.from_pretrained("EleutherAI/pythia-2.8b")
-    config = AutoConfig.from_pretrained("EleutherAI/pythia-2.8b")
+    tokenizer = AutoTokenizer.from_pretrained("EleutherAI/pythia-6.9b")
+    config = AutoConfig.from_pretrained("EleutherAI/pythia-6.9b")
     tokenizer.save_pretrained(out_path)
     config.save_pretrained(out_path)
 
