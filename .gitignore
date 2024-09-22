@@ -4,6 +4,9 @@ outputs/
 .cache
 slurm/*.out
 
+# Vim swap files
+*.sw*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
