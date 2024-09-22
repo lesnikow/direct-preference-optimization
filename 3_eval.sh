@@ -49,33 +49,92 @@ function make_fastchat_llm_judge_model_answers {
         echo "Generating model answers for ${exp_dir}"
         generate_model_answers "${exp_dir}" "${max_new_tokens}"
     done
-
-
 }
 
 
 
 function make_fastchat_llm_judge_model_judgements {
-    date
+    python3 gen_judgment.py \
+      --mode "single" \
+      --judge-model "gpt-4-turbo" \
+      --model-list "${dpo_exp_dirs[@]}" \
+      --parallel 256
 
-
+    python3 gen_judgment.py \
+      --mode "pairwise-all" \
+      --judge-model "gpt-4-turbo" \
+      --model-list "${dpo_exp_dirs[@]}" \
+      --parallel 256
 }
 
 
 function show_results {
-    date
+    python3 show_result.py \
+      --mode "single" \
+      --judge-model "gpt-4-turbo" \
+      --model-list "${dpo_exp_dirs[@]}"
 
-
+    python3 show_result.py \
+      --mode "pairwise-all" \
+      --judge-model "gpt-4-turbo" \
+      --model-list "${dpo_exp_dirs[@]}"
 }
 
 
 
 function main {
     # convert_models
-    make_fastchat_llm_judge_model_answers
+    # make_fastchat_llm_judge_model_answers
     make_fastchat_llm_judge_model_judgements
-    show_results
+    # show_results
 }
 
 
 main
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
