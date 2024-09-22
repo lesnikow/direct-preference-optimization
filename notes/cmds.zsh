@@ -53,6 +53,138 @@ pip install anthropic openai==0.28
 
 
 
+## Generate, evaluate null trained model vs maj, sc
+
+## DONE: SFT model generation
+a_arm_dataset='shp_maj_data'
+b_arm_dataset='shp_sc_data'
+model='pythia28'
+loss='sft'
+batch_size=8
+gradient_accumulation_steps=1
+trainer='FSDPTrainer'
+voters_model='gpt35'
+eval_batch_size=4
+eval_every=40000
+ulimit_value=32000
+n_eval_examples=16
+n_epochs=0
+n_examples=4
+
+
+function run_sft {
+    dataset=$1
+    exp_name=$2
+    python3 -u train.py \
+      model="$model" \
+      datasets="[$dataset]" \
+      loss="$loss" \
+      exp_name="$exp_name" \
+      gradient_accumulation_steps="$gradient_accumulation_steps" \
+      batch_size="$batch_size" \
+      eval_batch_size="$eval_batch_size" \
+      trainer="$trainer" \
+      sample_during_eval=false \
+      model.fsdp_policy_mp=bfloat16 \
+      eval_every="$eval_every" \
+      n_eval_examples="$n_eval_examples" \
+      n_epochs="$n_epochs" \
+      n_examples="$n_examples"
+}
+
+
+function run_n_arm {
+    exp_name="no_train_${a_arm_dataset}_dataset_${loss}_loss_${model}_model_${batch_size}_batch_size"
+    run_sft "$a_arm_dataset" "$exp_name"
+}
+
+run_n_arm
+
+
+
+## DONE: Evals
+### A. Run model adapter code models
+### Get dpo_exp_dirs from dpo .cache/adamlesnikowski/ dir
+
+deactivate && source $HOME/env/bin/activate
+cd $HOME/direct-preference-optimization/
+dpo_exp_dirs=(
+    "no_train_shp_maj_data_dataset_sft_loss_pythia28_model_8_batch_size_2024-09-18_21-15-10_125466"
+)
+
+for exp_dir in "${dpo_exp_dirs[@]}"; do
+  in_path="$HOME/direct-preference-optimization/.cache/adamlesnikowski/${exp_dir}/LATEST/policy.pt"
+  du -sh "${in_path}"
+  python3 convert_model.py --in_path ${in_path}
+done
+
+
+### B. Make fast-chat llm-judge answers
+
+deactivate && source $HOME/env-fastchat/bin/activate
+cd $HOME/fast-chat/fastchat/llm_judge/
+
+source $HOME/direct-preference-optimization/.env
+export OPENAI_API_KEY
+max_new_tokens=128
+
+
+function gen_model_answers {
+  exp_dir=$1
+  max_new_tokens=$2
+  model_path="$HOME/direct-preference-optimization/.cache/adamlesnikowski/${exp_dir}/LATEST/converted/"
+  echo "Model path: ${model_path}"
+  python3 gen_model_answer.py \
+    --model-path ${model_path} \
+    --model-id ${exp_dir} \
+    --num-gpus-total 1 \
+    --max-new-token ${max_new_tokens}
+}
+
+for exp_dir in "${dpo_exp_dirs[@]}"; do
+    echo "Generating model answers for ${exp_dir}"
+    gen_model_answers "${exp_dir}" "${max_new_tokens}"
+done
+
+
+### C. Make fast-chat llm-judge judgements
+
+
+python3 gen_judgment.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${dpo_exp_dirs[@]}" \
+  --parallel 256
+
+
+dpo_exp_dirs=(
+   "no_train_shp_maj_data_dataset_sft_loss_pythia28_model_8_batch_size_2024-09-18_21-15-10_125466"
+  "shp_maj_data_dataset_dpo_loss_pythia28_model_32_batch_size_2024-09-13_13-37-45_408534"
+  "shp_sc_data_dataset_dpo_loss_pythia28_model_32_batch_size_2024-09-13_13-37-59_889195"
+)
+
+
+python3 gen_judgment.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${dpo_exp_dirs[@]}" \
+  --parallel 256
+
+### D. Show results
+
+python3 show_result.py \
+  --mode "single" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${dpo_exp_dirs[@]}"
+
+python3 show_result.py \
+  --mode "pairwise-all" \
+  --judge-model "gpt-4-turbo" \
+  --model-list "${dpo_exp_dirs[@]}"
+
+ 
+
+
 ## DONE: reddit random majority preference "maj" vs random split cycle "sc"
 
 ## DONE: SFT
@@ -60,7 +192,6 @@ ulimit -n 32000
 gradient_accumulation_steps=4
 batch_size=32
 trainer='FSDPTrainer'
-#trainer='BasicTrainer'
 voters_model='gpt35'
 cd $HOME/direct-preference-optimization
 eval_batch_size=4
