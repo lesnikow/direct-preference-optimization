@@ -79,12 +79,12 @@ function show_results() {
     python3 show_result.py \
       --mode "single" \
       --judge-model "gpt-4-turbo" \
-      --model-list "${dpo_exp_dirs[@]}"
+      --model-list "${dpo_exp_dirs[@]}" | tee out_single.txt
 
     python3 show_result.py \
       --mode "pairwise-all" \
       --judge-model "gpt-4-turbo" \
-      --model-list "${dpo_exp_dirs[@]}"
+      --model-list "${dpo_exp_dirs[@]}" | tee out_pw.txt
 }
 
 
