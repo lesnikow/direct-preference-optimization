@@ -37,14 +37,17 @@ function generate_model_answers {
 }
 
 
-function make_fastchat_llm_judge_model_answers {
+function fastchat_setup {
     source $HOME/env-fastchat/bin/activate
     cd $HOME/fast-chat/fastchat/llm_judge/
-
     source $HOME/direct-preference-optimization/.env
     export OPENAI_API_KEY
-    max_new_tokens=128
+}
 
+function make_fastchat_llm_judge_model_answers {
+    fastchat_setup
+
+    export max_new_tokens=128
     for exp_dir in "${dpo_exp_dirs[@]}"; do
         echo "Generating model answers for ${exp_dir}"
         generate_model_answers "${exp_dir}" "${max_new_tokens}"
@@ -54,6 +57,8 @@ function make_fastchat_llm_judge_model_answers {
 
 
 function make_fastchat_llm_judge_model_judgements {
+    fastchat_setup
+
     python3 gen_judgment.py \
       --mode "single" \
       --judge-model "gpt-4-turbo" \
@@ -69,6 +74,8 @@ function make_fastchat_llm_judge_model_judgements {
 
 
 function show_results {
+    fastchat_setup
+
     python3 show_result.py \
       --mode "single" \
       --judge-model "gpt-4-turbo" \
