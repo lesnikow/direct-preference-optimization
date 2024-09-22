@@ -23,8 +23,32 @@ function convert_models {
 }
 
 
+function generate_model_answers {
+    num_gpus=4
+    exp_dir=$1
+    max_new_tokens=$2
+    model_path="$HOME/direct-preference-optimization/.cache/adamlesnikowski/${exp_dir}/LATEST/converted/"
+    echo "Model path: ${model_path}"
+    python3 gen_model_answer.py \
+    --model-path ${model_path} \
+    --model-id ${exp_dir} \
+    --num-gpus-total ${num_gpus} \
+    --max-new-token ${max_new_tokens}
+}
+
+
 function make_fastchat_llm_judge_model_answers {
-    date
+    deactivate && source $HOME/env-fastchat/bin/activate
+    cd $HOME/fast-chat/fastchat/llm_judge/
+
+    source $HOME/direct-preference-optimization/.env
+    export OPENAI_API_KEY
+    max_new_tokens=128
+
+    for exp_dir in "${dpo_exp_dirs[@]}"; do
+        echo "Generating model answers for ${exp_dir}"
+        generate_model_answers "${exp_dir}" "${max_new_tokens}"
+    done
 
 
 }
@@ -47,7 +71,7 @@ function show_results {
 
 
 function main {
-    convert_models
+    # convert_models
     make_fastchat_llm_judge_model_answers
     make_fastchat_llm_judge_model_judgements
     show_results
