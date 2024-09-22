@@ -38,7 +38,7 @@ function generate_model_answers {
 
 
 function make_fastchat_llm_judge_model_answers {
-    deactivate && source $HOME/env-fastchat/bin/activate
+    source $HOME/env-fastchat/bin/activate
     cd $HOME/fast-chat/fastchat/llm_judge/
 
     source $HOME/direct-preference-optimization/.env
