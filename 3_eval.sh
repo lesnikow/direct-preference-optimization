@@ -3,11 +3,11 @@
 
 
 
-    dpo_exp_dirs=(
-        "shp_maj_data_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-20_20-06-14_700176"
-        "shp_sc_data_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-20_23-17-00_932340"
-        "no_train_shp_maj_data_dataset_sft_loss_pythia69_model_1_batch_size_2024-09-21_21-09-45_286675"
-    )
+dpo_exp_dirs=(
+    "shp_maj_data_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-20_20-06-14_700176"
+    "shp_sc_data_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-20_23-17-00_932340"
+    "no_train_shp_maj_data_dataset_sft_loss_pythia69_model_1_batch_size_2024-09-21_21-09-45_286675"
+)
 
 
 function convert_models {
@@ -24,7 +24,7 @@ function convert_models {
 
 
 function make_fastchat_llm_judge_model_answers {
-
+    date
 
 
 }
@@ -32,14 +32,14 @@ function make_fastchat_llm_judge_model_answers {
 
 
 function make_fastchat_llm_judge_model_judgements {
-
+    date
 
 
 }
 
 
 function show_results {
-
+    date
 
 
 }
