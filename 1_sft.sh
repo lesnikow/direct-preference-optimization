@@ -1,8 +1,8 @@
 #!/bin/bash
 # Soft fine-tuning (SFT) experiments
 
-a_arm_dataset='shp_maj_data'
-b_arm_dataset='shp_sc_data'
+a_arm_dataset='shp_maj_data_v2'
+b_arm_dataset='shp_sc_data_v2'
 model='pythia69'
 model_fsdp_policy_mp="bfloat16"
 loss='sft'
