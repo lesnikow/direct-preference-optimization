@@ -531,10 +531,33 @@ def test_get_shp_maj_data():
     print(len(data.keys()))
 
 
+def get_shp_maj_data_v2():
+    """Get SHP majority data v2."""
+
+    home_dir = os.environ.get('HOME', '')
+    fp = os.path.join(home_dir,
+            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO_v2_first_40k.json")
+    return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+
+
+def get_shp_sc_data_v2():
+    """Get SHP split cycle data v2, presenting cycles to model."""
+
+    home_dir = os.environ.get('HOME', '')
+    fp = os.path.join(home_dir,
+            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_first_40k.json")
+    return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+
+
+
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "":
         pass
+    elif name == "shp_maj_data_v2":
+        data = get_shp_maj_data_v2()
+    elif name == "shp_sc_data_v2":
+        data = get_shp_sc_data_v2()
     elif name == "shp_maj_data":
         data = get_shp_maj_data()
     elif name == "shp_sc_data":
