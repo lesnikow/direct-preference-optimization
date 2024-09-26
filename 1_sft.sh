@@ -3,6 +3,7 @@
 
 a_arm_dataset='shp_maj_data_v2'
 b_arm_dataset='shp_sc_data_v2'
+n_arm_dataset='no_train_dataset'
 model='pythia69'
 model_fsdp_policy_mp="bfloat16"
 loss='sft'
@@ -54,12 +55,12 @@ function run_b_arm {
 
 
 function run_n_arm {
-    exp_name="no_train_${a_arm_dataset}_dataset_${loss}_loss_${model}_model_${batch_size}_batch_size"
+    exp_name="no_train_${n_arm_dataset}_dataset_${loss}_loss_${model}_model_${batch_size}_batch_size"
     run_sft "$a_arm_dataset" "$exp_name"
 }
 
 function main {
-    echo "Starting SFT experiments for a-arm dataset: $a_arm_dataset and b-arm dataset: $b_arm_dataset..."
+    echo -e "Starting SFT experiments for\n a-arm dataset: $a_arm_dataset and\n b-arm dataset: $b_arm_dataset..."
     echo "batch_size: $batch_size, gradient_accumulation_steps: $gradient_accumulation_steps; effective_batch_size: $((batch_size *
     gradient_accumulation_steps))"
 
