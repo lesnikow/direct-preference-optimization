@@ -784,13 +784,25 @@ class FSDPTrainer(BasicTrainer):
             policy_state_dict = self.policy.state_dict()
 
         if self.rank == 0:
-            self.write_state_dict(
-                self.example_counter,
-                policy_state_dict,
-                metrics,
-                "policy.pt",
-                output_dir,
-            )
+            try:
+                self.write_state_dict(
+                    self.example_counter,
+                    policy_state_dict,
+                    metrics,
+                    "policy.pt",
+                    output_dir,
+                )
+            except AttributeError:
+                # Used for saving null trained model with example_counter not set
+                self.example_counter = 0
+                self.write_state_dict(
+                    self.example_counter,
+                    policy_state_dict,
+                    metrics,
+                    "policy.pt",
+                    output_dir,
+                )
+
         del policy_state_dict
         dist.barrier()
 
