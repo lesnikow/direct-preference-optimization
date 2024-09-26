@@ -1,8 +1,8 @@
 #!/bin/bash
 # Direct preference optimization (DPO) experiments
 
-a_arm_dataset='shp_maj_data'
-b_arm_dataset='shp_sc_data'
+a_arm_dataset='shp_maj_data_v2'
+b_arm_dataset='shp_sc_data_v2'
 n_arm_dataset='null_data'
 model='pythia69'
 model_fsdp_policy_mp="bfloat16"
@@ -45,8 +45,6 @@ function run_dpo {
       n_epochs="$n_epochs" \
       n_examples="$n_examples"
 }
-
-
 
 
 function run_a_arm {
