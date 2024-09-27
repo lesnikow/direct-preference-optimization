@@ -2,7 +2,7 @@
 # Direct preference optimization (DPO) experiments
 
 a_arm_dataset='shp_maj_data_v2'
-b_arm_dataset='shp_sc_data_v2'
+b_arm_dataset='shp_sc_data_v2_cut_to_same_topics'
 n_arm_dataset='null_data'
 model='pythia69'
 model_fsdp_policy_mp="bfloat16"
