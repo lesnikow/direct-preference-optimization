@@ -549,11 +549,22 @@ def get_shp_sc_data_v2():
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
 
+def get_shp_sc_data_v2_cut_to_same_topics():
+    """Get SHP split cycle data v2, presenting cycles to model."""
+
+    home_dir = os.environ.get('HOME', '')
+    fp = os.path.join(home_dir,
+            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_first_40k_cut_to_same_topics.json")
+    return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+
+
 
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "":
         pass
+    elif name == "shp_sc_data_v2_cut_to_same_topics":
+        data = get_shp_sc_data_v2_cut_to_same_topics()
     elif name == "shp_maj_data_v2":
         data = get_shp_maj_data_v2()
     elif name == "shp_sc_data_v2":
