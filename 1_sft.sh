@@ -2,12 +2,12 @@
 # Soft fine-tuning (SFT) experiments
 
 a_arm_dataset='shp_maj_data_v2'
-b_arm_dataset='shp_sc_data_v2'
+b_arm_dataset='shp_sc_data_v2_cut_to_same_topics'
 n_arm_dataset='no_train_dataset'
 model='pythia69'
 model_fsdp_policy_mp="bfloat16"
 loss='sft'
-batch_size=4
+batch_size=16
 gradient_accumulation_steps=1
 trainer='FSDPTrainer'
 n_epochs=1
