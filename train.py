@@ -167,6 +167,11 @@ def main(config: DictConfig):
         print("starting single-process worker")
         worker_main(0, 1, config, policy, reference_model)
 
+    main_out = config.local_run_dir
+    print(f"main_out is {main_out}")
+    return main_out
+
+
 
 if __name__ == "__main__":
     main()
