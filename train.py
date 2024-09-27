@@ -168,7 +168,8 @@ def main(config: DictConfig):
         worker_main(0, 1, config, policy, reference_model)
 
     main_out = config.local_run_dir
-    print(f"main_out is {main_out}")
+    print(f"main_out is")
+    print(f"{main_out}")
     return main_out
 
 
