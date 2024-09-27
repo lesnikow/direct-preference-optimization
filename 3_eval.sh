@@ -4,15 +4,15 @@
 
 
 dpo_exp_dirs=(
-    "shp_maj_data_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-20_20-06-14_700176"
-    "shp_sc_data_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-20_23-17-00_932340"
-    "no_train_shp_maj_data_dataset_sft_loss_pythia69_model_1_batch_size_2024-09-21_21-09-45_286675"
+    "shp_maj_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-57-28_215286"
+    "shp_sc_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-59-16_258857"
+    "no_train_no_train_dataset_dataset_sft_loss_pythia69_model_4_batch_size_2024-09-25_19-42-29_986927"
 )
 
 
 function convert_models() {
 
-    deactivate && source $HOME/env/bin/activate
+    source $HOME/env/bin/activate
     cd $HOME/direct-preference-optimization/
 
     for exp_dir in "${dpo_exp_dirs[@]}"; do
@@ -23,8 +23,18 @@ function convert_models() {
 }
 
 
+function fastchat_setup() {
+    source $HOME/direct-preference-optimization/.env
+    export OPENAI_API_KEY
+    source $HOME/env-fastchat/bin/activate
+    cd $HOME/fast-chat/fastchat/llm_judge/
+}
+
+
 function generate_model_answers() {
-    num_gpus=4
+    # Helper function to generate model answers.
+
+    num_gpus=1
     exp_dir=$1
     max_new_tokens=$2
     model_path="$HOME/direct-preference-optimization/.cache/adamlesnikowski/${exp_dir}/LATEST/converted/"
@@ -37,15 +47,7 @@ function generate_model_answers() {
 }
 
 
-function fastchat_setup() {
-    source $HOME/env-fastchat/bin/activate
-    cd $HOME/fast-chat/fastchat/llm_judge/
-    source $HOME/direct-preference-optimization/.env
-    export OPENAI_API_KEY
-}
-
 function make_fastchat_llm_judge_model_answers() {
-    fastchat_setup
 
     export max_new_tokens=128
     for exp_dir in "${dpo_exp_dirs[@]}"; do
@@ -55,9 +57,7 @@ function make_fastchat_llm_judge_model_answers() {
 }
 
 
-
 function make_fastchat_llm_judge_model_judgements() {
-    fastchat_setup
 
     python3 gen_judgment.py \
       --mode "single" \
@@ -74,7 +74,6 @@ function make_fastchat_llm_judge_model_judgements() {
 
 
 function show_results() {
-    fastchat_setup
 
     python3 show_result.py \
       --mode "single" \
@@ -91,6 +90,7 @@ function show_results() {
 
 function main() {
     convert_models
+    fastchat_setup
     make_fastchat_llm_judge_model_answers
     make_fastchat_llm_judge_model_judgements
     show_results
