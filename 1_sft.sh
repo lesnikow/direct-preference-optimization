@@ -1,8 +1,8 @@
 #!/bin/bash
 # Soft fine-tuning (SFT) experiments
 
-a_arm_dataset='shp_maj_data_v2'
-b_arm_dataset='shp_sc_data_v2_cut_to_same_topics'
+a_arm_dataset='shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut'
+b_arm_dataset='shp_sc_data_v2_40k_rump_cut'
 n_arm_dataset='no_train_dataset'
 model='pythia69'
 model_fsdp_policy_mp="bfloat16"

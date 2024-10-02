@@ -557,12 +557,32 @@ def get_shp_sc_data_v2_cut_to_same_topics():
             "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_first_40k_cut_to_same_topics.json")
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
+def get_shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut():
+    """Get shp maj data v2 75k matched to sc 40k rump cut dataset."""
+
+    home_dir = os.environ.get('HOME', '')
+    fp = os.path.join(home_dir,
+            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO_v2_first_75k_topic_matched_to_sc_data_40k_rump_cut.json")
+    return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+   
+
+def get_shp_sc_data_v2_40k_rump_cut():
+    """Get shp sc data v2 40k with its last rump topic cut off."""
+
+    home_dir = os.environ.get('HOME', '')
+    fp = os.path.join(home_dir,
+            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_first_40k_rump_cut.json")
+    return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
 
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "":
         pass
+    elif name == "shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut":
+        data = get_shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut() 
+    elif name == "shp_sc_data_v2_40k_rump_cut":
+        data = get_shp_sc_data_v2_40k_rump_cut() 
     elif name == "shp_sc_data_v2_cut_to_same_topics":
         data = get_shp_sc_data_v2_cut_to_same_topics()
     elif name == "shp_maj_data_v2":
