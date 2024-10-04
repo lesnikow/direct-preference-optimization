@@ -1,8 +1,8 @@
 #!/bin/bash
 # Soft fine-tuning (SFT) experiments
 
-a_arm_dataset='shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut'
-b_arm_dataset='shp_sc_data_v2_40k_rump_cut'
+a_arm_dataset='${HOME}/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO_v2_160k.json'
+b_arm_dataset='${HOME}/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_topic_matched_to_maj_160k.json'
 n_arm_dataset='no_train_dataset'
 model='pythia69'
 model_fsdp_policy_mp="bfloat16"
