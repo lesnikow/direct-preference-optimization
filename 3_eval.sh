@@ -4,9 +4,9 @@
 
 
 dpo_exp_dirs=(
-    "shp_maj_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-57-28_215286"
-    "shp_sc_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-59-16_258857"
-    "no_train_no_train_dataset_dataset_sft_loss_pythia69_model_4_batch_size_2024-09-25_19-42-29_986927"
+    "shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-02_12-11-14_455618"
+    "shp_sc_data_v2_40k_rump_cut_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-02_12-13-11_651914"
+    "no_train_no_train_dataset_dataset_sft_loss_pythia69_model_4_batch_size_2024-09-25_19-42-29_986927_copy1"
 )
 
 
