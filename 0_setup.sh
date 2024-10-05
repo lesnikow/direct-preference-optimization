@@ -23,11 +23,10 @@ function install_vim_plug() {
 
 
 function setup_env_dpo() {
-    python3.11 -m venv env-dpo
-    deactivate && source env-dpo/bin/activate
+    python3 -m venv env-dpo
+    source env-dpo/bin/activate
     pip install --upgrade pip
     echo "source env-dpo/bin/activate" >> ~/.bashrc 
-    deactivate
 }
 
 
@@ -88,62 +87,4 @@ function main() {
 }
 
 main
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
