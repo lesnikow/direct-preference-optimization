@@ -623,20 +623,13 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
     if name == "":
         raise ValueError("Expected a non-empty name")
 
-    elif name == "shp_maj_data_v2_all":
-        data = get_shp_maj_data_v2_xk("all")
-    elif name == "shp_sc_data_v2_topic_matched_to_maj_all":
-        data = get_shp_sc_data_v2_topic_matched_to_maj_xk("all")
+    elif name.startswith("shp_maj_data_v2_"):
+        suffix = name.split("_")[-1]
+        data = get_shp_maj_data_v2_xk(suffix)
 
-    elif name == "shp_maj_data_v2_640k":
-        data = get_shp_maj_data_v2_xk("640k")
-    elif name == "shp_sc_data_v2_topic_matched_to_maj_640k":
-        data = get_shp_sc_data_v2_topic_matched_to_maj_xk("640k")
-
-    elif name == "shp_maj_data_v2_160k":
-        data = get_shp_maj_data_v2_160k() 
-    elif name == "shp_sc_data_v2_topic_matched_to_maj_160k":
-        data = get_shp_sc_data_v2_topic_matched_to_maj_160k()
+    elif name.startswith("shp_sc_data_v2_topic_matched_to_maj_"):
+        suffix = name.split("_")[-1]
+        data = get_shp_sc_data_v2_topic_matched_to_maj_xk(suffix)
 
     elif name == "shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut":
         data = get_shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut() 
