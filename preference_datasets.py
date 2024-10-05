@@ -592,6 +592,13 @@ def get_shp_sc_data_v2_topic_matched_to_maj_160k():
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
 
+def get_shp_dataset_from_fp(path):
+
+    home_dir = os.environ.get('HOME', '')
+    fp = os.path.join(home_dir, path)
+    return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+
+
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "":
