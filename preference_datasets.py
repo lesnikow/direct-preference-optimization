@@ -599,15 +599,42 @@ def get_shp_dataset_from_fp(path):
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
 
+def get_shp_maj_data_v2_xk(size_descriptor_string):
+
+    home_dir = os.environ.get('HOME', '')
+    fp = os.path.join(home_dir,
+            f"llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO_v2_{size_descriptor_string}.json")
+    return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+
+
+def get_shp_sc_data_v2_topic_matched_to_maj_xk(size_descriptor_string):
+
+    home_dir = os.environ.get('HOME', '')
+    fp = os.path.join(home_dir,
+            f"llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_topic_matched_to_maj_{size_descriptor_string}.json")
+    return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+
+
+
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "":
         raise ValueError("Expected a non-empty name")
 
+    elif name == "shp_maj_data_v2_all":
+        data = get_shp_maj_data_v2_xk("all")
+    elif name == "shp_sc_data_v2_topic_matched_to_maj_all":
+        data = get_shp_sc_data_v2_topic_matched_to_maj_xk("all")
+
+    elif name == "shp_maj_data_v2_640k":
+        data = get_shp_maj_data_v2_xk("640k")
+    elif name == "shp_sc_data_v2_topic_matched_to_maj_640k":
+        data = get_shp_sc_data_v2_topic_matched_to_maj_xk("640k")
+
     elif name == "shp_maj_data_v2_160k":
         data = get_shp_maj_data_v2_160k() 
     elif name == "shp_sc_data_v2_topic_matched_to_maj_160k":
-        data = get_shp_sc_data_v2_topic_matched_to_maj_160k() 
+        data = get_shp_sc_data_v2_topic_matched_to_maj_160k()
 
     elif name == "shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut":
         data = get_shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut() 
