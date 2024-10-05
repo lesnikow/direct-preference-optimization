@@ -1,8 +1,8 @@
 #!/bin/bash
 # Soft fine-tuning (SFT) experiments
 
-a_arm_dataset='shp_maj_data_v2_640k'
-b_arm_dataset='shp_sc_data_v2_topic_matched_to_maj_640k'
+a_arm_dataset='shp_maj_data_v2_160k'
+b_arm_dataset='shp_sc_data_v2_topic_matched_to_maj_160k'
 n_arm_dataset='no_train_dataset'
 model='pythia69'
 model_fsdp_policy_mp="bfloat16"
@@ -17,7 +17,7 @@ eval_batch_size=8
 eval_every=20000
 n_eval_examples=64
 
-ulimit_value=32000
+ulimit_value=64000
 voters_model='gpt35'
 
 
@@ -64,7 +64,7 @@ function main {
     echo "batch_size: $batch_size, gradient_accumulation_steps: $gradient_accumulation_steps; effective_batch_size: $((batch_size *
     gradient_accumulation_steps))"
 
-    cd "$HOME/direct-preference-optimization" || { echo "Directory not found!"; exit 1; }
+    cd "$HOME/dcpo-3/direct-preference-optimization" || { echo "Directory not found!"; exit 1; }
     ulimit -n "$ulimit_value"
     if [ "$1" == "a" ]; then
         run_a_arm
