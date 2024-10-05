@@ -602,7 +602,8 @@ def get_shp_dataset_from_fp(path):
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "":
-        pass
+        raise ValueError("Expected a non-empty name")
+
     elif name == "shp_maj_data_v2_160k":
         data = get_shp_maj_data_v2_160k() 
     elif name == "shp_sc_data_v2_topic_matched_to_maj_160k":
