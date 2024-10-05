@@ -599,10 +599,12 @@ def get_shp_dataset_from_fp(path):
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
 
+fp_shim = "dcpo-3"
+
 def get_shp_maj_data_v2_xk(size_descriptor_string):
     """Get shp maj data v2 of size size_descriptor string."""
 
-    fp = os.path.join(os.environ.get('HOME', ''),
+    fp = os.path.join(os.environ.get('HOME', ''), fp_shim,
         "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/",
         f"reddit_maj_data_for_DCPO_v2_{size_descriptor_string}.json")
     return get_custom_shp_dataset_from_fp(fp)
@@ -611,7 +613,7 @@ def get_shp_maj_data_v2_xk(size_descriptor_string):
 def get_shp_sc_data_v2_topic_matched_to_maj_xk(size_descriptor_string):
     """Get shp sc data v2 topic matched to maj of size size_descriptor string."""
 
-    fp = os.path.join(os.environ.get('HOME', ''),
+    fp = os.path.join(os.environ.get('HOME', ''), fp_shim,
         "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/"
         f"reddit_sc_data_for_DCPO_v2_topic_matched_to_maj_{size_descriptor_string}.json")
     return get_custom_shp_dataset_from_fp(fp)
