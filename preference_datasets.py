@@ -596,6 +596,11 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
     if name == "":
         pass
+    elif name == "shp_maj_data_v2_160k":
+        data = get_shp_maj_data_v2_160k() 
+    elif name == "shp_sc_data_v2_topic_matched_to_maj_160k":
+        data = get_shp_sc_data_v2_topic_matched_to_maj_160k() 
+
     elif name == "shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut":
         data = get_shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut() 
     elif name == "shp_sc_data_v2_40k_rump_cut":
