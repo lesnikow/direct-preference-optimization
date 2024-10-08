@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Module for making datasets for the project
+Module for making datasets for the project.
 """
 
 import argparse
@@ -19,25 +19,18 @@ def remove_im_start_end_tags(data):
     return data
 
 
-def build_maj_data(fp_maj_all):
-    """Build the majority datasets."""
-
-    with open(fp_maj_all, "r") as f:
-        data_maj = f.readlines()
-        logging.info(f"Loaded {len(data_maj)} maj comments")
-
-
-def build_completions(fp_sc_all, replace_im_start_end_tags=True):
+def build_completions(fp_all, replace_im_start_end_tags=True):
     """Build the completions dictionary."""
 
-    with open(fp_sc_all, "r") as f:
-        data_sc = f.readlines()
-        logging.info(f"Loaded {len(data_sc)} sc comments")
+    logging.info(f"Building completions from {fp_all}...")
+    with open(fp_all, "r") as f:
+        data = f.readlines()
+        logging.info(f"Loaded {len(data)}, comments")
 
     completions = {}
     cnt = 0
     cnt_limit = 4
-    for line in data_sc:
+    for line in data:
         if line.strip() == "[" or line.strip() == "]":
             logging.info("Skipping line")
             continue
@@ -86,7 +79,7 @@ def main():
     fp_maj_all = "/home/adam/data/reddit_data_v2/reddit_maj_data_for_DCPO_v2_all.json"
 
     build_completions(fp_sc_all)
-    # build_completions(fp_maj_all)
+    build_completions(fp_maj_all)
 
     logging.info("Datasets built")
 
