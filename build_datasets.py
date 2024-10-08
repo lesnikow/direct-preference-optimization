@@ -10,6 +10,8 @@ import os
 import sys
 import time
 
+import tqdm
+
 
 def remove_im_start_end_tags(data):
     """Remove the start and end tags from the data"""
@@ -19,7 +21,7 @@ def remove_im_start_end_tags(data):
     return data
 
 
-def build_completions(fp_all, replace_im_start_end_tags=True):
+def build_completions(fp_all, replace_im_start_end_tags=True, verbose=False):
     """Build the completions dictionary."""
 
     logging.info(f"Building completions from {fp_all}...")
@@ -29,10 +31,12 @@ def build_completions(fp_all, replace_im_start_end_tags=True):
 
     completions = {}
     cnt = 0
-    cnt_limit = 4
-    for line in data:
+    cnt_limit = 2**20
+    prompts = 0
+    for line in tqdm.tqdm(data):
+
         if line.strip() == "[" or line.strip() == "]":
-            logging.info("Skipping line")
+            logging.info(f"Skipping line: {line.strip()}")
             continue
         line_dict = eval(line)[0]
 
@@ -51,6 +55,7 @@ def build_completions(fp_all, replace_im_start_end_tags=True):
 
         if prompt not in completions:
             completions[prompt] = {"chosen": [], "rejected": []}
+            prompts += 1
         completions[prompt]["chosen"].append(chosen)
         completions[prompt]["rejected"].append(rejected)
 
@@ -58,10 +63,19 @@ def build_completions(fp_all, replace_im_start_end_tags=True):
         if cnt >= cnt_limit:
             break
 
-    for prompt in completions.keys():
-        logging.info(f"Prompt is:\n{prompt}")
-        logging.info(f"Chosen completions are:\n{completions[prompt]['chosen']}")
-        logging.info(f"Rejected completions are:\n{completions[prompt]['rejected']}")
+    assert len(completions) == prompts
+
+    if verbose:
+        for prompt in completions.keys():
+            logging.info(f"Prompt is:\n{prompt}")
+            logging.info(f"Chosen completions are:\n{completions[prompt]['chosen']}")
+            logging.info(
+                f"Rejected completions are:\n{completions[prompt]['rejected']}"
+            )
+
+    logging.info(f"Built completions from {fp_all}")
+    logging.info(f"Number of prompts: {prompts}")
+    logging.info(f"Number of completions: {cnt}")
 
     return completions
 
