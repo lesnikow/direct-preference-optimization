@@ -242,7 +242,7 @@ def write_out_dataset(
             raise NotImplementedError("Data must be a dictionary")
 
 
-def main(max_completions=2400):
+def main(max_completions_list=[2400]):
     """Main function"""
 
     set_randomness_seed()
@@ -251,21 +251,27 @@ def main(max_completions=2400):
     fp_sc_all = "/home/adam/data/reddit_data_v2/reddit_sc_data_for_DCPO_v2_all.json"
     fp_maj_all = "/home/adam/data/reddit_data_v2/reddit_maj_data_for_DCPO_v2_all.json"
 
-    completions_sc_all = build_completions(fp_sc_all)
-    completions_sc_sampled = sample_dataset_from_completions(
-        completions_sc_all, max_completions=max_completions
-    )
-    write_out_dataset(
-        completions_sc_sampled, "sc_dataset_sampled.json", cnt_limit=max_completions
-    )
+    completions_sc_all = build_completions(fp_sc_all, cnt_limit=2**30)
+    completions_maj_all = build_completions(fp_maj_all, cnt_limit=2**30)
 
-    completions_maj_all = build_completions(fp_maj_all)
-    completions_maj_sampled = sample_dataset_from_completions(
-        completions_maj_all, max_completions=max_completions
-    )
-    write_out_dataset(
-        completions_maj_sampled, "maj_dataset_sampled.json", cnt_limit=max_completions
-    )
+    for max_completions in max_completions_list:
+        completions_sc_sampled = sample_dataset_from_completions(
+            completions_sc_all, max_completions=max_completions
+        )
+        write_out_dataset(
+            completions_sc_sampled,
+            f"sc_dataset_sampled_{max_completions}.json",
+            cnt_limit=max_completions,
+        )
+
+        completions_maj_sampled = sample_dataset_from_completions(
+            completions_maj_all, max_completions=max_completions
+        )
+        write_out_dataset(
+            completions_maj_sampled,
+            f"maj_dataset_sampled_{max_completions}.json",
+            cnt_limit=max_completions,
+        )
 
     logging.info("Datasets built")
 
@@ -286,15 +292,17 @@ if __name__ == "__main__":
     parser.add_argument(
         "--seed", type=int, default=0, help="Random seed for reproducibility"
     )
+
     parser.add_argument(
-        "--max_completions",
-        "-mc",
+        "--max-completions-list",
+        "-mcl",
+        nargs="+",
         type=int,
-        default=2400,
-        help="Maximum number of completions to sample",
+        default=[2400],
+        help="List of maximum number of completions to sample",
     )
 
     args = parser.parse_args()
     logging.info(args)
 
-    main(max_completions=args.max_completions)
+    main(max_completions_list=args.max_completions_list)
