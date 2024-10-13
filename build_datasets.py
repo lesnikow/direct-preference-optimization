@@ -23,7 +23,31 @@ def remove_im_start_end_tags(data):
 
 
 def build_completions(fp_all, replace_im_start_end_tags=False, verbose=False):
-    """Build the completions dictionary."""
+    """
+    Build the completions dictionary from the fp_all filepath. This completion
+    dictionary is of the form:
+    {
+        "prompt": {
+            "chosen": [chosen1, chosen2, ...],
+            "rejected": [rejected1, rejected2, ...]
+        },
+        ...
+    }
+
+    Args:
+        fp_all: filepath to the source data file
+        replace_im_start_end_tags: whether to replace the start and end tags
+        verbose: whether to be verbose
+
+    Returns:
+        completions: dictionary of the form:
+            {
+                "prompt": {
+                    "chosen": [chosen1, chosen2, ...],
+                    "rejected": [rejected1, rejected2, ...]
+                },
+                ...
+    """
 
     logging.info(f"Building completions from {fp_all}...")
     with open(fp_all, "r") as f:
