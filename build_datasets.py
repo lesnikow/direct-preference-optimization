@@ -242,7 +242,7 @@ def write_out_dataset(
             raise NotImplementedError("Data must be a dictionary")
 
 
-def main():
+def main(max_completions=2400):
     """Main function"""
 
     set_randomness_seed()
@@ -251,11 +251,9 @@ def main():
     fp_sc_all = "/home/adam/data/reddit_data_v2/reddit_sc_data_for_DCPO_v2_all.json"
     fp_maj_all = "/home/adam/data/reddit_data_v2/reddit_maj_data_for_DCPO_v2_all.json"
 
-    max_completions = 2400
-
     completions_sc_all = build_completions(fp_sc_all)
     completions_sc_sampled = sample_dataset_from_completions(
-        completions_sc_all, max_completions=max_completions + 100
+        completions_sc_all, max_completions=max_completions
     )
     write_out_dataset(
         completions_sc_sampled, "sc_dataset_sampled.json", cnt_limit=max_completions
@@ -263,7 +261,7 @@ def main():
 
     completions_maj_all = build_completions(fp_maj_all)
     completions_maj_sampled = sample_dataset_from_completions(
-        completions_maj_all, max_completions=max_completions + 100
+        completions_maj_all, max_completions=max_completions
     )
     write_out_dataset(
         completions_maj_sampled, "maj_dataset_sampled.json", cnt_limit=max_completions
@@ -299,4 +297,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
     logging.info(args)
 
-    main()
+    main(max_completions=args.max_completions)
