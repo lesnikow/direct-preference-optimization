@@ -150,33 +150,37 @@ def write_out_dataset(
     with open(os.path.join(out_base_fp, out_name), "w", encoding="utf-16") as f:
         if isinstance(data, dict):
             f.write("[\n")
+            items = []
             for prompt in data.keys():
                 for chosen, rejected in zip(
                     data[prompt]["chosen"], data[prompt]["rejected"]
                 ):
                     item = {"prompt": prompt, "chosen": chosen, "rejected": rejected}
-                    json_str = json.dumps(item, ensure_ascii=False)
-                    out_line = f"{json_str},\n"
-
-                    try:
-                        f.write(
-                            out_line.encode("utf-16", "surrogatepass").decode(
-                                encoding="utf-16"
-                            )
-                        )
-                    except UnicodeEncodeError as e:
-                        logging.error(f"UnicodeEncodeError on line number {cnt}")
-                        logging.error(f"Error: {e}")
-                        unicode_error_cnt += 1
-                        continue
-
-                    cnt += 1
-                    if cnt >= cnt_limit:
+                    items.append(item)
+                    if len(items) >= cnt_limit:
                         break
+
+            for i, item in enumerate(items):
+                json_str = json.dumps(item, ensure_ascii=False)
+                out_line = f"{json_str}"
+                if i < len(items) - 1:
+                    out_line += ","
+                out_line += "\n"
+                try:
+                    f.write(
+                        out_line.encode("utf-16", "surrogatepass").decode(
+                            encoding="utf-16"
+                        )
+                    )
+                except UnicodeEncodeError as e:
+                    logging.error(f"UnicodeEncodeError on item number {i}")
+                    logging.error(f"Error: {e}")
+                    unicode_error_cnt += 1
+                    continue
+                cnt += 1
             f.write("]")
             logging.info(f"Wrote out {cnt} items to {out_name}")
             logging.info(f"UnicodeEncodeError count: {unicode_error_cnt}")
-
         else:
             raise NotImplementedError("Data must be a dictionary")
 
