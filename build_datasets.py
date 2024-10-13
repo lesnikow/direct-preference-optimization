@@ -238,9 +238,12 @@ def main():
     fp_maj_all = "/home/adam/data/reddit_data_v2/reddit_maj_data_for_DCPO_v2_all.json"
 
     completions_sc_all = build_completions(fp_sc_all)
-    write_out_dataset(completions_sc_all, "sc_dataset.json")
+    completions_sc_sampled = sample_dataset_from_completions(completions_sc_all)
+    write_out_dataset(completions_sc_sampled, "sc_dataset_sampled.json")
+
     completions_maj_all = build_completions(fp_maj_all)
-    write_out_dataset(completions_maj_all, "maj_dataset.json")
+    completions_maj_sampled = sample_dataset_from_completions(completions_maj_all)
+    write_out_dataset(completions_maj_sampled, "maj_dataset_sampled.json")
 
     logging.info("Datasets built")
 
