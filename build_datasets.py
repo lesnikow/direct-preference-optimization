@@ -168,6 +168,50 @@ def sample_dataset_from_completions(
     return dataset
 
 
+def sample_datasets_from_completions(
+    completions_maj, completions_sc, max_prompts=2**20, max_completions_maj=2**20
+):
+    """
+    Build datasets from the completions dictionary, sampling without replacement.
+
+    Sample same prompts from both completions_maj and completions_sc.
+    """
+
+    # assert completions_maj.keys() == completions_sc.keys()
+    assert completions_maj.keys() <= completions_sc.keys()
+
+    dataset_maj, dataset_sc = {}, {}
+    prompts = list(completions_maj.keys())
+    random.shuffle(prompts)
+    logging.info(f"Shuffled prompts")
+
+    logging.info(f"Sampling prompts until {max_completions_maj} completions hit.")
+    cnt_maj, cnt_sc = 0, 0
+    for prompt in prompts:
+        dataset_maj[prompt] = {
+            "chosen": completions_maj[prompt]["chosen"],
+            "rejected": completions_maj[prompt]["rejected"],
+        }
+        dataset_sc[prompt] = {
+            "chosen": completions_sc[prompt]["chosen"],
+            "rejected": completions_sc[prompt]["rejected"],
+        }
+        cnt_maj += len(completions_maj[prompt]["chosen"])
+        cnt_sc += len(completions_sc[prompt]["chosen"])
+        if len(dataset_maj) > max_prompts:
+            break
+        if cnt_maj > max_completions_maj:
+            logging.info("Breaking due to max completions hit.")
+            break
+
+    logging.info(f"Sampled prompts until {max_completions_maj} completions hit.")
+    logging.info(f"Number of prompts: {len(dataset_maj.keys())}")
+    logging.info(f"Number of completions_maj: {cnt_maj}")
+    logging.info(f"Number of completions_sc: {cnt_sc}")
+
+    return dataset_maj, dataset_sc
+
+
 def write_out_dataset(
     data,
     out_name="dataset.txt",
