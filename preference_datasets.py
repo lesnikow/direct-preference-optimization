@@ -164,8 +164,8 @@ def get_custom_shp_dataset_from_fp(
 
     print(f"Loading custom SHP style dataset from local data dir: {fp} ...")
 
-    with open(fp, "r") as f:
-        read_data = ast.literal_eval(f.read(encoding="utf-16"))
+    with open(fp, "r", encoding="utf-16") as f:
+        read_data = ast.literal_eval(f.read())
 
     data = defaultdict(lambda: defaultdict(list))
 
