@@ -1,8 +1,8 @@
 #!/bin/bash
 # Direct preference optimization (DPO) experiments
 
-a_arm_dataset='maj_shp_data_v3_topic_matched_2400'
-b_arm_dataset='sc_shp_data_v3_topic_matched_2400'
+a_arm_dataset='maj_shp_data_v3_topic_matched_300'
+b_arm_dataset='sc_shp_data_v3_topic_matched_300'
 n_arm_dataset='null_data'
 model='pythia69'
 model_fsdp_policy_mp="bfloat16"
