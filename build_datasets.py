@@ -299,21 +299,22 @@ def main(max_completions_list=[2400]):
     completions_maj_all = build_completions(fp_maj_all, cnt_limit=2**30)
 
     for max_completions in max_completions_list:
-        completions_sc_sampled = sample_dataset_from_completions(
-            completions_sc_all, max_completions=max_completions
+        completions_maj_sampled, completions_sc_sampled = (
+            sample_datasets_from_completions(
+                completions_maj_all,
+                completions_sc_all,
+                max_completions_maj=max_completions,
+            )
+        )
+
+        write_out_dataset(
+            completions_maj_sampled,
+            f"maj_dataset_sampled_{max_completions}.json",
+            cnt_limit=max_completions,
         )
         write_out_dataset(
             completions_sc_sampled,
             f"sc_dataset_sampled_{max_completions}.json",
-            cnt_limit=max_completions,
-        )
-
-        completions_maj_sampled = sample_dataset_from_completions(
-            completions_maj_all, max_completions=max_completions
-        )
-        write_out_dataset(
-            completions_maj_sampled,
-            f"maj_dataset_sampled_{max_completions}.json",
             cnt_limit=max_completions,
         )
 
