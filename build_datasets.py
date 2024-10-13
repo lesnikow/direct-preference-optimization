@@ -5,6 +5,7 @@ Module for making datasets for the project.
 """
 
 import argparse
+import json
 import logging
 import os
 import sys
@@ -80,8 +81,43 @@ def build_completions(fp_all, replace_im_start_end_tags=True, verbose=False):
     return completions
 
 
-def write_out_dataset():
-    pass
+def write_out_dataset(
+    data,
+    out_name="dataset.txt",
+    out_base_fp="/home/adam/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/",
+    cnt_limit=2**20,
+):
+    """Write out the dataset as a python list of dictionaries"""
+    cnt = 0
+    unicode_error_cnt = 0
+    with open(os.path.join(out_base_fp, out_name), "w", encoding="utf-16") as f:
+        if isinstance(data, dict):
+            f.write("[\n")
+            for prompt in data.keys():
+                for chosen, rejected in zip(
+                    data[prompt]["chosen"], data[prompt]["rejected"]
+                ):
+                    item = {"prompt": prompt, "chosen": chosen, "rejected": rejected}
+                    json_str = json.dumps(item, ensure_ascii=False)
+                    out_line = f"{json_str},\n"
+
+                    try:
+                        f.write(out_line)
+                    except UnicodeEncodeError as e:
+                        logging.error(f"UnicodeEncodeError on line number {cnt}")
+                        logging.error(f"Error: {e}")
+                        unicode_error_cnt += 1
+                        continue
+
+                    cnt += 1
+                    if cnt >= cnt_limit:
+                        break
+            f.write("]")
+            logging.info(f"Wrote out {cnt} items to {out_name}")
+            logging.info(f"UnicodeEncodeError count: {unicode_error_cnt}")
+
+        else:
+            raise NotImplementedError("Data must be a dictionary")
 
 
 def main():
@@ -92,8 +128,10 @@ def main():
     fp_sc_all = "/home/adam/data/reddit_data_v2/reddit_sc_data_for_DCPO_v2_all.json"
     fp_maj_all = "/home/adam/data/reddit_data_v2/reddit_maj_data_for_DCPO_v2_all.json"
 
-    build_completions(fp_sc_all)
-    build_completions(fp_maj_all)
+    completions_sc_all = build_completions(fp_sc_all)
+    write_out_dataset(completions_sc_all, "sc_dataset.json")
+    completions_maj_all = build_completions(fp_maj_all)
+    write_out_dataset(completions_maj_all, "maj_dataset.json")
 
     logging.info("Datasets built")
 
