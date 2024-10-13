@@ -111,6 +111,49 @@ def build_completions(fp_all, replace_im_start_end_tags=False, verbose=False):
     return completions
 
 
+def sample_dataset_from_completions(completions, n_prompts=2, cnt_limit=2**20):
+    """
+    Build a dataset from the completions dictionary, sampling
+    prompts without replacement, then adding each item for that prompt.
+
+    Args:
+        completions: dictionary of the form:
+            {
+                "prompt": {
+                    "chosen": [chosen1, chosen2, ...],
+                    "rejected": [rejected1, rejected2, ...]
+                },
+                ...
+            }
+        n_prompts: number of prompts to sample
+        cnt_limit: limit on the number of items to write out
+
+    Returns:
+        dataset: sampled dictionary of the form:
+            {
+                "prompt": {
+                    "chosen": [chosen1, chosen2, ...],
+                    "rejected": [rejected1, rejected2, ...]
+                },
+                ...
+            }
+    """
+    dataset = {}
+    prompts = random.sample(list(completions.keys()), n_prompts)
+    logging.info(f"Sampling {n_prompts} prompts")
+    cnt = 0
+    for prompt in prompts:
+        dataset[prompt] = {
+            "chosen": completions[prompt]["chosen"],
+            "rejected": completions[prompt]["rejected"],
+        }
+        cnt += len(completions[prompt]["chosen"])
+        if cnt >= cnt_limit:
+            break
+
+    return dataset, n_prompts
+
+
 def write_out_dataset(
     data,
     out_name="dataset.txt",
