@@ -8,10 +8,16 @@ import argparse
 import json
 import logging
 import os
+import random
 import sys
 import time
 
 import tqdm
+
+
+def set_randomness_seed(seed=0):
+    """Set the randomness seed for reproducibility"""
+    random.seed(seed)
 
 
 def remove_im_start_end_tags(data):
@@ -178,6 +184,7 @@ def write_out_dataset(
 def main():
     """Main function"""
 
+    set_randomness_seed()
     logging.info("Building datasets")
 
     fp_sc_all = "/home/adam/data/reddit_data_v2/reddit_sc_data_for_DCPO_v2_all.json"
