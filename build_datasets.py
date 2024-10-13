@@ -104,7 +104,7 @@ if __name__ == "__main__":
         format="%(asctime)s - %(levelname)s - %(message)s",
         handlers=[
             logging.StreamHandler(sys.stdout),
-            logging.FileHandler(f"log_time{time.time()}.log"),
+            logging.FileHandler(f"logs/log_time{time.time()}.log"),
         ],
     )
     logging.info("Starting main block.")
