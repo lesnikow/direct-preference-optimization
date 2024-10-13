@@ -285,6 +285,17 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Build datasets for the project")
 
+    parser.add_argument(
+        "--seed", type=int, default=0, help="Random seed for reproducibility"
+    )
+    parser.add_argument(
+        "--max_completions",
+        "-mc",
+        type=int,
+        default=2400,
+        help="Maximum number of completions to sample",
+    )
+
     args = parser.parse_args()
     logging.info(args)
 
