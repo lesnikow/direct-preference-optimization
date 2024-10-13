@@ -28,7 +28,9 @@ def remove_im_start_end_tags(data):
     return data
 
 
-def build_completions(fp_all, replace_im_start_end_tags=False, verbose=False):
+def build_completions(
+    fp_all, cnt_limit=2**16, replace_im_start_end_tags=False, verbose=False
+):
     """
     Build the completions dictionary from the fp_all filepath. This completion
     dictionary is of the form:
@@ -62,7 +64,6 @@ def build_completions(fp_all, replace_im_start_end_tags=False, verbose=False):
 
     completions = {}
     cnt = 0
-    cnt_limit = 2**10
     prompts = 0
     for line in tqdm.tqdm(data):
 
@@ -149,15 +150,16 @@ def sample_dataset_from_completions(
     cnt = 0
     while True:
         prompt = prompts.pop()
-        if len(completions[prompt]["chosen"]) + cnt > max_completions:
-            break
-        if len(dataset) >= max_prompts:
-            break
         dataset[prompt] = {
             "chosen": completions[prompt]["chosen"],
             "rejected": completions[prompt]["rejected"],
         }
         cnt += len(completions[prompt]["chosen"])
+        if len(dataset) > max_prompts:
+            break
+        if cnt > max_completions:
+            logging.info("Breaking due to max completions hit.")
+            break
 
     logging.info(f"Sampled prompts until {max_completions} completions hit.")
     logging.info(f"Number of prompts: {len(dataset.keys())}")
