@@ -112,7 +112,7 @@ def build_completions(fp_all, replace_im_start_end_tags=False, verbose=False):
 
 
 def sample_dataset_from_completions(
-    completions, max_prompts=2**20, max_completions=2**10
+    completions, max_prompts=2**20, max_completions=2**20
 ):
     """
     Build a dataset from the completions dictionary, sampling
@@ -211,9 +211,9 @@ def write_out_dataset(
                     data[prompt]["chosen"], data[prompt]["rejected"]
                 ):
                     item = {"prompt": prompt, "chosen": chosen, "rejected": rejected}
-                    items.append(item)
                     if len(items) >= cnt_limit:
                         break
+                    items.append(item)
 
             for i, item in enumerate(items):
                 json_str = json.dumps(item, ensure_ascii=False)
@@ -249,13 +249,23 @@ def main():
     fp_sc_all = "/home/adam/data/reddit_data_v2/reddit_sc_data_for_DCPO_v2_all.json"
     fp_maj_all = "/home/adam/data/reddit_data_v2/reddit_maj_data_for_DCPO_v2_all.json"
 
+    max_completions = 2400
+
     completions_sc_all = build_completions(fp_sc_all)
-    completions_sc_sampled = sample_dataset_from_completions(completions_sc_all)
-    write_out_dataset(completions_sc_sampled, "sc_dataset_sampled.json")
+    completions_sc_sampled = sample_dataset_from_completions(
+        completions_sc_all, max_completions=max_completions + 100
+    )
+    write_out_dataset(
+        completions_sc_sampled, "sc_dataset_sampled.json", cnt_limit=max_completions
+    )
 
     completions_maj_all = build_completions(fp_maj_all)
-    completions_maj_sampled = sample_dataset_from_completions(completions_maj_all)
-    write_out_dataset(completions_maj_sampled, "maj_dataset_sampled.json")
+    completions_maj_sampled = sample_dataset_from_completions(
+        completions_maj_all, max_completions=max_completions + 100
+    )
+    write_out_dataset(
+        completions_maj_sampled, "maj_dataset_sampled.json", cnt_limit=max_completions
+    )
 
     logging.info("Datasets built")
 
