@@ -22,7 +22,7 @@ def remove_im_start_end_tags(data):
     return data
 
 
-def build_completions(fp_all, replace_im_start_end_tags=True, verbose=False):
+def build_completions(fp_all, replace_im_start_end_tags=False, verbose=False):
     """Build the completions dictionary."""
 
     logging.info(f"Building completions from {fp_all}...")
@@ -32,7 +32,7 @@ def build_completions(fp_all, replace_im_start_end_tags=True, verbose=False):
 
     completions = {}
     cnt = 0
-    cnt_limit = 2**20
+    cnt_limit = 2**10
     prompts = 0
     for line in tqdm.tqdm(data):
 
