@@ -135,6 +135,9 @@ def write_out_dataset(
 
     Returns:
         None
+
+    Side effects:
+        Writes out the data to the output file.
     """
     cnt = 0
     unicode_error_cnt = 0
