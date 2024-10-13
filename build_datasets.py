@@ -87,7 +87,31 @@ def write_out_dataset(
     out_base_fp="/home/adam/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/",
     cnt_limit=2**20,
 ):
-    """Write out the dataset as a python list of dictionaries"""
+    """
+    Write out the dataset as a text file containing a Python list of dictionaries of the
+    form: [
+        {"prompt": prompt, "chosen": chosen, "rejected": rejected},
+        ...
+    ]
+
+    The data is written out in utf-16 encoding to avoid UnicodeEncodeErrors.
+
+    Args:
+        data: dictionary of the form:
+            {
+                "prompt": {
+                    "chosen": [chosen1, chosen2, ...],
+                    "rejected": [rejected1, rejected2, ...]
+                },
+                ...
+            }
+        out_name: name of the output file
+        out_base_fp: base filepath to write the output file
+        cnt_limit: limit on the number of items to write out
+
+    Returns:
+        None
+    """
     cnt = 0
     unicode_error_cnt = 0
     with open(os.path.join(out_base_fp, out_name), "w", encoding="utf-16") as f:
