@@ -111,7 +111,9 @@ def build_completions(fp_all, replace_im_start_end_tags=False, verbose=False):
     return completions
 
 
-def sample_dataset_from_completions(completions, n_prompts=2, cnt_limit=2**20):
+def sample_dataset_from_completions(
+    completions, max_prompts=2**20, max_completions=2**10
+):
     """
     Build a dataset from the completions dictionary, sampling
     prompts without replacement, then adding each item for that prompt.
@@ -125,8 +127,8 @@ def sample_dataset_from_completions(completions, n_prompts=2, cnt_limit=2**20):
                 },
                 ...
             }
-        n_prompts: number of prompts to sample
-        cnt_limit: limit on the number of items to write out
+        max_prompts: maximum number of prompts to sample
+        max_completions: maximum number of chosen, rejected pairs to sample
 
     Returns:
         dataset: sampled dictionary of the form:
@@ -139,17 +141,27 @@ def sample_dataset_from_completions(completions, n_prompts=2, cnt_limit=2**20):
             }
     """
     dataset = {}
-    prompts = random.sample(list(completions.keys()), n_prompts)
-    logging.info(f"Sampling {n_prompts} prompts")
+    prompts = list(completions.keys())
+    random.shuffle(prompts)
+    logging.info(f"Shuffled prompts")
+
+    logging.info(f"Sampling prompts until {max_completions} completions hit.")
     cnt = 0
-    for prompt in prompts:
+    while True:
+        prompt = prompts.pop()
+        if len(completions[prompt]["chosen"]) + cnt > max_completions:
+            break
+        if len(dataset) >= max_prompts:
+            break
         dataset[prompt] = {
             "chosen": completions[prompt]["chosen"],
             "rejected": completions[prompt]["rejected"],
         }
         cnt += len(completions[prompt]["chosen"])
-        if cnt >= cnt_limit:
-            break
+
+    logging.info(f"Sampled prompts until {max_completions} completions hit.")
+    logging.info(f"Number of prompts: {len(dataset.keys())}")
+    logging.info(f"Number of completions: {cnt}")
 
     return dataset
 
