@@ -102,7 +102,11 @@ def write_out_dataset(
                     out_line = f"{json_str},\n"
 
                     try:
-                        f.write(out_line)
+                        f.write(
+                            out_line.encode("utf-16", "surrogatepass").decode(
+                                encoding="utf-16"
+                            )
+                        )
                     except UnicodeEncodeError as e:
                         logging.error(f"UnicodeEncodeError on line number {cnt}")
                         logging.error(f"Error: {e}")
