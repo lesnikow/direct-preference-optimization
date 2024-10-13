@@ -151,7 +151,7 @@ def sample_dataset_from_completions(completions, n_prompts=2, cnt_limit=2**20):
         if cnt >= cnt_limit:
             break
 
-    return dataset, n_prompts
+    return dataset
 
 
 def write_out_dataset(
