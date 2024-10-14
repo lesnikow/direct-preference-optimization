@@ -5,6 +5,7 @@ Module for making datasets for the project.
 """
 
 import argparse
+import ast
 import json
 import logging
 import os
@@ -70,9 +71,9 @@ def build_completions(
     for line in tqdm.tqdm(data):
 
         if line.strip() == "[" or line.strip() == "]":
-            logging.info(f"Skipping line: {line.strip()}")
+            logging.info("Skipping line: %s", line.strip())
             continue
-        line_dict = eval(line)[0]
+        line_dict = ast.literal_eval(line)[0]
 
         prompt, chosen, rejected = (
             line_dict["prompt"],
