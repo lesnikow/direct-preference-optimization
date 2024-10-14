@@ -59,10 +59,10 @@ def build_completions(
                 ...
     """
 
-    logging.info(f"Building completions from {fp_all}...")
-    with open(fp_all, "r") as f:
+    logging.info("Building completions from %s", fp_all)
+    with open(fp_all, "r", encoding="utf-8") as f:
         data = f.readlines()
-        logging.info(f"Loaded {len(data)}, comments")
+        logging.info("Loaded %d comments", len(data))
 
     completions = {}
     cnt = 0
@@ -146,7 +146,7 @@ def sample_dataset_from_completions(
     dataset = {}
     prompts = list(completions.keys())
     random.shuffle(prompts)
-    logging.info(f"Shuffled prompts")
+    logging.info("Shuffled prompts")
 
     logging.info(f"Sampling prompts until {max_completions} completions hit.")
     cnt = 0
@@ -187,7 +187,7 @@ def sample_datasets_from_completions(
     dataset_maj, dataset_sc = {}, {}
     prompts = list(completions_maj.keys())
     random.shuffle(prompts)
-    logging.info(f"Shuffled prompts")
+    logging.info("Shuffled prompts")
 
     logging.info(f"Sampling prompts until {max_completions_maj} completions hit.")
     cnt_maj, cnt_sc = 0, 0
@@ -284,13 +284,13 @@ def write_out_dataset(
                     continue
                 cnt += 1
             f.write("]")
-            logging.info(f"Wrote out {cnt} items to {out_name}")
-            logging.info(f"UnicodeEncodeError count: {unicode_error_cnt}")
+            logging.info("Wrote out %d cnt items to %s", cnt, out_name)
+            logging.info("UnicodeEncodeError count: %d", unicode_error_cnt)
         else:
             raise NotImplementedError("Data must be a dictionary")
 
 
-def main(max_completions_list=[2400]):
+def main(max_completions_list=None):
     """Main function"""
 
     logging.info("Starting main method.")
