@@ -301,8 +301,8 @@ def main(max_completions_list=None):
     fp_sc_all = "/home/adam/data/reddit_data_v2/reddit_sc_data_for_DCPO_v2_all.json"
     fp_maj_all = "/home/adam/data/reddit_data_v2/reddit_maj_data_for_DCPO_v2_all.json"
 
-    completions_sc_all = build_completions(fp_sc_all, cnt_limit=2**30)
-    completions_maj_all = build_completions(fp_maj_all, cnt_limit=2**30)
+    completions_sc_all = build_completions(fp_sc_all, cnt_limit=CNT_LIMIT_DEFAULT)
+    completions_maj_all = build_completions(fp_maj_all, cnt_limit=CNT_LIMIT_DEFAULT)
 
     for max_completions in max_completions_list:
         completions_maj_sampled, completions_sc_sampled = (
