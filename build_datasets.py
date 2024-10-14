@@ -14,6 +14,8 @@ import time
 
 import tqdm
 
+CNT_LIMIT_DEFAULT = 2**22
+
 
 def set_randomness_seed(seed=0):
     """Set the randomness seed for reproducibility"""
@@ -29,7 +31,7 @@ def remove_im_start_end_tags(data):
 
 
 def build_completions(
-    fp_all, cnt_limit=2**16, replace_im_start_end_tags=False, verbose=False
+    fp_all, cnt_limit=CNT_LIMIT_DEFAULT, replace_im_start_end_tags=False, verbose=False
 ):
     """
     Build the completions dictionary from the fp_all filepath. This completion
@@ -113,7 +115,7 @@ def build_completions(
 
 
 def sample_dataset_from_completions(
-    completions, max_prompts=2**20, max_completions=2**20
+    completions, max_prompts=CNT_LIMIT_DEFAULT, max_completions=CNT_LIMIT_DEFAULT
 ):
     """
     Build a dataset from the completions dictionary, sampling
@@ -169,7 +171,10 @@ def sample_dataset_from_completions(
 
 
 def sample_datasets_from_completions(
-    completions_maj, completions_sc, max_prompts=2**20, max_completions_maj=2**20
+    completions_maj,
+    completions_sc,
+    max_prompts=CNT_LIMIT_DEFAULT,
+    max_completions_maj=CNT_LIMIT_DEFAULT,
 ):
     """
     Build datasets from the completions dictionary, sampling without replacement.
@@ -177,7 +182,6 @@ def sample_datasets_from_completions(
     Sample same prompts from both completions_maj and completions_sc.
     """
 
-    # assert completions_maj.keys() == completions_sc.keys()
     assert completions_maj.keys() <= completions_sc.keys()
 
     dataset_maj, dataset_sc = {}, {}
@@ -216,7 +220,7 @@ def write_out_dataset(
     data,
     out_name="dataset.txt",
     out_base_fp="/home/adam/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/",
-    cnt_limit=2**20,
+    cnt_limit=CNT_LIMIT_DEFAULT,
 ):
     """
     Write out the dataset as a text file containing a Python list of dictionaries of the
@@ -289,6 +293,7 @@ def write_out_dataset(
 def main(max_completions_list=[2400]):
     """Main function"""
 
+    logging.info("Starting main method.")
     set_randomness_seed()
     logging.info("Building datasets")
 
@@ -318,7 +323,7 @@ def main(max_completions_list=[2400]):
             cnt_limit=max_completions,
         )
 
-    logging.info("Datasets built")
+    logging.info("Finished main method.")
 
 
 if __name__ == "__main__":
@@ -330,13 +335,8 @@ if __name__ == "__main__":
             logging.FileHandler(f"logs/log_time{time.time()}.log"),
         ],
     )
-    logging.info("Starting main block.")
 
     parser = argparse.ArgumentParser(description="Build datasets for the project")
-
-    parser.add_argument(
-        "--seed", type=int, default=0, help="Random seed for reproducibility"
-    )
 
     parser.add_argument(
         "--max-completions-list",
@@ -345,6 +345,10 @@ if __name__ == "__main__":
         type=int,
         default=[2400],
         help="List of maximum number of completions to sample",
+    )
+
+    parser.add_argument(
+        "--seed", type=int, default=0, help="Random seed for reproducibility"
     )
 
     args = parser.parse_args()
