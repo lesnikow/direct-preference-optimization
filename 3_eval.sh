@@ -4,8 +4,8 @@
 
 
 dpo_exp_dirs=(
-    "maj_shp_data_v3_topic_matched_300_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-13_02-22-56_225138"
-    "sc_shp_data_v3_topic_matched_300_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-13_02-25-52_688896"
+    "maj_shp_data_v3_topic_matched_2400_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-13_02-30-52_565621"
+    "sc_shp_data_v3_topic_matched_2400_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-13_02-31-16_263368"
     "no_train_no_train_dataset_dataset_sft_loss_pythia69_model_4_batch_size_2024-09-25_19-42-29_986927_copy1"
 )
 
@@ -16,9 +16,9 @@ function convert_models() {
     cd $HOME/direct-preference-optimization/
 
     for exp_dir in "${dpo_exp_dirs[@]}"; do
-      in_path="$HOME/direct-preference-optimization/.cache/adamlesnikowski/${exp_dir}/LATEST/policy.pt"
-      du -sh "${in_path}"
-      python3 convert_model.py --in_path ${in_path}
+        in_path="$HOME/direct-preference-optimization/.cache/adamlesnikowski/${exp_dir}/LATEST/policy.pt"
+        du -sh "${in_path}"
+        python3 convert_model.py --in_path ${in_path}
     done
 }
 
@@ -91,9 +91,9 @@ function show_results() {
 function main() {
     convert_models
     fastchat_setup
-    # make_fastchat_llm_judge_model_answers
-    # make_fastchat_llm_judge_model_judgements
-    # show_results
+    make_fastchat_llm_judge_model_answers
+    make_fastchat_llm_judge_model_judgements
+    show_results
 }
 
 
