@@ -6,13 +6,14 @@ This script is used to run direct preference optimization (DPO) experiments for 
 a-arm and b-arm datasets.
 """
 
+import resource
 import subprocess
 import sys
 
 # Direct preference optimization (DPO) experiments
-a_arm_dataset = ""
-b_arm_dataset = ""
-n_arm_dataset = ""
+a_arm_dataset = 'maj_shp_data_v3_matched_prompts_1000'
+b_arm_dataset =  'sc_shp_data_v3_matched_prompts_1000'
+n_arm_dataset = 'null_data'
 model = "pythia69"
 model_fsdp_policy_mp = "bfloat16"
 loss = "dpo"
@@ -74,18 +75,22 @@ def run_n_arm(sft_exp_dir):
 
 
 def main():
-    print(
-        f"Starting DPO experiments for a-arm dataset: {a_arm_dataset} and b-arm dataset: {b_arm_dataset}..."
-    )
+    print(f"Starting DPO experiments for")
+    print(f"a-arm dataset: {a_arm_dataset}")
+    print(f"b-arm dataset: {b_arm_dataset}")
+
     print(
         f"batch_size: {batch_size}, gradient_accumulation_steps: {gradient_accumulation_steps}; "
         f"effective_batch_size: {batch_size * gradient_accumulation_steps}"
     )
 
-    # Set ulimit (Note: This might not work on all systems and might require additional permissions)
-    import resource
 
-    resource.setrlimit(resource.RLIMIT_NOFILE, (ulimit_value, ulimit_value))
+    try:
+        resource.setrlimit(resource.RLIMIT_NOFILE, (ulimit_value, ulimit_value))
+    except ValueError as e:
+        print(
+            f"Failed to set ulimit to {ulimit_value}. This might require additional permissions. Error: {e}"
+        )
 
     if len(sys.argv) < 3:
         print("Usage: python script.py <arm> <sft_exp_dir>")
