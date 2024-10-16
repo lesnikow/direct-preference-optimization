@@ -296,15 +296,43 @@ def main(max_completions_list=None):
 
     logging.info("Starting main method.")
     set_randomness_seed()
-    logging.info("Building datasets")
 
-    fp_sc_all = "/home/adam/data/reddit_data_v2/reddit_sc_data_for_DCPO_v2_all.json"
-    fp_maj_all = "/home/adam/data/reddit_data_v2/reddit_maj_data_for_DCPO_v2_all.json"
+    logging.info("Building datasets")
+    fp_sc_all = os.path.join(
+        os.path.expanduser("~"),
+        "data/reddit_data_v2/reddit_sc_data_for_DCPO_v2_all.json",
+    )
+    fp_maj_all = os.path.join(
+        os.path.expanduser("~"),
+        "data/reddit_data_v2/reddit_maj_data_for_DCPO_v2_all.json",
+    )
+    logging.info("Using fp_sc_all: %s", fp_sc_all)
+    logging.info("Using fp_maj_all: %s", fp_maj_all)
 
     completions_sc_all = build_completions(fp_sc_all, cnt_limit=CNT_LIMIT_DEFAULT)
     completions_maj_all = build_completions(fp_maj_all, cnt_limit=CNT_LIMIT_DEFAULT)
 
+    fp_out_dir = os.path.join(
+        os.path.expanduser("~"),
+        "llm-sct",
+        "data",
+        "reddit",
+        "processed",
+        "gpt35",
+        "maj_sc_v3",
+        "matched_prompts",
+        f"maj_{max_completions_list[0]}_to_{max_completions_list[-1]}",
+    )
+    logging.info("Using output directory: %s", fp_out_dir)
+
+    try:
+        os.makedirs(fp_out_dir, exist_ok=True)
+        logging.info("Created directory: %s", fp_out_dir)
+    except FileExistsError:
+        logging.info(f"Directory already exists: {os.path.dirname(fp_out_dir)}")
+
     for max_completions in max_completions_list:
+        logging.info("Sampling datasets for max_completions: %d", max_completions)
         completions_maj_sampled, completions_sc_sampled = (
             sample_datasets_from_completions(
                 completions_maj_all,
@@ -312,15 +340,21 @@ def main(max_completions_list=None):
                 max_completions_maj=max_completions,
             )
         )
+        maj_fp_out = os.path.join(fp_out_dir, f"{max_completions}.json")
+        sc_fp_out = os.path.join(fp_out_dir, f"{max_completions}.json")
+        logging.info("Writing out maj prompts to %s", maj_fp_out)
+        logging.info("Writing out sc prompts to %s", sc_fp_out)
 
         write_out_dataset(
             completions_maj_sampled,
-            f"maj_dataset_sampled_{max_completions}.json",
+            out_name=f"maj_{max_completions}.json",
+            out_base_fp=fp_out_dir,
             cnt_limit=max_completions,
         )
         write_out_dataset(
             completions_sc_sampled,
-            f"sc_dataset_sampled_{max_completions}.json",
+            out_name=f"sc_{max_completions}.json",
+            out_base_fp=fp_out_dir,
             cnt_limit=max_completions,
         )
 
