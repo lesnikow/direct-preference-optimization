@@ -12,12 +12,12 @@ import sys
 import time
 
 # Direct preference optimization (DPO) experiments
-a_arm_dataset_prefix = 'maj_shp_data_v3_matched_prompts_'
-b_arm_dataset_prefix = 'sc_shp_data_v3_matched_prompts_'
+a_arm_dataset_prefix = "maj_shp_data_v3_matched_prompts_"
+b_arm_dataset_prefix = "sc_shp_data_v3_matched_prompts_"
 
-a_arm_dataset = 'maj_shp_data_v3_matched_prompts_1000'
-b_arm_dataset = 'sc_shp_data_v3_matched_prompts_1000'
-n_arm_dataset = 'null_data'
+a_arm_dataset = "maj_shp_data_v3_matched_prompts_1000"
+b_arm_dataset = "sc_shp_data_v3_matched_prompts_1000"
+n_arm_dataset = "null_data"
 model = "pythia69"
 model_fsdp_policy_mp = "bfloat16"
 loss = "dpo"
@@ -85,6 +85,7 @@ def run_a_arm_sequence(sft_exp_dir, sizes_list):
         )
         run_dpo(dataset, sft_exp_dir, exp_name)
 
+
 def run_b_arm_sequence(sft_exp_dir, sizes_list):
     """
     Run a sequence of experiments for the b-arm dataset with different dataset sizes.
@@ -96,10 +97,10 @@ def run_b_arm_sequence(sft_exp_dir, sizes_list):
             f"{dataset}_dataset_{loss}_loss_{model}_model_{batch_size}_batch_size"
         )
         run_dpo(dataset, sft_exp_dir, exp_name)
-    
+
 
 def main():
-    """ Main function. """
+    """Main function."""
 
     print(f"Starting DPO experiments for")
     print(f"a-arm dataset: {a_arm_dataset}")
