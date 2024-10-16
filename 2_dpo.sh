@@ -72,7 +72,6 @@ function main {
     echo "Starting DPO experiments for a-arm dataset: $a_arm_dataset and b-arm dataset: $b_arm_dataset..."
     echo "batch_size: $batch_size, gradient_accumulation_steps: $gradient_accumulation_steps; effective_batch_size: $((batch_size * gradient_accumulation_steps))"
 
-    # cd "$HOME/direct-preference-optimization" || { echo "Directory not found!"; exit 1; }
     ulimit -n "$ulimit_value"
 
     if [ "$1" == "a" ]; then
