@@ -291,13 +291,18 @@ def write_out_dataset(
             raise NotImplementedError("Data must be a dictionary")
 
 
-def main(max_completions_list=None):
-    """Main function"""
+def build_datasets_matched_prompts(
+    max_completions_list=None,
+    max_prompts=CNT_LIMIT_DEFAULT,
+    max_completions_maj=CNT_LIMIT_DEFAULT,
+):
+    """
+    Build datasets from the completions dictionary, sampling without replacement.
 
-    logging.info("Starting main method.")
-    set_randomness_seed()
+    Sample same prompts from both completions_maj and completions_sc.
+    """
+    logging.info("Building datasets for matched prompts.")
 
-    logging.info("Building datasets")
     fp_sc_all = os.path.join(
         os.path.expanduser("~"),
         "data/reddit_data_v2/reddit_sc_data_for_DCPO_v2_all.json",
@@ -358,6 +363,29 @@ def main(max_completions_list=None):
             cnt_limit=max_completions,
         )
 
+
+def build_datasets_matched_sizes(
+    max_completions_list=None,
+    max_prompts=CNT_LIMIT_DEFAULT,
+    max_completions_maj=CNT_LIMIT_DEFAULT,
+):
+    """
+    Build datasets from max_completions_list, sampling without replacement.
+
+    Build sc and maj datasets from the same prompts, then top-off sc
+    with newly sampled prompts.
+    """
+    raise NotImplementedError("Not implemented yet.")
+
+
+def main(max_completions_list=None):
+    """Main function"""
+
+    logging.info("Starting main method.")
+    set_randomness_seed()
+
+    build_datasets_matched_prompts(max_completions_list=max_completions_list)
+
     logging.info("Finished main method.")
 
 
@@ -372,7 +400,6 @@ if __name__ == "__main__":
     )
 
     parser = argparse.ArgumentParser(description="Build datasets for the project")
-
     parser.add_argument(
         "--max-completions-list",
         "-mcl",
@@ -381,11 +408,9 @@ if __name__ == "__main__":
         default=[2400],
         help="List of maximum number of completions to sample",
     )
-
     parser.add_argument(
         "--seed", type=int, default=0, help="Random seed for reproducibility"
     )
-
     args = parser.parse_args()
     logging.info(args)
 
