@@ -1,25 +1,32 @@
 # TODOs
 
 
-## Eval and graph of [1000 ... 64000] train run prompt-matched
+## Eval and graph of [1000, ... , 64000] train run prompt-matched
 
 - [ ] Update next experiment on results here.
 
 - [ ] Generate plot of series training.
 
 
-## Train run of [1000 ... 64000] prompt-matched
+- [ ] Batch conversion of models in `3_eval`.
 
-- [ ] Update training logic to do series training to have trains loaded up
+- [ ] New `3_eval.py` translation of `3_eval.sh`.
 
-  - [ ] One of the following:
 
-    - [ ] Python script to handle this series training
+## Train run of [1000, ... , 64000] prompt-matched
+
+- [ ] Finish this training run.
+
+- [x] Update training logic to do series training to have trains loaded up
+
+  - [x] One of the following:
+
+    - [x] Python script to handle this series training
     
-      - [ ] [Implementation of `3_dpo` in Python]
+      - [x] [Implementation of `2_dpo` in Python]
 
-    - [ ] Modify `3_dpo` to accept positional arg and do bash script `3_dpo_series`
-          or `loop_3_dpo` or just a CLI for loop.
+    ~~- [ ] Modify `2_dpo` to accept positional arg and do bash script `2_dpo_series`
+          or `loop_2_dpo` or just a CLI for loop.~~
 
 
 ## Dataset sizes as in DPO paper
