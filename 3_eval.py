@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""Convert models, generate model answers, make judgements and show results."""
+
+import os
+import subprocess
+import sys
+
+dpo_exp_dirs = [
+    "maj_shp_data_v3_topic_matched_2400_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-13_02-30-52_565621",
+    "sc_shp_data_v3_topic_matched_2400_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-13_02-31-16_263368",
+    "no_train_no_train_dataset_dataset_sft_loss_pythia69_model_4_batch_size_2024-09-25_19-42-29_986927_copy1",
+]
+
+
+def convert_models():
+    subprocess.run(
+        f"source {os.path.expanduser('~/env/bin/activate')}",
+        shell=True,
+        executable="/bin/bash",
+    )
+    os.chdir(os.path.expanduser("~/direct-preference-optimization/"))
+    for exp_dir in dpo_exp_dirs:
+        in_path = os.path.expanduser(
+            f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}/LATEST/policy.pt"
+        )
+        subprocess.run(f"du -sh {in_path}", shell=True)
+        subprocess.run(f"python3 convert_model.py --in_path {in_path}", shell=True)
+
+
+def fastchat_setup():
+    subprocess.run(
+        f"source {os.path.expanduser('~/direct-preference-optimization/.env')}",
+        shell=True,
+        executable="/bin/bash",
+    )
+    os.environ["OPENAI_API_KEY"] = os.environ.get("OPENAI_API_KEY")
+    subprocess.run(
+        f"source {os.path.expanduser('~/env-fastchat/bin/activate')}",
+        shell=True,
+        executable="/bin/bash",
+    )
+    os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
+
+
+def generate_model_answers(exp_dir, max_new_tokens):
+    num_gpus = 1
+    model_path = os.path.expanduser(
+        f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}/LATEST/converted/"
+    )
+    print(f"Model path: {model_path}")
+    subprocess.run(
+        [
+            "python3",
+            "gen_model_answer.py",
+            "--model-path",
+            model_path,
+            "--model-id",
+            exp_dir,
+            "--num-gpus-total",
+            str(num_gpus),
+            "--max-new-token",
+            str(max_new_tokens),
+        ]
+    )
+
+
+def make_fastchat_llm_judge_model_answers():
+    max_new_tokens = 128
+    for exp_dir in dpo_exp_dirs:
+        print(f"Generating model answers for {exp_dir}")
+        generate_model_answers(exp_dir, max_new_tokens)
+
+
+def make_fastchat_llm_judge_model_judgements():
+    subprocess.run(
+        [
+            "python3",
+            "gen_judgment.py",
+            "--mode",
+            "single",
+            "--judge-model",
+            "gpt-4-turbo",
+            "--model-list",
+            *dpo_exp_dirs,
+            "--parallel",
+            "256",
+        ]
+    )
+    subprocess.run(
+        [
+            "python3",
+            "gen_judgment.py",
+            "--mode",
+            "pairwise-all",
+            "--judge-model",
+            "gpt-4-turbo",
+            "--model-list",
+            *dpo_exp_dirs,
+            "--parallel",
+            "256",
+        ]
+    )
+
+
+def show_results():
+    with open("out_single.txt", "w") as f:
+        subprocess.run(
+            [
+                "python3",
+                "show_result.py",
+                "--mode",
+                "single",
+                "--judge-model",
+                "gpt-4-turbo",
+                "--model-list",
+                *dpo_exp_dirs,
+            ],
+            stdout=f,
+            stderr=subprocess.STDOUT,
+        )
+
+    with open("out_pw.txt", "w") as f:
+        subprocess.run(
+            [
+                "python3",
+                "show_result.py",
+                "--mode",
+                "pairwise-all",
+                "--judge-model",
+                "gpt-4-turbo",
+                "--model-list",
+                *dpo_exp_dirs,
+            ],
+            stdout=f,
+            stderr=subprocess.STDOUT,
+        )
+
+
+def main():
+    convert_models()
+    fastchat_setup()
+    make_fastchat_llm_judge_model_answers()
+    make_fastchat_llm_judge_model_judgements()
+    show_results()
+
+
+if __name__ == "__main__":
+    main()
