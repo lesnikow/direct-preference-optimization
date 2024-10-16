@@ -8,9 +8,8 @@ import subprocess
 import sys
 
 dpo_exp_dirs = [
-    "maj_shp_data_v3_topic_matched_2400_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-13_02-30-52_565621",
-    "sc_shp_data_v3_topic_matched_2400_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-13_02-31-16_263368",
-    "no_train_no_train_dataset_dataset_sft_loss_pythia69_model_4_batch_size_2024-09-25_19-42-29_986927_copy1",
+    "shp_maj_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-57-28_215286",
+    "shp_sc_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-59-16_258857",
 ]
 
 
@@ -30,17 +29,21 @@ def convert_models():
 
 
 def fastchat_setup():
+    """
     subprocess.run(
         f"source {os.path.expanduser('~/direct-preference-optimization/.env')}",
         shell=True,
         executable="/bin/bash",
     )
     os.environ["OPENAI_API_KEY"] = os.environ.get("OPENAI_API_KEY")
+    """
+
     subprocess.run(
         f"source {os.path.expanduser('~/env-fastchat/bin/activate')}",
         shell=True,
         executable="/bin/bash",
     )
+
     os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
 
 
@@ -139,10 +142,10 @@ def show_results():
 
 
 def main():
-    convert_models()
+    # convert_models()
     fastchat_setup()
-    make_fastchat_llm_judge_model_answers()
-    make_fastchat_llm_judge_model_judgements()
+    # make_fastchat_llm_judge_model_answers()
+    # make_fastchat_llm_judge_model_judgements()
     show_results()
 
 
