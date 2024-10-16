@@ -326,7 +326,7 @@ def build_datasets_matched_prompts(
         "gpt35",
         "maj_sc_v3",
         "matched_prompts",
-        f"maj_{max_completions_list[0]}_to_{max_completions_list[-1]}",
+        f"{max_completions_list[0]}_to_{max_completions_list[-1]}",
     )
     logging.info("Using output directory: %s", fp_out_dir)
 
