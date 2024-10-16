@@ -12,6 +12,9 @@ import sys
 import time
 
 # Direct preference optimization (DPO) experiments
+a_arm_dataset_prefix = 'maj_shp_data_v3_matched_prompts_'
+b_arm_dataset_prefix =  'sc_shp_data_v3_matched_prompts_'
+
 a_arm_dataset = 'maj_shp_data_v3_matched_prompts_1000'
 b_arm_dataset =  'sc_shp_data_v3_matched_prompts_1000'
 n_arm_dataset = 'null_data'
@@ -75,6 +78,20 @@ def run_n_arm(sft_exp_dir):
     run_dpo(n_arm_dataset, sft_exp_dir, exp_name)
 
 
+
+def run_a_arm_sequence(sft_exp_dir, sizes_list):
+    """
+    Run a sequence of experiments for the a-arm dataset with different dataset sizes.
+    """
+    logging.info(f"Running a-arm experiments for sizes: {sizes_list}")
+    for size in sizes_list:
+        dataset = f"{a_arm_dataset_prefix}{size}"
+        exp_name = (
+            f"{dataset}_dataset_{loss}_loss_{model}_model_{batch_size}_batch_size"
+        )
+        run_dpo(dataset, sft_exp_dir, exp_name)
+    
+
 def main():
     """ Main function. """
 
@@ -98,7 +115,14 @@ def main():
     arm = sys.argv[1]
     sft_exp_dir = sys.argv[2]
 
-    if arm == "a":
+    if arm == "":
+        print("Please provide the arm to run the experiments for.")
+        sys.exit(1)
+    elif arm == "as":
+        sizes_list = [1000, 2000, 4000, 8000, 16000, 32000, 64000]
+        run_a_arm_sequence(sft_exp_dir, sizes_list)
+
+    elif arm == "a":
         run_a_arm(sft_exp_dir)
     elif arm == "b":
         run_b_arm(sft_exp_dir)
