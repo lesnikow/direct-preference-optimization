@@ -13,10 +13,10 @@ import time
 
 # Direct preference optimization (DPO) experiments
 a_arm_dataset_prefix = 'maj_shp_data_v3_matched_prompts_'
-b_arm_dataset_prefix =  'sc_shp_data_v3_matched_prompts_'
+b_arm_dataset_prefix = 'sc_shp_data_v3_matched_prompts_'
 
 a_arm_dataset = 'maj_shp_data_v3_matched_prompts_1000'
-b_arm_dataset =  'sc_shp_data_v3_matched_prompts_1000'
+b_arm_dataset = 'sc_shp_data_v3_matched_prompts_1000'
 n_arm_dataset = 'null_data'
 model = "pythia69"
 model_fsdp_policy_mp = "bfloat16"
@@ -90,6 +90,18 @@ def run_a_arm_sequence(sft_exp_dir, sizes_list):
             f"{dataset}_dataset_{loss}_loss_{model}_model_{batch_size}_batch_size"
         )
         run_dpo(dataset, sft_exp_dir, exp_name)
+
+def run_b_arm_sequence(sft_exp_dir, sizes_list):
+    """
+    Run a sequence of experiments for the b-arm dataset with different dataset sizes.
+    """
+    logging.info(f"Running b-arm experiments for sizes: {sizes_list}")
+    for size in sizes_list:
+        dataset = f"{b_arm_dataset_prefix}{size}"
+        exp_name = (
+            f"{dataset}_dataset_{loss}_loss_{model}_model_{batch_size}_batch_size"
+        )
+        run_dpo(dataset, sft_exp_dir, exp_name)
     
 
 def main():
@@ -121,6 +133,9 @@ def main():
     elif arm == "as":
         sizes_list = [1000, 2000, 4000, 8000, 16000, 32000, 64000]
         run_a_arm_sequence(sft_exp_dir, sizes_list)
+    elif arm == "bs":
+        sizes_list = [1000, 2000, 4000, 8000, 16000, 32000, 64000]
+        run_b_arm_sequence(sft_exp_dir, sizes_list)
 
     elif arm == "a":
         run_a_arm(sft_exp_dir)
