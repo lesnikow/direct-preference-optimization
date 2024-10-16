@@ -73,12 +73,6 @@ def run_b_arm(sft_exp_dir):
     run_dpo(b_arm_dataset, sft_exp_dir, exp_name)
 
 
-def run_n_arm(sft_exp_dir):
-    exp_name = f"no_train_{a_arm_dataset}_dataset_{loss}_loss_{model}_model_{batch_size}_batch_size"
-    run_dpo(n_arm_dataset, sft_exp_dir, exp_name)
-
-
-
 def run_a_arm_sequence(sft_exp_dir, sizes_list):
     """
     Run a sequence of experiments for the a-arm dataset with different dataset sizes.
