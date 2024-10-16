@@ -618,12 +618,14 @@ def get_shp_sc_data_v2_topic_matched_to_maj_xk(size_descriptor_string):
 
 
 
-def get_shp_data_v3_topic_matched_xk(maj_or_sc, size_str):
+def get_shp_data_v3_matched_prompts_xk(maj_or_sc, size_str):
     """Get shp data topic matched, of size size_str."""
 
     fp = os.path.join(os.environ.get('HOME', ''),
-        "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/"
-        f"maj_sc_matched_topics/{maj_or_sc}_300_to_3k/{maj_or_sc}_dataset_sampled_{size_str}.json")
+        "llm-sct/data/reddit/processed/gpt35/",
+        "maj_sc_v3/matched_prompts/",
+        "1000_to_64000/",
+        f"{maj_or_sc}_{size_str}.json")
 
     return get_custom_shp_dataset_from_fp(fp)
 
@@ -634,10 +636,13 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
     if name == "":
         raise ValueError("Expected a non-empty name")
 
-    elif name.startswith("maj_shp_data_v3_topic_") or name.startswith("sc_shp_data_v3_topic"):
+
+    elif (name.startswith("maj_shp_data_v3_matched_prompts_") or
+          name.startswith("sc_shp_data_v3_matched_prompts_")):
         maj_or_sc = name.split("_")[0]
         size_str = name.split("_")[-1]
-        data = get_shp_data_v3_topic_matched_xk(maj_or_sc, size_str)
+        data = get_shp_data_v3_matched_prompts_xk(maj_or_sc, size_str)
+
 
     elif name.startswith("shp_maj_data_v2_"):
         suffix = name.split("_")[-1]
