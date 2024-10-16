@@ -1,14 +1,14 @@
 # TODOs
 
 
-## Eval and graph of [2000 ... 20000] train run prompt-matched
+## Eval and graph of [1000 ... 64000] train run prompt-matched
 
 - [ ] Update next experiment on results here.
 
 - [ ] Generate plot of series training.
 
 
-## Train run of [2000 ... 20000] prompt-matched
+## Train run of [1000 ... 64000] prompt-matched
 
 - [ ] Update training logic to do series training to have trains loaded up
 
@@ -24,9 +24,9 @@
 
 ## Dataset sizes as in DPO paper
 
-- [ ] Dataset sizes from 2.4 K to 20 K, randomly selected subreddits
+- [ ] Dataset sizes from 2 K to 64 K, randomly selected subreddits
 
-  - [ ] Prompt matched, so same exact prompts
+  - [x] Prompt matched, so same exact prompts.
 
   - [ ] Size matched. One implementation: same exact prompts, then more prompts for `sc`.
 
