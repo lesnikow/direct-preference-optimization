@@ -5,10 +5,11 @@
 This script is used to run direct preference optimization (DPO) experiments for the
 a-arm and b-arm datasets.
 """
-
+import logging
 import resource
 import subprocess
 import sys
+import time
 
 # Direct preference optimization (DPO) experiments
 a_arm_dataset = 'maj_shp_data_v3_matched_prompts_1000'
@@ -75,22 +76,20 @@ def run_n_arm(sft_exp_dir):
 
 
 def main():
+    """ Main function. """
+
     print(f"Starting DPO experiments for")
     print(f"a-arm dataset: {a_arm_dataset}")
     print(f"b-arm dataset: {b_arm_dataset}")
-
-    print(
-        f"batch_size: {batch_size}, gradient_accumulation_steps: {gradient_accumulation_steps}; "
-        f"effective_batch_size: {batch_size * gradient_accumulation_steps}"
-    )
-
+    print(f"batch_size: {batch_size}")
+    print(f"gradient_accumulation_steps: {gradient_accumulation_steps}")
+    print(f"effective_batch_size: {batch_size * gradient_accumulation_steps}")
 
     try:
         resource.setrlimit(resource.RLIMIT_NOFILE, (ulimit_value, ulimit_value))
     except ValueError as e:
-        print(
-            f"Failed to set ulimit to {ulimit_value}. This might require additional permissions. Error: {e}"
-        )
+        print(f"Failed to set ulimit to {ulimit_value}.")
+        print(f"This might require additional permissions Error: {e}")
 
     if len(sys.argv) < 3:
         print("Usage: python script.py <arm> <sft_exp_dir>")
@@ -106,10 +105,17 @@ def main():
     elif arm == "n":
         run_n_arm(sft_exp_dir)
     else:
-        print(
-            "Invalid argument, use e.g. 'a' or 'b' for running a or b arm respectively."
-        )
+        logging.error(f"Invalid arm: {arm}. Try e.g. 'a' or 'b'.")
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.StreamHandler(sys.stdout),
+            logging.FileHandler(f"logs/log_time{time.time()}.log"),
+        ],
+    )
+
     main()
