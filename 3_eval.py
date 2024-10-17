@@ -54,19 +54,33 @@ def test_get_recent_exp_dirs():
 def convert_models(dpo_exp_dirs, overwrite=False):
     """Convert models to format suitable for fastchat."""
 
-    """
-    subprocess.run(
-        f"source {os.path.expanduser('~/env/bin/activate')}",
-        shell=True,
-        executable="/bin/bash",
-    )
-    os.chdir(os.path.expanduser("~/direct-preference-optimization/"))
     for exp_dir in dpo_exp_dirs:
         in_path = os.path.expanduser(
             f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}/LATEST/policy.pt"
         )
+
+        if (
+            os.path.exists(
+                os.path.expanduser(
+                    f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}/LATEST/converted/"
+                )
+            )
+            and not overwrite
+        ):
+            logging.info(f"Converted model already exists for {exp_dir}")
+            continue
+
         subprocess.run(f"du -sh {in_path}", shell=True)
         subprocess.run(f"python3 convert_model.py --in_path {in_path}", shell=True)
+
+
+def test_convert_models():
+    """Test convert_models function."""
+
+    seconds = 60 * 60 * 24
+    dpo_exp_dirs = get_recent_exp_dirs(seconds)
+
+    convert_models(dpo_exp_dirs)
 
 
 def fastchat_setup():
