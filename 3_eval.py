@@ -96,6 +96,8 @@ def fastchat_setup():
 
 
 def generate_model_answers(exp_dir, max_new_tokens):
+    """Generate model answers for a given model."""
+
     num_gpus = 1
     model_path = os.path.expanduser(
         f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}/LATEST/converted/"
@@ -118,6 +120,8 @@ def generate_model_answers(exp_dir, max_new_tokens):
 
 
 def make_fastchat_llm_judge_model_answers():
+    """Make fastchat llm judge model answers."""
+
     max_new_tokens = 128
     for exp_dir in dpo_exp_dirs:
         print(f"Generating model answers for {exp_dir}")
@@ -125,6 +129,8 @@ def make_fastchat_llm_judge_model_answers():
 
 
 def make_fastchat_llm_judge_model_judgements():
+    """Make fastchat llm judge model judgements."""
+
     subprocess.run(
         [
             "python3",
@@ -155,7 +161,9 @@ def make_fastchat_llm_judge_model_judgements():
     )
 
 
-def show_results():
+def show_results(dpo_exp_dirs):
+    """Show results."""
+
     with open("out_single.txt", "w") as f:
         subprocess.run(
             [
