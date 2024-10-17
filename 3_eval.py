@@ -84,14 +84,7 @@ def test_convert_models():
 
 
 def fastchat_setup():
-    """
-    subprocess.run(
-        f"source {os.path.expanduser('~/direct-preference-optimization/.env')}",
-        shell=True,
-        executable="/bin/bash",
-    )
-    os.environ["OPENAI_API_KEY"] = os.environ.get("OPENAI_API_KEY")
-    """
+    """Setup fastchat environment."""
 
     subprocess.run(
         f"source {os.path.expanduser('~/env-fastchat/bin/activate')}",
