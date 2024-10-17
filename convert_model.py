@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""Convert a model from a state dictionary to a model, tokenizer, and config."""
+
 import argparse
 import os
 import torch
