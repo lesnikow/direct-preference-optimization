@@ -22,7 +22,7 @@ def main(in_path):
     """Main method."""
 
     out_path = os.path.join(os.path.dirname(in_path), "converted")
-    logging.info(f"Saving model .bin, tokenizer, config json files to {out_path}")
+    logging.info(f"Starting conversion of model from {in_path} to {out_path}...")
     os.makedirs(out_path, exist_ok=True)
 
     logging.info(f"Loading state dictionary from {in_path}")
