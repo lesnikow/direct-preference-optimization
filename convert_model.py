@@ -44,7 +44,7 @@ def main(in_path):
     model.save_pretrained(out_path)
 
 
-def test(out_path):
+def test_main(out_path):
     """Test our main method outputs."""
 
     model = GPTNeoXForCausalLM.from_pretrained(out_path)
