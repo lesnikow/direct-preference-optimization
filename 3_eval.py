@@ -14,8 +14,47 @@ dpo_exp_dirs = [
     "shp_sc_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-59-16_258857",
 ]
 
+def get_recent_exp_dirs(seconds):
+    """Get the experiment directories that were modified in the last seconds seconds.
 
-def convert_models():
+    We ignore the wandb directory and any dirs without the LATEST directory.
+    """
+
+    exp_dirs = []
+    for exp_dir in os.listdir(
+        os.path.expanduser("~/direct-preference-optimization/.cache/adamlesnikowski/")
+    ):
+        exp_dir_fullpath = os.path.expanduser(
+            f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}"
+        )
+        if os.path.getmtime(exp_dir_fullpath) > time.time() - seconds:
+            if os.path.exists(f"{exp_dir_fullpath}/LATEST/policy.pt"):
+                if exp_dir not in ["wandb"]:
+                    exp_dirs.append(exp_dir)
+    return exp_dirs
+
+
+def test_get_recent_exp_dirs():
+    """Test get_recent_exp_dirs function."""
+
+    seconds = 60 * 60 * 6
+    exp_dirs = get_recent_exp_dirs(seconds)
+    assert len(exp_dirs) > 0
+    assert ["wandb"] not in exp_dirs
+
+    for exp_dir in exp_dirs:
+        logging.info(f"Checking if {exp_dir} exists")
+        assert os.path.exists(
+            os.path.expanduser(
+                f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}"
+            )
+        )
+
+
+def convert_models(dpo_exp_dirs, overwrite=False):
+    """Convert models to format suitable for fastchat."""
+
+    """
     subprocess.run(
         f"source {os.path.expanduser('~/env/bin/activate')}",
         shell=True,
