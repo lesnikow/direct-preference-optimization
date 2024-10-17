@@ -9,10 +9,6 @@ import subprocess
 import sys
 import time
 
-dpo_exp_dirs = [
-    "shp_maj_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-57-28_215286",
-    "shp_sc_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-59-16_258857",
-]
 
 def get_recent_exp_dirs(seconds):
     """Get the experiment directories that were modified in the last seconds seconds.
@@ -198,11 +194,30 @@ def show_results(dpo_exp_dirs):
 
 
 def main():
-    # convert_models()
-    fastchat_setup()
+    """Main method."""
+
+    dpo_exp_dirs = [
+        "shp_maj_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-57-28_215286",
+        "shp_sc_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-59-16_258857",
+    ]
+
+    dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 6)
+    for exp_dir in dpo_exp_dirs:
+        logging.info(f"Recent experiment directory: {exp_dir}")
+
+    convert_models(dpo_exp_dirs)
+
+    # fastchat_setup()
     # make_fastchat_llm_judge_model_answers()
     # make_fastchat_llm_judge_model_judgements()
-    show_results()
+    # show_results(dpo_exp_dirs)
+
+
+def test_main():
+    """Test main method."""
+
+    result = main()
+    assert result is None
 
 
 if __name__ == "__main__":
