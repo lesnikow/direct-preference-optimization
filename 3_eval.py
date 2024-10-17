@@ -3,9 +3,11 @@
 
 """Convert models, generate model answers, make judgements and show results."""
 
+import logging
 import os
 import subprocess
 import sys
+import time
 
 dpo_exp_dirs = [
     "shp_maj_data_v2_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-25_16-57-28_215286",
@@ -150,4 +152,12 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.StreamHandler(sys.stdout),
+            logging.FileHandler(f"logs/log_time{time.time()}.log"),
+        ],
+    )
     main()
