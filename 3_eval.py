@@ -196,40 +196,47 @@ def make_fastchat_llm_judge_model_judgements():
     )
 
 
+def show_results_single(dpo_exp_dirs):
+    """Show results for single mode."""
+    venv_python = os.path.join(os.path.expanduser("~/env-fastchat"), "bin", "python3")
+    os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
+    subprocess.run(
+        [
+            venv_python,
+            os.path.expanduser("~/fast-chat/fastchat/llm_judge/show_result.py"),
+            "--mode",
+            "single",
+            "--judge-model",
+            "gpt-4-turbo",
+            "--model-list",
+            *dpo_exp_dirs,
+        ]
+    )
+
+
+def show_results_pairwise(dpo_exp_dirs):
+    """Show results for pairwise mode."""
+    venv_python = os.path.join(os.path.expanduser("~/env-fastchat"), "bin", "python3")
+    os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
+    subprocess.run(
+        [
+            venv_python,
+            os.path.expanduser("~/fast-chat/fastchat/llm_judge/show_result.py"),
+            "--mode",
+            "pairwise-all",
+            "--judge-model",
+            "gpt-4-turbo",
+            "--model-list",
+            *dpo_exp_dirs,
+        ]
+    )
+
+
 def show_results(dpo_exp_dirs):
     """Show results."""
 
-    with open("out_single.txt", "w") as f:
-        subprocess.run(
-            [
-                "python3",
-                "show_result.py",
-                "--mode",
-                "single",
-                "--judge-model",
-                "gpt-4-turbo",
-                "--model-list",
-                *dpo_exp_dirs,
-            ],
-            stdout=f,
-            stderr=subprocess.STDOUT,
-        )
-
-    with open("out_pw.txt", "w") as f:
-        subprocess.run(
-            [
-                "python3",
-                "show_result.py",
-                "--mode",
-                "pairwise-all",
-                "--judge-model",
-                "gpt-4-turbo",
-                "--model-list",
-                *dpo_exp_dirs,
-            ],
-            stdout=f,
-            stderr=subprocess.STDOUT,
-        )
+    show_results_single(dpo_exp_dirs)
+    showw_results_pairwise(dpo_exp_dirs)
 
 
 def main():
@@ -237,11 +244,11 @@ def main():
 
     dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 5)
 
-    show_results(dpo_exp_dirs)
     # convert_models(dpo_exp_dirs)
     # fastchat_setup()
     # make_fastchat_llm_judge_model_answers()
     # make_fastchat_llm_judge_model_judgements()
+    show_results_single(dpo_exp_dirs)
 
 
 def test_main():
