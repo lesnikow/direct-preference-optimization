@@ -149,6 +149,20 @@ def make_fastchat_llm_judge_model_answers(dpo_exp_dirs):
         generate_model_answers(exp_dir, max_new_tokens)
 
 
+def test_make_fastchat_llm_judge_model_answers():
+    """Test make_fastchat_llm_judge_model_answers function."""
+
+    fastchat_setup()
+
+    dpo_exp_dirs = [
+        "maj_shp_data_v3_matched_prompts_1000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-17_01-05-51_987880",
+        "shp_sc_data_v2_40k_rump_cut_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-02_12-13-11_651914",
+        "vicuna-7b-v1.3",
+    ]
+
+    make_fastchat_llm_judge_model_answers(dpo_exp_dirs)
+
+
 def make_fastchat_llm_judge_model_judgements():
     """Make fastchat llm judge model judgements."""
 
