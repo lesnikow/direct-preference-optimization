@@ -99,17 +99,34 @@ def fastchat_setup():
     os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
 
 
-def generate_model_answers(exp_dir, max_new_tokens):
+def generate_model_answers(exp_dir, max_new_tokens, overwrite=False):
     """Generate model answers for a given model."""
 
+    output_path = os.path.expanduser(
+        f"~/fast-chat/fastchat/llm_judge/data/mt_bench/model_answer/{exp_dir}.jsonl"
+    )
+    logging.info(f"Output path for model answers: {output_path}")
+
+    if os.path.exists(output_path):
+        if not overwrite:
+            logging.info(f"Model answers already exist for {exp_dir}")
+            logging.info(f"Skipping")
+            return
+        else:
+            logging.info(
+                f"Model answers exist, but overwriting model answers for {exp_dir}"
+            )
+
+    logging.info(f"Generating model answers")
     num_gpus = 1
     model_path = os.path.expanduser(
         f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}/LATEST/converted/"
     )
-    print(f"Model path: {model_path}")
+
+    venv_python = os.path.join(os.path.expanduser("~/env-fastchat"), "bin", "python3")
     subprocess.run(
         [
-            "python3",
+            venv_python,
             "gen_model_answer.py",
             "--model-path",
             model_path,
