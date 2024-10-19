@@ -235,15 +235,13 @@ def show_results(dpo_exp_dirs):
 def main():
     """Main method."""
 
-    dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 6)
-    for exp_dir in dpo_exp_dirs:
-        logging.info(f"Recent experiment directory: {exp_dir}")
+    dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 5)
 
-    convert_models(dpo_exp_dirs)
-    fastchat_setup()
-    make_fastchat_llm_judge_model_answers()
-    make_fastchat_llm_judge_model_judgements()
     show_results(dpo_exp_dirs)
+    # convert_models(dpo_exp_dirs)
+    # fastchat_setup()
+    # make_fastchat_llm_judge_model_answers()
+    # make_fastchat_llm_judge_model_judgements()
 
 
 def test_main():
