@@ -55,19 +55,28 @@ def convert_models(dpo_exp_dirs, overwrite=False):
             f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}/LATEST/policy.pt"
         )
 
-        if (
-            os.path.exists(
-                os.path.expanduser(
-                    f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}/LATEST/converted/"
-                )
+        if os.path.exists(
+            os.path.expanduser(
+                f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}/LATEST/converted/"
             )
-            and not overwrite
         ):
-            logging.info(f"Converted model already exists for {exp_dir}")
-            continue
+            if not overwrite:
+                logging.info(f"Model already converted for {exp_dir}")
+                logging.info(f"Skipping")
+                continue
+            elif overwrite:
+                logging.info(f"Overwriting converted model for {exp_dir}")
 
-        subprocess.run(f"du -sh {in_path}", shell=True)
-        subprocess.run(f"python3 convert_model.py --in_path {in_path}", shell=True)
+        venv_python = os.path.join(os.path.expanduser("~/env"), "bin", "python3")
+
+        subprocess.run(
+            [
+                venv_python,
+                "convert_model.py",
+                "--in_path",
+                in_path,
+            ]
+        )
 
 
 def test_convert_models():
