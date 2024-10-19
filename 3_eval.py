@@ -140,7 +140,7 @@ def generate_model_answers(exp_dir, max_new_tokens, overwrite=False):
     )
 
 
-def make_fastchat_llm_judge_model_answers():
+def make_fastchat_llm_judge_model_answers(dpo_exp_dirs):
     """Make fastchat llm judge model answers."""
 
     max_new_tokens = 128
