@@ -82,10 +82,15 @@ def convert_models(dpo_exp_dirs, overwrite=False):
 def test_convert_models():
     """Test convert_models function."""
 
-    seconds = 60 * 60 * 24
+    seconds = 60 * 60 * 12
     dpo_exp_dirs = get_recent_exp_dirs(seconds)
+    dpo_exp_dirs = [
+        "maj_shp_data_v3_matched_prompts_16_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-17_01-17-47_748858",
+        "maj_shp_data_v3_matched_prompts_1000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-17_01-05-51_987880",
+        "maj_shp_data_v3_matched_prompts_32000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_06-28-57_000634",
+    ]
 
-    convert_models(dpo_exp_dirs)
+    convert_models(dpo_exp_dirs, overwrite=True)
 
 
 def fastchat_setup():
