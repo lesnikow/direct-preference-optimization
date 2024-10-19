@@ -2,13 +2,22 @@
 # Eval of models
 
 
-
 dpo_exp_dirs=(
-    "maj_shp_data_v3_topic_matched_2400_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-13_02-30-52_565621"
-    "sc_shp_data_v3_topic_matched_2400_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-13_02-31-16_263368"
-    "no_train_no_train_dataset_dataset_sft_loss_pythia69_model_4_batch_size_2024-09-25_19-42-29_986927_copy1"
+    "sc_shp_data_v3_matched_prompts_1000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_00-13-22_492768"
+    "maj_shp_data_v3_matched_prompts_1000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_00-13-36_789292"   
+    "sc_shp_data_v3_matched_prompts_2000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_00-23-55_905499"
+    "maj_shp_data_v3_matched_prompts_2000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_00-28-17_553502"
+    "sc_shp_data_v3_matched_prompts_4000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_00-41-42_307862"
+    "maj_shp_data_v3_matched_prompts_4000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_00-54-30_060280"
+    "sc_shp_data_v3_matched_prompts_8000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_01-12-20_844513"
+    "maj_shp_data_v3_matched_prompts_8000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_01-44-32_662714"
+    "sc_shp_data_v3_matched_prompts_16000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_02-10-07_721487"
+    "maj_shp_data_v3_matched_prompts_16000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_03-20-47_141077"
+    "sc_shp_data_v3_matched_prompts_32000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_04-11-40_585501"
+    "maj_shp_data_v3_matched_prompts_32000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_06-28-57_000634"
+    "sc_shp_data_v3_matched_prompts_64000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_07-39-57_040672"
+    "maj_shp_data_v3_matched_prompts_64000_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-16_12-41-23_885774"
 )
-
 
 function convert_models() {
 
@@ -65,11 +74,11 @@ function make_fastchat_llm_judge_model_judgements() {
       --model-list "${dpo_exp_dirs[@]}" \
       --parallel 256
 
-    python3 gen_judgment.py \
-      --mode "pairwise-all" \
-      --judge-model "gpt-4-turbo" \
-      --model-list "${dpo_exp_dirs[@]}" \
-      --parallel 256
+#    python3 gen_judgment.py \
+#      --mode "pairwise-all" \
+#      --judge-model "gpt-4-turbo" \
+#      --model-list "${dpo_exp_dirs[@]}" \
+#      --parallel 256
 }
 
 
@@ -80,19 +89,19 @@ function show_results() {
       --judge-model "gpt-4-turbo" \
       --model-list "${dpo_exp_dirs[@]}" | tee out_single.txt
 
-    python3 show_result.py \
-      --mode "pairwise-all" \
-      --judge-model "gpt-4-turbo" \
-      --model-list "${dpo_exp_dirs[@]}" | tee out_pw.txt
+#    python3 show_result.py \
+#      --mode "pairwise-all" \
+#      --judge-model "gpt-4-turbo" \
+#      --model-list "${dpo_exp_dirs[@]}" | tee out_pw.txt
 }
 
 
 
 function main() {
-    convert_models
+    #convert_models
     fastchat_setup
-    make_fastchat_llm_judge_model_answers
-    make_fastchat_llm_judge_model_judgements
+    #make_fastchat_llm_judge_model_answers
+    #make_fastchat_llm_judge_model_judgements
     show_results
 }
 
