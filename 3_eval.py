@@ -96,12 +96,6 @@ def test_convert_models():
 def fastchat_setup():
     """Setup fastchat environment."""
 
-    subprocess.run(
-        f"source {os.path.expanduser('~/env-fastchat/bin/activate')}",
-        shell=True,
-        executable="/bin/bash",
-    )
-
     os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
 
 
