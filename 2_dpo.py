@@ -6,6 +6,7 @@ This script is used to run direct preference optimization (DPO) experiments for 
 a-arm and b-arm datasets.
 """
 import logging
+import os
 import resource
 import subprocess
 import sys
@@ -35,8 +36,10 @@ voters_model = "gpt35"
 
 
 def run_dpo(dataset, sft_exp_dir, exp_name):
+
+    venv_python = os.path.join(os.path.expanduser("~/env"), "bin", "python3")
     command = [
-        "python3",
+        venv_python,
         "-u",
         "train.py",
         f"model={model}",
