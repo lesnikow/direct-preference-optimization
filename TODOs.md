@@ -1,21 +1,48 @@
 # TODOs
 
+## Next experiment
+
+
 
 ## Eval and graph of [1000, ... , 64000] train run prompt-matched
 
-- [ ] Update next experiment on results here.
+- [x] Update next experiment on results here.
 
-- [ ] Generate plot of series training.
+- [ ] Robustness of current plot, across diff random seeds
+      Asked for in latest ICML / NeurIPS / ICLR instructions / checklist?
+
+- [ ] Zero-point of training, e.g. no DPO steps, on graph
+
+- [ ] Win-rate on y-axis, as in DPO paper 
+
+- [x] Update plotting of sc series on x-axis, number of samples
+
+- [x] Generate plot of series training.
+
+- [x] Make model judgements in `3_eval.py`.
+
+- [x] Make model answers in `3_eval.py`.
+
+- [x] Batch conversion of models in `3_eval.py`.  
 
 
-- [ ] Batch conversion of models in `3_eval`.
+- [x] Debug min len key error in making model answers
+  - [x] Triage if issue is in dpo or convert model step
+    - [x] ~~Take a 1000 trained model, see if bash 3 eval script works step-by-step
+        Result: Not same error when doing 3 eval sh script with 8000 trained model! 
+          -> Try working on model conversion + answers in python, testing~~
 
-- [ ] New `3_eval.py` translation of `3_eval.sh`.
+
+- [x] Do fastchat setup and show results in new py module.
+
+- [x] New `3_eval.py` translation of `3_eval.sh`.
+
+- [x] ~~|Update eval py script to do python module imports instead of subprocesses|~~
 
 
 ## Train run of [1000, ... , 64000] prompt-matched
 
-- [ ] Finish this training run.
+- [x] Finish this training run.
 
 - [x] Update training logic to do series training to have trains loaded up
 
@@ -25,7 +52,7 @@
     
       - [x] [Implementation of `2_dpo` in Python]
 
-    ~~- [ ] Modify `2_dpo` to accept positional arg and do bash script `2_dpo_series`
+    - [x] ~~Modify `2_dpo` to accept positional arg and do bash script `2_dpo_series`
           or `loop_2_dpo` or just a CLI for loop.~~
 
 
