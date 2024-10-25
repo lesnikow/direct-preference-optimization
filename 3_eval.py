@@ -163,29 +163,18 @@ def test_make_answers():
     make_answers(dpo_exp_dirs)
 
 
-def make_judgements():
-    """Make fastchat llm judge model judgements."""
+def make_judgements_for_mode(mode, dpo_exp_dirs):
+    """Make fastchat llm judge model judgements for the given mode.
 
+    Available modes: single, pairwise-all."""
+
+    venv_python = os.path.join(os.path.expanduser("~/env-fastchat"), "bin", "python3")
     subprocess.run(
         [
-            "python3",
+            venv_python,
             "gen_judgment.py",
             "--mode",
-            "single",
-            "--judge-model",
-            "gpt-4-turbo",
-            "--model-list",
-            *dpo_exp_dirs,
-            "--parallel",
-            "256",
-        ]
-    )
-    subprocess.run(
-        [
-            "python3",
-            "gen_judgment.py",
-            "--mode",
-            "pairwise-all",
+            mode,
             "--judge-model",
             "gpt-4-turbo",
             "--model-list",
