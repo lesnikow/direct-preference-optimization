@@ -242,7 +242,7 @@ def show_results(dpo_exp_dirs):
 def main():
     """Main method."""
 
-    dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 9)
+    dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 10)
 
     # convert_models(dpo_exp_dirs)
     # fastchat_setup()
