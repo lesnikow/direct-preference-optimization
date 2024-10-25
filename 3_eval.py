@@ -196,8 +196,9 @@ def make_judgements():
     )
 
 
-def show_results_single(dpo_exp_dirs):
-    """Show results for single mode."""
+def show_results_for_mode(mode, dpo_exp_dirs):
+    """Show results for a given mode and dpo_exp_dirs."""
+
     venv_python = os.path.join(os.path.expanduser("~/env-fastchat"), "bin", "python3")
     os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
     subprocess.run(
@@ -205,25 +206,7 @@ def show_results_single(dpo_exp_dirs):
             venv_python,
             os.path.expanduser("~/fast-chat/fastchat/llm_judge/show_result.py"),
             "--mode",
-            "single",
-            "--judge-model",
-            "gpt-4-turbo",
-            "--model-list",
-            *dpo_exp_dirs,
-        ]
-    )
-
-
-def show_results_pairwise(dpo_exp_dirs):
-    """Show results for pairwise mode."""
-    venv_python = os.path.join(os.path.expanduser("~/env-fastchat"), "bin", "python3")
-    os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
-    subprocess.run(
-        [
-            venv_python,
-            os.path.expanduser("~/fast-chat/fastchat/llm_judge/show_result.py"),
-            "--mode",
-            "pairwise-all",
+            mode,
             "--judge-model",
             "gpt-4-turbo",
             "--model-list",
@@ -235,8 +218,8 @@ def show_results_pairwise(dpo_exp_dirs):
 def show_results(dpo_exp_dirs):
     """Show results."""
 
-    show_results_single(dpo_exp_dirs)
-    show_results_pairwise(dpo_exp_dirs)
+    for mode in ["single", "pairwise-all"]:
+        show_results_for_mode(mode, dpo_exp_dirs)
 
 
 def main():
@@ -247,8 +230,11 @@ def main():
     # convert_models(dpo_exp_dirs)
     # fastchat_setup()
     # make_answers()
-    # make_judgements()
-    show_results_single(dpo_exp_dirs)
+
+    make_judgements_mode = "single"
+    # make_judgements_for_mode(make_judgements_mode, dpo_exp_dirs)
+    show_results_mode = "single"
+    show_results_for_mode(show_results_mode, dpo_exp_dirs)
 
 
 def test_main():
