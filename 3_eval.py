@@ -94,12 +94,12 @@ def test_convert_models():
 
 
 def fastchat_setup():
-    """Setup fastchat environment."""
+    """Setup for fastchat modules."""
 
     os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
 
 
-def generate_model_answers(exp_dir, max_new_tokens, overwrite=False):
+def make_answers_single_model(exp_dir, max_new_tokens, overwrite=False):
     """Generate model answers for a given model."""
 
     output_path = os.path.expanduser(
@@ -146,7 +146,7 @@ def make_answers(dpo_exp_dirs):
     max_new_tokens = 128
     for exp_dir in dpo_exp_dirs:
         print(f"Generating model answers for {exp_dir}")
-        generate_model_answers(exp_dir, max_new_tokens)
+        make_answers_single_model(exp_dir, max_new_tokens)
 
 
 def test_make_answers():
