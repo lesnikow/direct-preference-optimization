@@ -163,26 +163,53 @@ def test_make_answers():
     make_answers(dpo_exp_dirs)
 
 
-def make_judgements_for_mode(mode, dpo_exp_dirs):
+def make_judgements_for_mode(
+    mode, dpo_exp_dirs, baseline_model="EleutherAI/pythia-6.9b"
+):
     """Make fastchat llm judge model judgements for the given mode.
 
-    Available modes: single, pairwise-all."""
+    Available modes: single, pairwise-all, pairwise-baseline.
+
+    baseline_model is the model to compare against in pairwise-baseline mode.
+    """
 
     venv_python = os.path.join(os.path.expanduser("~/env-fastchat"), "bin", "python3")
-    subprocess.run(
-        [
-            venv_python,
-            "gen_judgment.py",
-            "--mode",
-            mode,
-            "--judge-model",
-            "gpt-4-turbo",
-            "--model-list",
-            *dpo_exp_dirs,
-            "--parallel",
-            "256",
-        ]
-    )
+    logging.info("Making judgements for mode: %s", mode)
+
+    if mode in ["single", "pairwise-all"]:
+        subprocess.run(
+            [
+                venv_python,
+                "gen_judgment.py",
+                "--mode",
+                mode,
+                "--judge-model",
+                "gpt-4-turbo",
+                "--model-list",
+                *dpo_exp_dirs,
+                "--parallel",
+                "256",
+            ]
+        )
+    elif mode == "pairwise-baseline":
+        subprocess.run(
+            [
+                venv_python,
+                "gen_judgment.py",
+                "--mode",
+                mode,
+                "--judge-model",
+                "gpt-4-turbo",
+                "--model-list",
+                *dpo_exp_dirs,
+                "--parallel",
+                "1",
+                "--baseline-model",
+                baseline_model,
+            ]
+        )
+    else:
+        raise ValueError(f"Invalid mode: {mode}")
 
 
 def show_results_for_mode(mode, dpo_exp_dirs):
