@@ -140,7 +140,7 @@ def generate_model_answers(exp_dir, max_new_tokens, overwrite=False):
     )
 
 
-def make_model_answers(dpo_exp_dirs):
+def make_answers(dpo_exp_dirs):
     """Make fastchat llm judge model answers."""
 
     max_new_tokens = 128
@@ -149,8 +149,8 @@ def make_model_answers(dpo_exp_dirs):
         generate_model_answers(exp_dir, max_new_tokens)
 
 
-def test_make_model_answers():
-    """Test make_model_answers function."""
+def test_make_answers():
+    """Test make_answers function."""
 
     fastchat_setup()
 
@@ -160,10 +160,10 @@ def test_make_model_answers():
         "vicuna-7b-v1.3",
     ]
 
-    make_model_answers(dpo_exp_dirs)
+    make_answers(dpo_exp_dirs)
 
 
-def make_model_judgements():
+def make_judgements():
     """Make fastchat llm judge model judgements."""
 
     subprocess.run(
@@ -246,8 +246,8 @@ def main():
 
     # convert_models(dpo_exp_dirs)
     # fastchat_setup()
-    # make_model_answers()
-    # make_model_judgements()
+    # make_answers()
+    # make_judgements()
     show_results_single(dpo_exp_dirs)
 
 
