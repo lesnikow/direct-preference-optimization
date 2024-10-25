@@ -236,13 +236,13 @@ def show_results(dpo_exp_dirs):
     """Show results."""
 
     show_results_single(dpo_exp_dirs)
-    showw_results_pairwise(dpo_exp_dirs)
+    show_results_pairwise(dpo_exp_dirs)
 
 
 def main():
     """Main method."""
 
-    dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 5)
+    dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 9)
 
     # convert_models(dpo_exp_dirs)
     # fastchat_setup()
