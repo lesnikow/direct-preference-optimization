@@ -163,9 +163,7 @@ def test_make_answers():
     make_answers(dpo_exp_dirs)
 
 
-def make_judgements_for_mode(
-    mode, dpo_exp_dirs, baseline_model="EleutherAI/pythia-6.9b"
-):
+def make_judgements_for_mode(mode, dpo_exp_dirs, baseline_model="pythia-6.9b"):
     """Make fastchat llm judge model judgements for the given mode.
 
     Available modes: single, pairwise-all, pairwise-baseline.
@@ -203,7 +201,7 @@ def make_judgements_for_mode(
                 "--model-list",
                 *dpo_exp_dirs,
                 "--parallel",
-                "1",
+                "256",
                 "--baseline-model",
                 baseline_model,
             ]
@@ -217,18 +215,37 @@ def show_results_for_mode(mode, dpo_exp_dirs):
 
     venv_python = os.path.join(os.path.expanduser("~/env-fastchat"), "bin", "python3")
     os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
-    subprocess.run(
-        [
-            venv_python,
-            os.path.expanduser("~/fast-chat/fastchat/llm_judge/show_result.py"),
-            "--mode",
-            mode,
-            "--judge-model",
-            "gpt-4-turbo",
-            "--model-list",
-            *dpo_exp_dirs,
-        ]
-    )
+
+    if mode in ["single", "pairwise-all"]:
+        subprocess.run(
+            [
+                venv_python,
+                os.path.expanduser("~/fast-chat/fastchat/llm_judge/show_result.py"),
+                "--mode",
+                mode,
+                "--judge-model",
+                "gpt-4-turbo",
+                "--model-list",
+                *dpo_exp_dirs,
+            ]
+        )
+    elif mode == "pairwise-baseline":
+        subprocess.run(
+            [
+                venv_python,
+                os.path.expanduser("~/fast-chat/fastchat/llm_judge/show_result.py"),
+                "--mode",
+                mode,
+                "--judge-model",
+                "gpt-4-turbo",
+                "--model-list",
+                *dpo_exp_dirs,
+                "--baseline-model",
+                "pythia-6.9b",
+            ]
+        )
+    else:
+        raise ValueError(f"Invalid mode: {mode}")
 
 
 def show_results(dpo_exp_dirs):
