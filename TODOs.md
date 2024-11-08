@@ -13,7 +13,13 @@
 
 - [ ] Zero-point of training, e.g. no DPO steps, on graph
 
-- [ ] Win-rate on y-axis, as in DPO paper 
+- [ ] Add baseline horizontal line to win-rate plot
+      Possible baselines: pythia69b, 
+                          pythia69b sft with maj, sc
+
+- [P] Win-rate on y-axis, as in DPO paper 
+      Possible baselines: pythia69b, 
+                          pythia69b sft with maj, sc
 
 - [x] Update plotting of sc series on x-axis, number of samples
 
