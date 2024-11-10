@@ -3,6 +3,33 @@
 ## Next experiment
 
 
+## Eval and graph of Pythia 2.9B, base, [SFT], DPO.
+
+- [ ] Get metrics on base, SFT, DPO evolutions.
+
+- [ ] DPO train.
+
+    - [ ] Train [1000, ... , 64000] maj vs sc prompt-matched from base
+          from common SFT'ed model.
+
+- [ ] SFT train of pythia base with all of updated SFT data.  
+
+
+## Eval and graph of Pythia 2.9B, base, DPO.
+
+- [ ] Get metrics on base, DPO evolutions.
+
+- [ ] Try just DPO train, see if this is a viable shortcut.
+
+    - [ ] Train [1000, ... , 64000] maj vs sc prompt-matched from base.
+
+
+
+- [x] Cleanup past old json files from llm-sct repo.
+
+- [x] Get SFT datasets from email into our repo, edited, checke
+
+
 
 ## Eval and graph of [1000, ... , 64000] train run prompt-matched
 
