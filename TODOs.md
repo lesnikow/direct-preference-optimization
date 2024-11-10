@@ -1,5 +1,6 @@
 # TODOs
 
+
 ## Next experiment
 
 
@@ -29,6 +30,14 @@
 
 - [x] Get SFT datasets from email into our repo, edited, checke
 
+
+
+## Quality of life improvements
+
+
+- [ ] Make evals easier to run. Less time, less manual effort.
+
+- [ ] Have converted models saved during model training checkpointing.
 
 
 ## Eval and graph of [1000, ... , 64000] train run prompt-matched
