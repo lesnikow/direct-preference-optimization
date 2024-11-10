@@ -20,9 +20,9 @@
 
 - [ ] Get metrics on base, DPO evolutions.
 
-- [ ] Try just DPO train, see if this is a viable shortcut.
+- [ ] Try just DPO train, see if this is a viable shortcut : )
 
-    - [ ] Train [1000, ... , 64000] maj vs sc prompt-matched from base.
+    - [P] Train [1000, ... , 64000] maj vs sc prompt-matched from base.
 
 
 
@@ -39,6 +39,17 @@
 
 - [ ] Have converted models saved during model training checkpointing.
 
+
+## Understanding the codebase
+
+- [ ] How exactly does train.py used in `2_dpo.py` know how to use
+      pythia 2.8b?
+
+- [ ] Relatedly how does train.py compile/set `config.model.name_or_path`
+      to a seemingly default value of pythia 2.8b?
+        
+- [ ] More generally how does omega conf work at a high or design/motivation
+      level?
 
 ## Eval and graph of [1000, ... , 64000] train run prompt-matched
 
