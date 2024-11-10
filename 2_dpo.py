@@ -19,7 +19,7 @@ b_arm_dataset_prefix = "sc_shp_data_v3_matched_prompts_"
 a_arm_dataset = "maj_shp_data_v3_matched_prompts_1000"
 b_arm_dataset = "sc_shp_data_v3_matched_prompts_1000"
 n_arm_dataset = "null_data"
-model = "pythia69"
+model = "pythia28"
 model_fsdp_policy_mp = "bfloat16"
 loss = "dpo"
 loss_beta = 0.1
@@ -36,6 +36,7 @@ voters_model = "gpt35"
 
 
 def run_dpo(dataset, sft_exp_dir, exp_name):
+    """Run DPO experiments for the given dataset."""
 
     venv_python = os.path.join(os.path.expanduser("~/env"), "bin", "python3")
     command = [
@@ -43,7 +44,7 @@ def run_dpo(dataset, sft_exp_dir, exp_name):
         "-u",
         "train.py",
         f"model={model}",
-        f"model.archive=.cache/adamlesnikowski/{sft_exp_dir}/LATEST/policy.pt",
+        # f"model.archive=.cache/adamlesnikowski/{sft_exp_dir}/LATEST/policy.pt",
         f"datasets=[{dataset}]",
         f"loss={loss}",
         f"loss.beta={loss_beta}",
