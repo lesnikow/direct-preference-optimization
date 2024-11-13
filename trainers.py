@@ -844,18 +844,28 @@ class FSDPTrainer(BasicTrainer):
         del policy_state_dict
         dist.barrier()
 
-        save_policy = FullOptimStateDictConfig(offload_to_cpu=True, rank0_only=True)
-        with FSDP.state_dict_type(
-            self.policy,
-            StateDictType.FULL_STATE_DICT,
-            optim_state_dict_config=save_policy,
-        ):
-            optimizer_state_dict = FSDP.optim_state_dict(self.policy, self.optimizer)
+        save_optimizer = False
+        if save_optimizer:
+            save_policy = FullOptimStateDictConfig(offload_to_cpu=True, rank0_only=True)
+            with FSDP.state_dict_type(
+                self.policy,
+                StateDictType.FULL_STATE_DICT,
+                optim_state_dict_config=save_policy,
+            ):
+                optimizer_state_dict = FSDP.optim_state_dict(
+                    self.policy, self.optimizer
+                )
 
-        # if self.rank == 0:
-        #    self.write_state_dict(self.example_counter, optimizer_state_dict, metrics, 'optimizer.pt', output_dir)
-        del optimizer_state_dict
-        dist.barrier()
+            if self.rank == 0:
+                self.write_state_dict(
+                    self.example_counter,
+                    optimizer_state_dict,
+                    metrics,
+                    "optimizer.pt",
+                    output_dir,
+                )
+            del optimizer_state_dict
+            dist.barrier()
 
         if self.rank == 0:
             scheduler_state_dict = self.scheduler.state_dict()
