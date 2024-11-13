@@ -807,45 +807,50 @@ class FSDPTrainer(BasicTrainer):
     def save(self, output_dir=None, metrics=None):
         """Save policy, optimizer, and scheduler state to disk, gathering from all
         processes and saving only on the rank 0 process."""
-        save_policy = FullStateDictConfig(offload_to_cpu=True, rank0_only=True)
-        with FSDP.state_dict_type(
-            self.policy, StateDictType.FULL_STATE_DICT, state_dict_config=save_policy
-        ):
-            policy_state_dict = self.policy.state_dict()
-
-        if self.rank == 0:
-            try:
-                self.write_state_dict(
-                    self.example_counter,
-                    policy_state_dict,
-                    metrics,
-                    "policy.pt",
-                    output_dir,
-                )
-                self.write_state_dict_converted(
-                    policy_state_dict,
-                    output_dir,
-                )
-            except AttributeError:
-                # Used for saving null trained model with example_counter not set
-                self.example_counter = 0
-                self.write_state_dict(
-                    self.example_counter,
-                    policy_state_dict,
-                    metrics,
-                    "policy.pt",
-                    output_dir,
-                )
-                self.write_state_dict_converted(
-                    policy_state_dict,
-                    output_dir,
-                )
-
-        del policy_state_dict
-        dist.barrier()
-
+        save_policy_bool = True
         save_optimizer = False
         save_scheduler = False
+
+        if save_policy_bool:
+            save_policy = FullStateDictConfig(offload_to_cpu=True, rank0_only=True)
+            with FSDP.state_dict_type(
+                self.policy,
+                StateDictType.FULL_STATE_DICT,
+                state_dict_config=save_policy,
+            ):
+                policy_state_dict = self.policy.state_dict()
+
+            if self.rank == 0:
+                try:
+                    self.write_state_dict(
+                        self.example_counter,
+                        policy_state_dict,
+                        metrics,
+                        "policy.pt",
+                        output_dir,
+                    )
+                    self.write_state_dict_converted(
+                        policy_state_dict,
+                        output_dir,
+                    )
+                except AttributeError:
+                    # Used for saving null trained model with example_counter not set
+                    self.example_counter = 0
+                    self.write_state_dict(
+                        self.example_counter,
+                        policy_state_dict,
+                        metrics,
+                        "policy.pt",
+                        output_dir,
+                    )
+                    self.write_state_dict_converted(
+                        policy_state_dict,
+                        output_dir,
+                    )
+
+            del policy_state_dict
+            dist.barrier()
+
         if save_optimizer:
             save_policy = FullOptimStateDictConfig(offload_to_cpu=True, rank0_only=True)
             with FSDP.state_dict_type(
