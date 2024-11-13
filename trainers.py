@@ -193,6 +193,8 @@ class BasicTrainer(object):
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
 
+        self.config = transformers.AutoConfig.from_pretrained(config.model.name_or_path)
+
         data_iterator_kwargs = dict(
             names=config.datasets,
             tokenizer=self.tokenizer,
@@ -619,6 +621,7 @@ class BasicTrainer(object):
         dir_name: Optional[str] = None,
     ):
         """Write a checkpoint to disk."""
+
         if dir_name is None:
             dir_name = os.path.join(self.run_dir, f"LATEST")
 
@@ -634,6 +637,23 @@ class BasicTrainer(object):
             output_path,
         )
 
+    def write_state_dict_converted(
+        self,
+        state: Dict[str, torch.Tensor],
+        dir_name: Optional[str] = None,
+    ):
+        """Write a checkpoint to disk, converted, ready to be used in eval modules."""
+
+        if dir_name is None:
+            dir_name = os.path.join(self.run_dir, f"LATEST/converted")
+
+        os.makedirs(dir_name, exist_ok=True)
+
+        rank0_print(f"writing converted checkpoint to {dir_name}...")
+        self.policy.save_pretrained(dir_name)
+        self.tokenizer.save_pretrained(dir_name)
+        self.config.save_pretrained(dir_name)
+
     def save(self, output_dir: Optional[str] = None, metrics: Optional[Dict] = None):
         """Save policy, optimizer, and scheduler state to disk."""
 
@@ -646,6 +666,10 @@ class BasicTrainer(object):
                 "policy.pt",
                 output_dir,
             )
+            self.write_state_dict_converted(
+                policy_state_dict,
+                output_dir,
+            )
         except:
             self.example_counter = 0
             self.write_state_dict(
@@ -655,7 +679,10 @@ class BasicTrainer(object):
                 "policy.pt",
                 output_dir,
             )
-
+            self.write_state_dict_converted(
+                policy_state_dict,
+                output_dir,
+            )
         del policy_state_dict
 
         optimizer_state_dict = self.optimizer.state_dict()
