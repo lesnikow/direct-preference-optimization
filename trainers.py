@@ -186,8 +186,9 @@ class BasicTrainer(object):
         )
         rank0_print(f"Loading tokenizer {tokenizer_name_or_path}")
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(
-            tokenizer_name_or_path, cache_dir=get_local_dir(config.local_dirs),
-            use_fast=True
+            tokenizer_name_or_path,
+            cache_dir=get_local_dir(config.local_dirs),
+            use_fast=True,
         )
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
@@ -639,12 +640,20 @@ class BasicTrainer(object):
         policy_state_dict = self.policy.state_dict()
         try:
             self.write_state_dict(
-                self.example_counter, policy_state_dict, metrics, "policy.pt", output_dir
+                self.example_counter,
+                policy_state_dict,
+                metrics,
+                "policy.pt",
+                output_dir,
             )
         except:
             self.example_counter = 0
             self.write_state_dict(
-                self.example_counter, policy_state_dict, metrics, "policy.pt", output_dir
+                self.example_counter,
+                policy_state_dict,
+                metrics,
+                "policy.pt",
+                output_dir,
             )
 
         del policy_state_dict
