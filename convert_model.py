@@ -21,6 +21,9 @@ from transformers import (
 def main(in_path):
     """Main method."""
 
+    model_hf_str = "EleutherAI/pythia-2.8b"
+    logging.info(f"Using model HF string: {model_hf_str}")
+
     out_path = os.path.join(os.path.dirname(in_path), "converted")
     logging.info(f"Starting conversion of model from {in_path} to {out_path}...")
     os.makedirs(out_path, exist_ok=True)
@@ -29,11 +32,11 @@ def main(in_path):
     state_dict = torch.load(in_path)
 
     logging.info("Loading tokenizer and config")
-    tokenizer = AutoTokenizer.from_pretrained("EleutherAI/pythia-6.9b")
-    config = AutoConfig.from_pretrained("EleutherAI/pythia-6.9b")
+    tokenizer = AutoTokenizer.from_pretrained(model_hf_str)
+    config = AutoConfig.from_pretrained(model_hf_str)
 
     logging.info("Loading model from state dictionary")
-    model = GPTNeoXForCausalLM.from_pretrained("EleutherAI/pythia-6.9b")
+    model = GPTNeoXForCausalLM.from_pretrained(model_hf_str)
     model.load_state_dict(state_dict["state"])
 
     logging.info("Saving tokenizer and config")
