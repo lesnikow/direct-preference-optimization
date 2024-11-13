@@ -822,6 +822,10 @@ class FSDPTrainer(BasicTrainer):
                     "policy.pt",
                     output_dir,
                 )
+                self.write_state_dict_converted(
+                    policy_state_dict,
+                    output_dir,
+                )
             except AttributeError:
                 # Used for saving null trained model with example_counter not set
                 self.example_counter = 0
@@ -830,6 +834,10 @@ class FSDPTrainer(BasicTrainer):
                     policy_state_dict,
                     metrics,
                     "policy.pt",
+                    output_dir,
+                )
+                self.write_state_dict_converted(
+                    policy_state_dict,
                     output_dir,
                 )
 
