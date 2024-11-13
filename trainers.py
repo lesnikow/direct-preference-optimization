@@ -1,46 +1,40 @@
 import torch
 
 torch.backends.cuda.matmul.allow_tf32 = True
-import torch.nn.functional as F
-import torch.nn as nn
-import transformers
-from omegaconf import DictConfig
-
-import torch.distributed as dist
-from torch.distributed.fsdp import (
-    FullyShardedDataParallel as FSDP,
-    MixedPrecision,
-    StateDictType,
-    BackwardPrefetch,
-    ShardingStrategy,
-    CPUOffload,
-)
-from torch.distributed.fsdp.api import FullStateDictConfig, FullOptimStateDictConfig
-from torch.distributed.fsdp.wrap import transformer_auto_wrap_policy
-import tensor_parallel as tp
 import contextlib
+import functools
+import json
+import os
+import random
+import time
+from collections import defaultdict
+from typing import Dict, List, Optional, Tuple, Union
+
+import numpy as np
+import tensor_parallel as tp
+import torch.distributed as dist
+import torch.nn as nn
+import torch.nn.functional as F
+import tqdm
+import transformers
+import wandb
+from omegaconf import DictConfig
+from torch.distributed.fsdp import BackwardPrefetch, CPUOffload
+from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+from torch.distributed.fsdp import MixedPrecision, ShardingStrategy, StateDictType
+from torch.distributed.fsdp.api import FullOptimStateDictConfig, FullStateDictConfig
+from torch.distributed.fsdp.wrap import transformer_auto_wrap_policy
 
 from preference_datasets import get_batch_iterator
 from utils import (
-    slice_and_move_batch_for_device,
-    formatted_dict,
     all_gather_if_needed,
-    pad_to_length,
+    formatted_dict,
     get_block_class_from_model,
-    rank0_print,
     get_local_dir,
+    pad_to_length,
+    rank0_print,
+    slice_and_move_batch_for_device,
 )
-import numpy as np
-import wandb
-import tqdm
-
-import random
-import os
-from collections import defaultdict
-import time
-import json
-import functools
-from typing import Optional, Dict, List, Union, Tuple
 
 
 def preference_loss(
@@ -740,9 +734,9 @@ class FSDPTrainer(BasicTrainer):
                 #
                 # first, verify we have FSDP activation support ready by importing:
                 from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import (
-                    checkpoint_wrapper,
-                    apply_activation_checkpointing,
                     CheckpointImpl,
+                    apply_activation_checkpointing,
+                    checkpoint_wrapper,
                 )
 
                 non_reentrant_wrapper = functools.partial(
