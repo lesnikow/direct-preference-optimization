@@ -258,16 +258,12 @@ def show_results(dpo_exp_dirs):
 def main():
     """Main method."""
 
-    dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 10)
-    dpo_exp_dirs.remove("dpo_8000_latest_train_current_failing")
-    dpo_exp_dirs.remove(
-        "maj_shp_data_v3_matched_prompts_16_dataset_dpo_loss_pythia69_model_8_batch_size_2024-10-17_01-17-47_748858"
-    )
-    dpo_exp_dirs.append("pythia-6.9b")
+    logging.info("Starting main method")
+    dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 4)
     logging.info(f"Recent experiment directories: {dpo_exp_dirs}")
 
-    # convert_models(dpo_exp_dirs)
-    fastchat_setup()
+    convert_models(dpo_exp_dirs)
+    # fastchat_setup()
     # make_answers(dpo_exp_dirs)
 
     # make_judgements_mode = "pairwise-baseline"
@@ -276,7 +272,7 @@ def main():
     # )
 
     show_results_mode = "pairwise-baseline"
-    show_results_for_mode(show_results_mode, dpo_exp_dirs)
+    # show_results_for_mode(show_results_mode, dpo_exp_dirs)
 
 
 def test_main():
