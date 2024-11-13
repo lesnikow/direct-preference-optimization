@@ -1,28 +1,34 @@
-import torch
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Train a model using the specified configuration.
+"""
 
-torch.backends.cuda.matmul.allow_tf32 = True
-import torch.nn as nn
-import transformers
-from utils import (
-    get_local_dir,
-    get_local_run_dir,
-    disable_dropout,
-    init_distributed,
-    get_open_port,
-)
-import os
-import hydra
-import torch.multiprocessing as mp
-from omegaconf import OmegaConf, DictConfig
-import trainers
-import wandb
 import json
+import os
+import resource
 import socket
 from typing import Optional, Set
-import resource
 
-from torch.profiler import profile, record_function, ProfilerActivity
+import hydra
+import torch
+import torch.multiprocessing as mp
+import torch.nn as nn
+import transformers
+import wandb
+from omegaconf import DictConfig, OmegaConf
+from torch.profiler import ProfilerActivity, profile, record_function
 
+import trainers
+from utils import (
+    disable_dropout,
+    get_local_dir,
+    get_local_run_dir,
+    get_open_port,
+    init_distributed,
+)
+
+torch.backends.cuda.matmul.allow_tf32 = True
 
 OmegaConf.register_new_resolver(
     "get_local_run_dir",
@@ -162,7 +168,7 @@ def main(config: DictConfig):
             args=(world_size, config, policy, reference_model),
             join=True,
         )
-        #prof.export_chrome_trace("out_trace.json")
+        # prof.export_chrome_trace("out_trace.json")
     else:
         print("starting single-process worker")
         worker_main(0, 1, config, policy, reference_model)
@@ -171,7 +177,6 @@ def main(config: DictConfig):
     print(f"main_out is")
     print(f"{main_out}")
     return main_out
-
 
 
 if __name__ == "__main__":
