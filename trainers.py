@@ -845,6 +845,7 @@ class FSDPTrainer(BasicTrainer):
         dist.barrier()
 
         save_optimizer = False
+        save_scheduler = False
         if save_optimizer:
             save_policy = FullOptimStateDictConfig(offload_to_cpu=True, rank0_only=True)
             with FSDP.state_dict_type(
@@ -867,16 +868,17 @@ class FSDPTrainer(BasicTrainer):
             del optimizer_state_dict
             dist.barrier()
 
-        if self.rank == 0:
-            scheduler_state_dict = self.scheduler.state_dict()
-            self.write_state_dict(
-                self.example_counter,
-                scheduler_state_dict,
-                metrics,
-                "scheduler.pt",
-                output_dir,
-            )
-        dist.barrier()
+        if save_scheduler:
+            if self.rank == 0:
+                scheduler_state_dict = self.scheduler.state_dict()
+                self.write_state_dict(
+                    self.example_counter,
+                    scheduler_state_dict,
+                    metrics,
+                    "scheduler.pt",
+                    output_dir,
+                )
+            dist.barrier()
 
 
 class TensorParallelTrainer(BasicTrainer):
