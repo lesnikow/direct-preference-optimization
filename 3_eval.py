@@ -163,7 +163,7 @@ def test_make_answers():
     make_answers(dpo_exp_dirs)
 
 
-def make_judgements_for_mode(mode, dpo_exp_dirs, baseline_model="pythia-6.9b"):
+def make_judgements_for_mode(mode, dpo_exp_dirs, baseline_model="pythia-2.8b"):
     """Make fastchat llm judge model judgements for the given mode.
 
     Available modes: single, pairwise-all, pairwise-baseline.
@@ -262,17 +262,17 @@ def main():
     dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 4)
     logging.info(f"Recent experiment directories: {dpo_exp_dirs}")
 
-    convert_models(dpo_exp_dirs)
-    # fastchat_setup()
+    # convert_models(dpo_exp_dirs)
+    fastchat_setup()
     # make_answers(dpo_exp_dirs)
 
-    # make_judgements_mode = "pairwise-baseline"
-    # make_judgements_for_mode(
-    #    make_judgements_mode, dpo_exp_dirs, baseline_model="pythia-6.9b"
-    # )
+    make_judgements_mode = "pairwise-baseline"
+    make_judgements_for_mode(
+        make_judgements_mode, dpo_exp_dirs, baseline_model="pythia-2.8b"
+    )
 
     show_results_mode = "pairwise-baseline"
-    # show_results_for_mode(show_results_mode, dpo_exp_dirs)
+    show_results_for_mode(show_results_mode, dpo_exp_dirs)
 
 
 def test_main():
