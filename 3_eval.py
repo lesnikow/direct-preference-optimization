@@ -171,7 +171,7 @@ def make_judgements_for_mode(mode, dpo_exp_dirs, baseline_model="pythia-2.8b"):
     baseline_model is the model to compare against in pairwise-baseline mode.
     """
 
-    venv_python = os.path.join(os.path.expanduser("~/env-fastchat"), "bin", "python3")
+    venv_python = os.path.join(os.path.expanduser("~/venvs/fc"), "bin", "python3")
     logging.info("Making judgements for mode: %s", mode)
 
     if mode in ["single", "pairwise-all"]:
@@ -201,7 +201,7 @@ def make_judgements_for_mode(mode, dpo_exp_dirs, baseline_model="pythia-2.8b"):
                 "--model-list",
                 *dpo_exp_dirs,
                 "--parallel",
-                "256",
+                "32",
                 "--baseline-model",
                 baseline_model,
             ]
@@ -213,7 +213,7 @@ def make_judgements_for_mode(mode, dpo_exp_dirs, baseline_model="pythia-2.8b"):
 def show_results_for_mode(mode, dpo_exp_dirs):
     """Show results for a given mode and dpo_exp_dirs."""
 
-    venv_python = os.path.join(os.path.expanduser("~/env-fastchat"), "bin", "python3")
+    venv_python = os.path.join(os.path.expanduser("~/venvs/fc"), "bin", "python3")
     os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
 
     if mode in ["single", "pairwise-all"]:
@@ -241,7 +241,7 @@ def show_results_for_mode(mode, dpo_exp_dirs):
                 "--model-list",
                 *dpo_exp_dirs,
                 "--baseline-model",
-                "pythia-6.9b",
+                "pythia-2.8b",
             ]
         )
     else:
@@ -259,7 +259,25 @@ def main():
     """Main method."""
 
     logging.info("Starting main method")
-    dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 4)
+    dpo_exp_dirs = [
+        "maj_shp_data_v3_matched_prompts_8000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_01-07-40_099260",
+        "sc_shp_data_v3_matched_prompts_1000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_00-40-24_390782",
+        "maj_shp_data_v3_matched_prompts_64000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_04-32-28_043166",
+        "sc_shp_data_v3_matched_prompts_2000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_00-45-05_996195",
+        "maj_shp_data_v3_matched_prompts_1000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_00-38-08_251316",
+        "sc_shp_data_v3_matched_prompts_32000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_01-59-18_179950",
+        "sc_shp_data_v3_matched_prompts_64000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_03-05-37_640844",
+        "maj_shp_data_v3_matched_prompts_4000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_00-52-14_774895",
+        "maj_shp_data_v3_matched_prompts_16000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_01-37-51_643939",
+        "sc_shp_data_v3_matched_prompts_16000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_01-21-24_002283",
+        "maj_shp_data_v3_matched_prompts_2000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_00-42-56_500194",
+        "sc_shp_data_v3_matched_prompts_8000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_01-02-54_079591",
+        "maj_shp_data_v3_matched_prompts_32000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_02-36-06_735679",
+        "sc_shp_data_v3_matched_prompts_4000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_00-51-56_512768",
+    ]
+    dpo_exp_dirs.remove(
+        "sc_shp_data_v3_matched_prompts_1000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_00-40-24_390782"
+    )
     logging.info(f"Recent experiment directories: {dpo_exp_dirs}")
 
     # convert_models(dpo_exp_dirs)
@@ -267,9 +285,9 @@ def main():
     # make_answers(dpo_exp_dirs)
 
     make_judgements_mode = "pairwise-baseline"
-    make_judgements_for_mode(
-        make_judgements_mode, dpo_exp_dirs, baseline_model="pythia-2.8b"
-    )
+    # make_judgements_for_mode(
+    #    make_judgements_mode, dpo_exp_dirs, baseline_model="pythia-2.8b"
+    # )
 
     show_results_mode = "pairwise-baseline"
     show_results_for_mode(show_results_mode, dpo_exp_dirs)
