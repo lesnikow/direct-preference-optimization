@@ -655,6 +655,17 @@ def get_shp_data_v3_matched_prompts_xk(maj_or_sc, size_str):
     return get_custom_shp_dataset_from_fp(fp)
 
 
+def get_sft_condorcet_data(suffix):
+    """Get SFT condorcet data."""
+
+    fp = os.path.join(
+        os.environ.get("HOME", ""),
+        "llm-sct/data/reddit/processed/gpt35/",
+        "maj_sc_v3/sft_improved/",
+        f"sft_condorcet_{suffix}.json",
+    )
+    return get_custom_shp_dataset_from_fp(fp)
+
 
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
@@ -662,6 +673,10 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
     if name == "":
         raise ValueError("Expected a non-empty name")
 
+    elif name.startswith("sft_condorcet"):
+        prefix = "sft_condorcet"
+        suffix = "_".join(name.split("_")[2:])
+        data = get_sft_condorcet_data(suffix)
 
     elif name.startswith("maj_shp_data_v3_matched_prompts_") or name.startswith(
         "sc_shp_data_v3_matched_prompts_"
