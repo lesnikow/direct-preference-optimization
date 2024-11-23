@@ -512,17 +512,24 @@ def get_rmp(
 def get_shp_maj_data():
     """Get SHP majority data."""
 
-    home_dir = os.environ.get('HOME', '')
-    fp = os.path.join(home_dir, "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO.json")
+    home_dir = os.environ.get("HOME", "")
+    fp = os.path.join(
+        home_dir,
+        "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO.json",
+    )
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
 
 def get_shp_sc_data():
     """Get SHP split cycle data."""
 
-    home_dir = os.environ.get('HOME', '')
-    fp = os.path.join(home_dir, "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO.json")
+    home_dir = os.environ.get("HOME", "")
+    fp = os.path.join(
+        home_dir,
+        "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO.json",
+    )
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+
 
 def test_get_shp_maj_data():
     fp = "/nas/ucb/adamlesnikowski/llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO.json"
@@ -534,67 +541,81 @@ def test_get_shp_maj_data():
 def get_shp_maj_data_v2():
     """Get SHP majority data v2."""
 
-    home_dir = os.environ.get('HOME', '')
-    fp = os.path.join(home_dir,
-            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO_v2_first_40k.json")
+    home_dir = os.environ.get("HOME", "")
+    fp = os.path.join(
+        home_dir,
+        "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO_v2_first_40k.json",
+    )
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
 
 def get_shp_sc_data_v2():
     """Get SHP split cycle data v2, presenting cycles to model."""
 
-    home_dir = os.environ.get('HOME', '')
-    fp = os.path.join(home_dir,
-            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_first_40k.json")
+    home_dir = os.environ.get("HOME", "")
+    fp = os.path.join(
+        home_dir,
+        "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_first_40k.json",
+    )
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
 
 def get_shp_sc_data_v2_cut_to_same_topics():
     """Get SHP split cycle data v2, presenting cycles to model."""
 
-    home_dir = os.environ.get('HOME', '')
-    fp = os.path.join(home_dir,
-            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_first_40k_cut_to_same_topics.json")
+    home_dir = os.environ.get("HOME", "")
+    fp = os.path.join(
+        home_dir,
+        "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_first_40k_cut_to_same_topics.json",
+    )
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
+
 
 def get_shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut():
     """Get shp maj data v2 75k matched to sc 40k rump cut dataset."""
 
-    home_dir = os.environ.get('HOME', '')
-    fp = os.path.join(home_dir,
-            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO_v2_first_75k_topic_matched_to_sc_data_40k_rump_cut.json")
+    home_dir = os.environ.get("HOME", "")
+    fp = os.path.join(
+        home_dir,
+        "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO_v2_first_75k_topic_matched_to_sc_data_40k_rump_cut.json",
+    )
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
-   
+
 
 def get_shp_sc_data_v2_40k_rump_cut():
     """Get shp sc data v2 40k with its last rump topic cut off."""
 
-    home_dir = os.environ.get('HOME', '')
-    fp = os.path.join(home_dir,
-            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_first_40k_rump_cut.json")
+    home_dir = os.environ.get("HOME", "")
+    fp = os.path.join(
+        home_dir,
+        "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_first_40k_rump_cut.json",
+    )
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
-
 
 
 def get_shp_maj_data_v2_160k():
 
-    home_dir = os.environ.get('HOME', '')
-    fp = os.path.join(home_dir,
-            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO_v2_160k.json")
+    home_dir = os.environ.get("HOME", "")
+    fp = os.path.join(
+        home_dir,
+        "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_maj_data_for_DCPO_v2_160k.json",
+    )
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
-   
+
 
 def get_shp_sc_data_v2_topic_matched_to_maj_160k():
 
-    home_dir = os.environ.get('HOME', '')
-    fp = os.path.join(home_dir,
-            "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_topic_matched_to_maj_160k.json")
+    home_dir = os.environ.get("HOME", "")
+    fp = os.path.join(
+        home_dir,
+        "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/reddit_sc_data_for_DCPO_v2_topic_matched_to_maj_160k.json",
+    )
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
 
 def get_shp_dataset_from_fp(path):
 
-    home_dir = os.environ.get('HOME', '')
+    home_dir = os.environ.get("HOME", "")
     fp = os.path.join(home_dir, path)
     return get_custom_shp_dataset_from_fp(fp, silent=False, verbose=False)
 
@@ -602,47 +623,52 @@ def get_shp_dataset_from_fp(path):
 def get_shp_maj_data_v2_xk(size_descriptor_string):
     """Get shp maj data v2 of size size_descriptor string."""
 
-    fp = os.path.join(os.environ.get('HOME', ''),
+    fp = os.path.join(
+        os.environ.get("HOME", ""),
         "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/",
-        f"reddit_maj_data_for_DCPO_v2_{size_descriptor_string}.json")
+        f"reddit_maj_data_for_DCPO_v2_{size_descriptor_string}.json",
+    )
     return get_custom_shp_dataset_from_fp(fp)
 
 
 def get_shp_sc_data_v2_topic_matched_to_maj_xk(size_descriptor_string):
     """Get shp sc data v2 topic matched to maj of size size_descriptor string."""
 
-    fp = os.path.join(os.environ.get('HOME', ''),
+    fp = os.path.join(
+        os.environ.get("HOME", ""),
         "llm-sct/data/reddit/raw/gpt-3.5-turbo-0125/"
-        f"reddit_sc_data_for_DCPO_v2_topic_matched_to_maj_{size_descriptor_string}.json")
+        f"reddit_sc_data_for_DCPO_v2_topic_matched_to_maj_{size_descriptor_string}.json",
+    )
     return get_custom_shp_dataset_from_fp(fp)
-
 
 
 def get_shp_data_v3_matched_prompts_xk(maj_or_sc, size_str):
     """Get shp data topic matched, of size size_str."""
 
-    fp = os.path.join(os.environ.get('HOME', ''),
+    fp = os.path.join(
+        os.environ.get("HOME", ""),
         "llm-sct/data/reddit/processed/gpt35/",
         "maj_sc_v3/matched_prompts/",
         "1000_to_64000/",
-        f"{maj_or_sc}_{size_str}.json")
-
+        f"{maj_or_sc}_{size_str}.json",
+    )
     return get_custom_shp_dataset_from_fp(fp)
 
 
 
 def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = None):
     """Load the given dataset by name. Supported by default are 'shp', 'hh', and 'se'."""
+
     if name == "":
         raise ValueError("Expected a non-empty name")
 
 
-    elif (name.startswith("maj_shp_data_v3_matched_prompts_") or
-          name.startswith("sc_shp_data_v3_matched_prompts_")):
+    elif name.startswith("maj_shp_data_v3_matched_prompts_") or name.startswith(
+        "sc_shp_data_v3_matched_prompts_"
+    ):
         maj_or_sc = name.split("_")[0]
         size_str = name.split("_")[-1]
         data = get_shp_data_v3_matched_prompts_xk(maj_or_sc, size_str)
-
 
     elif name.startswith("shp_maj_data_v2_"):
         suffix = name.split("_")[-1]
@@ -653,9 +679,9 @@ def get_dataset(name: str, split: str, silent: bool = False, cache_dir: str = No
         data = get_shp_sc_data_v2_topic_matched_to_maj_xk(suffix)
 
     elif name == "shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut":
-        data = get_shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut() 
+        data = get_shp_maj_data_v2_75k_matched_to_sc_40k_rump_cut()
     elif name == "shp_sc_data_v2_40k_rump_cut":
-        data = get_shp_sc_data_v2_40k_rump_cut() 
+        data = get_shp_sc_data_v2_40k_rump_cut()
     elif name == "shp_sc_data_v2_cut_to_same_topics":
         data = get_shp_sc_data_v2_cut_to_same_topics()
     elif name == "shp_maj_data_v2":
