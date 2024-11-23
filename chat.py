@@ -5,8 +5,9 @@ from transformers import pipeline
 
 model_p = "EleutherAI/pythia-2.8b"
 model_l = ".cache/adamlesnikowski/shp_sc_data_v2_cut_to_same_topics_dataset_dpo_loss_pythia69_model_8_batch_size_2024-09-26_22-48-21_033517/LATEST/converted/"
+model_p28 = ".cache/adamlesnikowski/sc_shp_data_v3_matched_prompts_64000_dataset_dpo_loss_pythia28_model_8_batch_size_2024-11-10_03-05-37_640844"
 
-model = model_l
+model = model_p28
 print(f"model is {model}")
 
 pipe = pipeline("text-generation", model=model)
