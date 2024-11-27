@@ -193,8 +193,6 @@ class BasicTrainer(object):
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
 
-        self.config = transformers.AutoConfig.from_pretrained(config.model.name_or_path)
-
         data_iterator_kwargs = dict(
             names=config.datasets,
             tokenizer=self.tokenizer,
