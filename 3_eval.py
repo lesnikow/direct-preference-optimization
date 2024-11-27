@@ -99,30 +99,30 @@ def fastchat_setup():
     os.chdir(os.path.expanduser("~/fast-chat/fastchat/llm_judge/"))
 
 
-def make_answers_single_model(exp_dir, max_new_tokens, overwrite=False):
+def make_answers_single_model(model_path, max_new_tokens, overwrite=False):
     """Generate model answers for a given model."""
 
+    if "LATEST" not in model_path:
+        model_id = "_".join(model_path.split("/")[-2:])
+    else:
+        model_id = "_".join(model_path.split("/")[-3:])
+
     output_path = os.path.expanduser(
-        f"~/fast-chat/fastchat/llm_judge/data/mt_bench/model_answer/{exp_dir}.jsonl"
+        f"~/fast-chat/fastchat/llm_judge/data/mt_bench/model_answer/{model_id}.jsonl"
     )
     logging.info(f"Output path for model answers: {output_path}")
 
     if os.path.exists(output_path):
         if not overwrite:
-            logging.info(f"Model answers already exist for {exp_dir}")
-            logging.info(f"Skipping")
+            logging.info(f"Model answers already exist for {model_id}, skipping")
             return
         else:
             logging.info(
-                f"Model answers exist, but overwriting model answers for {exp_dir}"
+                f"Model answers exist, but overwriting model answers for {model_id}"
             )
 
-    logging.info(f"Generating model answers")
+    logging.info(f"Generating model answers for {model_id}")
     num_gpus = 1
-    model_path = os.path.expanduser(
-        f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}/LATEST/converted/"
-    )
-
     venv_python = os.path.join(os.path.expanduser("~/env-fastchat"), "bin", "python3")
     subprocess.run(
         [
@@ -131,7 +131,7 @@ def make_answers_single_model(exp_dir, max_new_tokens, overwrite=False):
             "--model-path",
             model_path,
             "--model-id",
-            exp_dir,
+            model_id,
             "--num-gpus-total",
             str(num_gpus),
             "--max-new-token",
@@ -140,13 +140,37 @@ def make_answers_single_model(exp_dir, max_new_tokens, overwrite=False):
     )
 
 
-def make_answers(dpo_exp_dirs):
+def make_answers(dpo_exp_dirs, run_intermediate_models=False, reverse=False):
     """Make fastchat llm judge model answers."""
 
+    model_paths = []
     max_new_tokens = 128
+    base_path = os.path.expanduser(
+        "~/direct-preference-optimization/.cache/adamlesnikowski"
+    )
     for exp_dir in dpo_exp_dirs:
-        print(f"Generating model answers for {exp_dir}")
-        make_answers_single_model(exp_dir, max_new_tokens)
+        if run_intermediate_models:
+            exp_path = os.path.join(base_path, exp_dir)
+            intermediate_models = os.listdir(exp_path)
+            intermediate_models.remove("config.yaml")
+            intermediate_models.remove("LATEST")
+
+            model_paths_to_add = [
+                os.path.join(exp_path, model) for model in intermediate_models
+            ]
+            model_paths.extend(model_paths_to_add)
+        else:
+            model_paths.append(os.path.join(base_path, exp_dir, "LATEST/converted"))
+
+        if reverse:
+            model_paths = reversed(model_paths)
+        logging.info(f"Model paths: {model_paths}")
+        for model_path in model_paths:
+            logging.info(f"Model path: {model_path}")
+            if not os.path.exists(model_path):
+                logging.info(f"Model path does not exist: {model_path}")
+                continue
+            make_answers_single_model(model_path, max_new_tokens)
 
 
 def test_make_answers():
