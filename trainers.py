@@ -683,15 +683,15 @@ class BasicTrainer(object):
             )
         del policy_state_dict
 
-        optimizer_state_dict = self.optimizer.state_dict()
-        self.write_state_dict(
-            self.example_counter,
-            optimizer_state_dict,
-            metrics,
-            "optimizer.pt",
-            output_dir,
-        )
-        del optimizer_state_dict
+        # optimizer_state_dict = self.optimizer.state_dict()
+        # self.write_state_dict(
+        #     self.example_counter,
+        #     optimizer_state_dict,
+        #     metrics,
+        #     "optimizer.pt",
+        #     output_dir,
+        # )
+        # del optimizer_state_dict
 
         scheduler_state_dict = self.scheduler.state_dict()
         self.write_state_dict(
