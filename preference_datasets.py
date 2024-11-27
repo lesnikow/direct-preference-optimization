@@ -680,7 +680,7 @@ def get_sft_condorcet_data(suffix):
         os.environ.get("HOME", ""),
         "llm-sct/data/reddit/processed/gpt35/",
         "maj_sc_v3/sft_improved/",
-        f"sft_condorcet_{suffix}.json",
+        f"sft_condorcet_{suffix}.jsonl",
     )
     return get_custom_shp_dataset_from_fp(fp)
 
