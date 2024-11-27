@@ -1,20 +1,23 @@
 #!/bin/bash
 # Soft fine-tuning (SFT) experiments
 
-a_arm_dataset='shp_maj_data_v2_640k'
-b_arm_dataset='shp_sc_data_v2_topic_matched_to_maj_640k'
-n_arm_dataset='no_train_dataset'
-model='pythia69'
+a_arm_dataset='sft_condorcet_all'
+b_arm_dataset=''
+n_arm_dataset=''
+model='pythia28'
 model_fsdp_policy_mp="bfloat16"
 loss='sft'
-batch_size=16
-gradient_accumulation_steps=1
-trainer='FSDPTrainer'
+batch_size=32
+gradient_accumulation_steps=4
+
+# trainer='FSDPTrainer'
+trainer='BasicTrainer'
+
 n_epochs=1
 n_examples=null
 
 eval_batch_size=8
-eval_every=20000
+eval_every=2500
 n_eval_examples=64
 
 ulimit_value=32000
