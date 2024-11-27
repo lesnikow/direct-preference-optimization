@@ -625,7 +625,7 @@ class BasicTrainer(object):
 
         os.makedirs(dir_name, exist_ok=True)
         output_path = os.path.join(dir_name, filename)
-        rank0_print(f"writing checkpoint to {output_path}...")
+        rank0_print(f"writing checkpoint to {output_path} ...")
         torch.save(
             {
                 "step_idx": step,
@@ -646,11 +646,9 @@ class BasicTrainer(object):
             dir_name = os.path.join(self.run_dir, f"LATEST/converted")
 
         os.makedirs(dir_name, exist_ok=True)
-
-        rank0_print(f"writing converted checkpoint to {dir_name}...")
-        self.policy.save_pretrained(dir_name)
+        rank0_print(f"writing converted checkpoint to {dir_name} ...")
         self.tokenizer.save_pretrained(dir_name)
-        self.config.save_pretrained(dir_name)
+        self.policy.save_pretrained(dir_name)
 
     def save(self, output_dir: Optional[str] = None, metrics: Optional[Dict] = None):
         """Save policy, optimizer, and scheduler state to disk."""
