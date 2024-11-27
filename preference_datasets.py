@@ -163,9 +163,27 @@ def get_custom_shp_dataset_from_fp(
     """Get dataset based on Stanford Human Preferences dataset content and format from custom fp."""
 
     print(f"Loading custom SHP style dataset from local data dir: {fp} ...")
+    try:
+        with open(fp, "rb") as f:
+            raw_data = f.read()
 
-    with open(fp, "r", encoding="utf-16") as f:
-        read_data = ast.literal_eval(f.read())
+        try:
+            with open(fp, "r", encoding="utf-8") as f:
+                content = f.read()
+                print(f"Successfully read {len(content)} characters using UTF-8")
+                read_data = ast.literal_eval(content)
+        except UnicodeDecodeError:
+            with open(fp, "r", encoding="utf-16") as f:
+                content = f.read()
+                print(f"Successfully read {len(content)} characters using UTF-16")
+                read_data = ast.literal_eval(content)
+
+    except UnicodeDecodeError as e:
+        print(f"Error position: {e.start}")
+        print(
+            f"Problematic bytes near error: {raw_data[max(0, e.start-10):e.start+10].hex()}"
+        )
+        raise e
 
     data = defaultdict(lambda: defaultdict(list))
 
