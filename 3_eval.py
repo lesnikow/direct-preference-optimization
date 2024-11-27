@@ -283,20 +283,23 @@ def main():
     """Main method."""
 
     logging.info("Starting main method")
-    dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 4)
+    # dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 14)
+    dpo_exp_dirs = [
+        "sft_condorcet_all_dataset_sft_loss_pythia28_model_32_batch_size_2024-11-26_20-38-29_179432"
+    ]
     logging.info(f"Recent experiment directories: {dpo_exp_dirs}")
 
     # convert_models(dpo_exp_dirs)
     fastchat_setup()
-    # make_answers(dpo_exp_dirs)
+    make_answers(dpo_exp_dirs, run_intermediate_models=True)
 
     make_judgements_mode = "pairwise-baseline"
-    make_judgements_for_mode(
-        make_judgements_mode, dpo_exp_dirs, baseline_model="pythia-2.8b"
-    )
+    # make_judgements_for_mode(
+    #    make_judgements_mode, dpo_exp_dirs, baseline_model="pythia-2.8b"
+    # )
 
     show_results_mode = "pairwise-baseline"
-    show_results_for_mode(show_results_mode, dpo_exp_dirs)
+    # show_results_for_mode(show_results_mode, dpo_exp_dirs)
 
 
 def test_main():
