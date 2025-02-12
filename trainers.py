@@ -534,7 +534,7 @@ class BasicTrainer(object):
                                 step=self.example_counter,
                             )
 
-                if self.example_counter > 0:
+                if self.example_counter >= 0:
                     if self.config.debug:
                         rank0_print("skipping save in debug mode")
                     else:
