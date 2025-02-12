@@ -1,14 +1,14 @@
 #!/bin/bash
 # Soft fine-tuning (SFT) experiments
 
-a_arm_dataset='sft_condorcet_all'
+a_arm_dataset='hh'
 b_arm_dataset=''
 n_arm_dataset=''
 model='pythia28'
 model_fsdp_policy_mp="bfloat16"
 loss='sft'
-batch_size=32
-gradient_accumulation_steps=4
+batch_size=16
+gradient_accumulation_steps=8
 
 # trainer='FSDPTrainer'
 trainer='BasicTrainer'
@@ -16,8 +16,8 @@ trainer='BasicTrainer'
 n_epochs=1
 n_examples=null
 
-eval_batch_size=8
-eval_every=2500
+eval_batch_size=16
+eval_every=2400
 n_eval_examples=64
 
 ulimit_value=32000
@@ -64,8 +64,7 @@ function run_n_arm {
 
 function main {
     echo -e "Starting SFT experiments for\n a-arm dataset: $a_arm_dataset and\n b-arm dataset: $b_arm_dataset..."
-    echo "batch_size: $batch_size, gradient_accumulation_steps: $gradient_accumulation_steps; effective_batch_size: $((batch_size *
-    gradient_accumulation_steps))"
+    echo "batch_size: $batch_size, gradient_accumulation_steps: $gradient_accumulation_steps; effective_batch_size: $((batch_size * gradient_accumulation_steps))"
 
     cd "$HOME/direct-preference-optimization" || { echo "Directory not found!"; exit 1; }
     ulimit -n "$ulimit_value"
