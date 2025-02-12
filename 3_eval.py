@@ -24,9 +24,8 @@ def get_recent_exp_dirs(seconds):
             f"~/direct-preference-optimization/.cache/adamlesnikowski/{exp_dir}"
         )
         if os.path.getmtime(exp_dir_fullpath) > time.time() - seconds:
-            if os.path.exists(f"{exp_dir_fullpath}/LATEST/policy.pt"):
-                if exp_dir not in ["wandb"]:
-                    exp_dirs.append(exp_dir)
+            if exp_dir not in ["wandb"]:
+                exp_dirs.append(exp_dir)
     return exp_dirs
 
 
@@ -153,7 +152,10 @@ def make_answers(dpo_exp_dirs, run_intermediate_models=False, reverse=False):
             exp_path = os.path.join(base_path, exp_dir)
             intermediate_models = os.listdir(exp_path)
             intermediate_models.remove("config.yaml")
-            intermediate_models.remove("LATEST")
+            try:
+                intermediate_models.remove("LATEST")
+            except ValueError:
+                pass
 
             model_paths_to_add = [
                 os.path.join(exp_path, model) for model in intermediate_models
@@ -265,7 +267,7 @@ def show_results_for_mode(mode, dpo_exp_dirs):
                 "--model-list",
                 *dpo_exp_dirs,
                 "--baseline-model",
-                "pythia-6.9b",
+                "pythia-2.8b",
             ]
         )
     else:
@@ -282,24 +284,41 @@ def show_results(dpo_exp_dirs):
 def main():
     """Main method."""
 
-    logging.info("Starting main method")
-    # dpo_exp_dirs = get_recent_exp_dirs(60 * 60 * 24 * 14)
-    dpo_exp_dirs = [
-        "sft_condorcet_all_dataset_sft_loss_pythia28_model_32_batch_size_2024-11-26_20-38-29_179432"
-    ]
-    logging.info(f"Recent experiment directories: {dpo_exp_dirs}")
+    convert_model_bool = False
+    make_answers_bool = False
+    make_judgements_bool = False
+    show_results_bool = True
 
-    # convert_models(dpo_exp_dirs)
+    logging.info("Starting main method")
+
+    if convert_model_bool:
+        convert_models(dpo_exp_dirs)
+
     fastchat_setup()
-    make_answers(dpo_exp_dirs, run_intermediate_models=True)
+    if make_answers_bool:
+        dpo_exp_dirs = [
+            "hh_dataset_sft_loss_pythia28_model_16_batch_size_2024-11-30_22-37-19_528267"
+        ]
+        logging.info(f"Recent experiment directories: {dpo_exp_dirs}")
+
+        make_answers(dpo_exp_dirs, run_intermediate_models=True)
 
     make_judgements_mode = "pairwise-baseline"
-    # make_judgements_for_mode(
-    #    make_judgements_mode, dpo_exp_dirs, baseline_model="pythia-2.8b"
-    # )
+    if make_judgements_bool:
 
-    show_results_mode = "pairwise-baseline"
-    # show_results_for_mode(show_results_mode, dpo_exp_dirs)
+        make_judgements_for_mode(
+            make_judgements_mode, dpo_exp_dirs, baseline_model="pythia-2.8b"
+        )
+
+    if show_results_bool:
+        dpo_exp_dirs = []
+        for i in range(1, 20):
+            dpo_exp_dirs.append(
+                f"hh_dataset_sft_loss_pythia28_model_16_batch_size_2024-11-30_22-37-19_528267_step-{i * 2400}"
+            )
+        logging.info(f"Recent experiment directories: {dpo_exp_dirs}")
+        show_results_mode = "pairwise-baseline"
+        show_results_for_mode(show_results_mode, dpo_exp_dirs)
 
 
 def test_main():
